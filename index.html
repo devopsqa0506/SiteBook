@@ -90,8 +90,9 @@ body{
   border:1px solid var(--bd);
   border-radius:24px 24px 0 0;
   width:100%;max-width:500px;
-  padding:0 0 max(28px,env(safe-area-inset-bottom,28px));
-  max-height:93vh;overflow-y:auto;
+  padding:0 0 max(60px,env(safe-area-inset-bottom,60px));
+  max-height:88vh;overflow-y:scroll;
+  -webkit-overflow-scrolling:touch;
 }
 .wiz-grip{width:40px;height:4px;background:var(--bd2);border-radius:2px;margin:14px auto 0}
 .wiz-head{padding:22px 22px 0}
@@ -137,8 +138,8 @@ body{
 .fi:focus{border-color:var(--amb)}
 .fi::placeholder{color:var(--tx3)}
 .fi-mono{font-family:'JetBrains Mono';font-size:13px}
-.wiz-footer{padding:16px 22px 0;display:flex;gap:9px}
-.wiz-footer .btn{min-height:52px;font-size:15px;border-radius:12px}
+.wiz-footer{padding:16px 22px 20px;display:flex;gap:9px;flex-wrap:wrap}
+.wiz-footer .btn{min-height:56px;font-size:15px;border-radius:12px;flex:1}
 
 /* steps key visual */
 .key-steps{counter-reset:ks;list-style:none;margin-bottom:14px}
@@ -1049,19 +1050,21 @@ function copyScript() {
 }
 
 function validateSheetAndNext() {
+  document.activeElement && document.activeElement.blur();
   const sheetId = document.getElementById('sheet-id').value.trim();
   const scriptUrl = document.getElementById('script-url').value.trim();
   if (!sheetId) { toast('Sheet ID enter చేయండి','err'); return; }
   if (!scriptUrl) { toast('Apps Script URL enter చేయండి','err'); return; }
-  // Save and proceed — connection will be tested on first real sync
   cfg.sheetId = sheetId;
   cfg.scriptUrl = scriptUrl;
   saveCfg(cfg);
-  toast('✓ Saved! Next step కి వెళ్తున్నాం...','ok');
-  setTimeout(() => gotoStep(2), 800);
+  toast('✓ Saved!','ok');
+  setTimeout(() => { try { gotoStep(2); } catch(e){ console.log(e); } }, 600);
 }
 
 function finishSetup() {
+  // Dismiss keyboard first on iPhone
+  document.activeElement && document.activeElement.blur();
   const key = document.getElementById('gemini-key').value.trim();
   if (!key) { toast('Gemini API key enter చేయండి','err'); return; }
   if (!key.startsWith('AIza')) { toast('AIza తో start అయ్యే key enter చేయండి','err'); return; }
@@ -1073,19 +1076,36 @@ function finishSetup() {
 }
 
 function launchApp() {
-  document.getElementById('setup').classList.add('out');
-  document.getElementById('app').classList.add('visible');
-  refreshUI();
-  injectWelcomeMsg();
-  updateSettingsUI();
-  syncFromSheet();
-  // Show install banner
-  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  const isAndroid = /android/i.test(navigator.userAgent);
-  const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
-  if ((isIOS||isAndroid) && !isStandalone) {
-    document.getElementById('install-banner').style.display = 'flex';
-  }
+  // Hide setup completely
+  const setupEl = document.getElementById('setup');
+  setupEl.style.opacity = '0';
+  setTimeout(() => { setupEl.style.display = 'none'; }, 400);
+
+  // Show app
+  const appEl = document.getElementById('app');
+  appEl.style.opacity = '1';
+  appEl.style.pointerEvents = 'all';
+  appEl.classList.add('visible');
+
+  // Init all screens safely
+  try { refreshUI(); } catch(e){ console.log('refreshUI err',e); }
+  try { renderDocList(); } catch(e){ console.log('renderDocList err',e); }
+  try { injectWelcomeMsg(); } catch(e){ console.log('injectWelcomeMsg err',e); }
+  try { updateSettingsUI(); } catch(e){ console.log('updateSettingsUI err',e); }
+  try { syncFromSheet(); } catch(e){ console.log('syncFromSheet err',e); }
+
+  // Install banner
+  try {
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    const isAndroid = /android/i.test(navigator.userAgent);
+    const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+    if ((isIOS || isAndroid) && !isStandalone) {
+      document.getElementById('install-banner').style.display = 'flex';
+    }
+  } catch(e){}
+
+  // Auto-sync every 5 min
+  setInterval(() => { try { syncFromSheet(); } catch(e){} }, 5 * 60 * 1000);
 }
 
 // ═══════════════════════════════════════════════════
