@@ -1,13 +1,14 @@
 <!DOCTYPE html>
+
 <html lang="te">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Nirmit">
-<meta name="theme-color" content="#08090d">
-<title>Nirmit — Builder AI</title>
+<meta name="apple-mobile-web-app-title" content="SiteBook">
+<meta name="theme-color" content="#0d2244">
+<title>SiteBook — Construction Manager</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;500;600;700&family=Noto+Serif+Telugu:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <style>
 :root {
@@ -24,384 +25,384 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
   position:fixed;width:100%;height:100%;height:-webkit-fill-available}
 
 /* SPLASH */
-#splash{position:fixed;inset:0;z-index:9000;background:var(--bg);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
-  transition:opacity 0.6s}
+#splash{position:fixed;inset:0;z-index:9000;background:var(–bg);
+display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
+transition:opacity 0.6s}
 #splash.out{opacity:0;pointer-events:none}
 .sp-box{width:88px;height:88px;border-radius:22px;
-  background:linear-gradient(145deg,#1a2a4a,#2a4a6a);border:1px solid var(--bd2);
-  display:flex;align-items:center;justify-content:center;font-size:42px;
-  box-shadow:0 0 60px rgba(232,184,74,0.15)}
-.sp-name{font-size:26px;font-weight:700;color:var(--amb);font-family:'Noto Serif Telugu'}
-.sp-tag{font-size:13px;color:var(--tx2)}
-.sp-bar{width:180px;height:2px;background:var(--s3);border-radius:1px;overflow:hidden}
-.sp-fill{height:100%;background:linear-gradient(90deg,var(--amb),var(--teal));
-  animation:fill 2.2s ease forwards}
+background:linear-gradient(145deg,#1a2a4a,#2a4a6a);border:1px solid var(–bd2);
+display:flex;align-items:center;justify-content:center;font-size:42px;
+box-shadow:0 0 60px rgba(232,184,74,0.15)}
+.sp-name{font-size:26px;font-weight:700;color:var(–amb);font-family:‘Noto Serif Telugu’}
+.sp-tag{font-size:13px;color:var(–tx2)}
+.sp-bar{width:180px;height:2px;background:var(–s3);border-radius:1px;overflow:hidden}
+.sp-fill{height:100%;background:linear-gradient(90deg,var(–amb),var(–teal));
+animation:fill 2.2s ease forwards}
 @keyframes fill{to{width:100%}}
 
 /* SETUP */
 #setup{position:fixed;inset:0;z-index:5000;background:rgba(8,9,13,0.96);
-  display:none;align-items:flex-end;justify-content:center;
-  opacity:0;transition:opacity 0.4s}
-.wiz{background:var(--s1);border:1px solid var(--bd);border-radius:24px 24px 0 0;
-  width:100%;max-width:500px;padding:0 0 max(32px,env(safe-area-inset-bottom,32px));
-  max-height:90vh;overflow-y:auto}
-.wiz-grip{width:38px;height:4px;background:var(--bd2);border-radius:2px;margin:14px auto 0}
+display:none;align-items:flex-end;justify-content:center;
+opacity:0;transition:opacity 0.4s}
+.wiz{background:var(–s1);border:1px solid var(–bd);border-radius:24px 24px 0 0;
+width:100%;max-width:500px;padding:0 0 max(32px,env(safe-area-inset-bottom,32px));
+max-height:90vh;overflow-y:auto}
+.wiz-grip{width:38px;height:4px;background:var(–bd2);border-radius:2px;margin:14px auto 0}
 .wiz-head{padding:20px 20px 0}
 .step-bar{display:flex;gap:6px;margin-bottom:18px}
-.sb{height:3px;flex:1;border-radius:2px;background:var(--s4);transition:background 0.4s}
-.sb.done{background:var(--teal)}.sb.active{background:var(--amb)}
-.wiz-title{font-size:21px;font-weight:700;color:var(--amb);font-family:'Noto Serif Telugu';margin-bottom:7px}
-.wiz-sub{font-size:13px;color:var(--tx2);line-height:1.75;margin-bottom:18px}
+.sb{height:3px;flex:1;border-radius:2px;background:var(–s4);transition:background 0.4s}
+.sb.done{background:var(–teal)}.sb.active{background:var(–amb)}
+.wiz-title{font-size:21px;font-weight:700;color:var(–amb);font-family:‘Noto Serif Telugu’;margin-bottom:7px}
+.wiz-sub{font-size:13px;color:var(–tx2);line-height:1.75;margin-bottom:18px}
 .wiz-body{padding:0 20px}
 .step{display:none}.step.on{display:block}
-.panel{background:var(--s2);border:1px solid var(--bd);border-radius:11px;
-  padding:13px;margin-bottom:13px;font-size:13px;color:var(--tx2);line-height:1.7}
+.panel{background:var(–s2);border:1px solid var(–bd);border-radius:11px;
+padding:13px;margin-bottom:13px;font-size:13px;color:var(–tx2);line-height:1.7}
 .panel .ph{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .panel .pi{font-size:20px}
-.panel .pt{font-size:13px;font-weight:700;color:var(--tx)}
+.panel .pt{font-size:13px;font-weight:700;color:var(–tx)}
 .panel.hl{border-color:rgba(232,184,74,0.35);background:rgba(232,184,74,0.05)}
-.panel.hl .pt{color:var(--amb)}
+.panel.hl .pt{color:var(–amb)}
 .panel.tl{border-color:rgba(58,232,200,0.3);background:rgba(58,232,200,0.04)}
-.panel.tl .pt{color:var(--teal)}
+.panel.tl .pt{color:var(–teal)}
 .steps-list{counter-reset:sl;list-style:none}
 .steps-list li{counter-increment:sl;padding:8px 0 8px 38px;position:relative;
-  font-size:13px;color:var(--tx2);border-bottom:1px solid var(--bd);line-height:1.6}
+font-size:13px;color:var(–tx2);border-bottom:1px solid var(–bd);line-height:1.6}
 .steps-list li:last-child{border-bottom:none}
 .steps-list li::before{content:counter(sl);position:absolute;left:0;top:7px;
-  width:24px;height:24px;border-radius:7px;background:var(--s3);border:1px solid var(--bd2);
-  display:grid;place-items:center;font-size:11px;font-family:'JetBrains Mono';color:var(--amb)}
-.steps-list li strong{color:var(--tx)}
-.steps-list li a{color:var(--teal)}
-.fl{font-size:11px;color:var(--tx2);margin-bottom:6px;display:block;font-family:'JetBrains Mono'}
-.fi{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:10px;
-  padding:12px 14px;color:var(--tx);font-family:'Noto Sans Telugu',sans-serif;
-  font-size:14px;outline:none;transition:border-color 0.2s;margin-bottom:12px}
-.fi:focus{border-color:var(--amb)}
-.fi::placeholder{color:var(--tx3)}
-.fi-mono{font-family:'JetBrains Mono';font-size:13px}
-.script-copy-btn{width:100%;background:var(--s2);border:1px solid var(--bd);
-  border-radius:10px;padding:11px;color:var(--sky);font-family:'Noto Sans Telugu',sans-serif;
-  font-size:13px;cursor:pointer;margin-bottom:13px}
+width:24px;height:24px;border-radius:7px;background:var(–s3);border:1px solid var(–bd2);
+display:grid;place-items:center;font-size:11px;font-family:‘JetBrains Mono’;color:var(–amb)}
+.steps-list li strong{color:var(–tx)}
+.steps-list li a{color:var(–teal)}
+.fl{font-size:11px;color:var(–tx2);margin-bottom:6px;display:block;font-family:‘JetBrains Mono’}
+.fi{width:100%;background:var(–s2);border:1px solid var(–bd);border-radius:10px;
+padding:12px 14px;color:var(–tx);font-family:‘Noto Sans Telugu’,sans-serif;
+font-size:14px;outline:none;transition:border-color 0.2s;margin-bottom:12px}
+.fi:focus{border-color:var(–amb)}
+.fi::placeholder{color:var(–tx3)}
+.fi-mono{font-family:‘JetBrains Mono’;font-size:13px}
+.script-copy-btn{width:100%;background:var(–s2);border:1px solid var(–bd);
+border-radius:10px;padding:11px;color:var(–sky);font-family:‘Noto Sans Telugu’,sans-serif;
+font-size:13px;cursor:pointer;margin-bottom:13px}
 .wiz-footer{padding:14px 20px 0;display:flex;gap:9px}
 .wiz-footer .btn{min-height:52px;font-size:15px}
 
 /* APP */
 #app{display:flex;flex-direction:column;height:100%;height:-webkit-fill-available;
-  opacity:0;transition:opacity 0.4s;pointer-events:none}
+opacity:0;transition:opacity 0.4s;pointer-events:none}
 #app.on{opacity:1;pointer-events:all}
 
 /* HEADER */
-.hdr{background:var(--s1);border-bottom:1px solid var(--bd);
-  padding:12px 16px;padding-top:max(12px,env(safe-area-inset-top,12px));
-  display:flex;align-items:center;gap:11px;flex-shrink:0}
+.hdr{background:var(–s1);border-bottom:1px solid var(–bd);
+padding:12px 16px;padding-top:max(12px,env(safe-area-inset-top,12px));
+display:flex;align-items:center;gap:11px;flex-shrink:0}
 .hdr-logo{width:34px;height:34px;border-radius:9px;
-  background:linear-gradient(145deg,var(--s3),var(--s4));border:1px solid var(--bd2);
-  display:flex;align-items:center;justify-content:center;font-size:17px}
+background:linear-gradient(145deg,var(–s3),var(–s4));border:1px solid var(–bd2);
+display:flex;align-items:center;justify-content:center;font-size:17px}
 .hdr-info{flex:1;min-width:0}
-.hdr-title{font-size:16px;font-weight:700;color:var(--amb);font-family:'Noto Serif Telugu'}
-.hdr-sub{font-size:11px;color:var(--tx2);margin-top:1px;display:flex;align-items:center;gap:5px}
-.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--sage);transition:background 0.3s}
+.hdr-title{font-size:16px;font-weight:700;color:var(–amb);font-family:‘Noto Serif Telugu’}
+.hdr-sub{font-size:11px;color:var(–tx2);margin-top:1px;display:flex;align-items:center;gap:5px}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(–sage);transition:background 0.3s}
 .sync-dot.spin{animation:blink 0.7s infinite}
-.sync-dot.err{background:var(--rose)}.sync-dot.off{background:var(--amb)}
+.sync-dot.err{background:var(–rose)}.sync-dot.off{background:var(–amb)}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
 .hdr-right{flex-shrink:0}
-.pill{background:var(--s2);border:1px solid var(--bd);border-radius:20px;
-  padding:4px 10px;font-size:11px;color:var(--tx2);font-family:'JetBrains Mono'}
-.pill b{color:var(--rose)}
+.pill{background:var(–s2);border:1px solid var(–bd);border-radius:20px;
+padding:4px 10px;font-size:11px;color:var(–tx2);font-family:‘JetBrains Mono’}
+.pill b{color:var(–rose)}
 
 /* NAV */
-.nav{display:flex;background:var(--s1);border-bottom:1px solid var(--bd);flex-shrink:0}
+.nav{display:flex;background:var(–s1);border-bottom:1px solid var(–bd);flex-shrink:0}
 .ni{flex:1;min-width:48px;display:flex;flex-direction:column;align-items:center;
-  padding:9px 4px 7px;cursor:pointer;border-bottom:2.5px solid transparent;
-  transition:all 0.18s;gap:3px}
+padding:9px 4px 7px;cursor:pointer;border-bottom:2.5px solid transparent;
+transition:all 0.18s;gap:3px}
 .ni .ico{font-size:18px}
-.ni .lbl{font-size:10px;color:var(--tx3);font-weight:600;white-space:nowrap}
-.ni.on{border-bottom-color:var(--amb)}
-.ni.on .lbl{color:var(--amb)}
+.ni .lbl{font-size:10px;color:var(–tx3);font-weight:600;white-space:nowrap}
+.ni.on{border-bottom-color:var(–amb)}
+.ni.on .lbl{color:var(–amb)}
 
 /* SCREENS */
 .screens{flex:1;overflow:hidden;position:relative}
 .sc{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
-  padding:0 0 30px;display:none}
+padding:0 0 30px;display:none}
 .sc.on{display:block}
 
 /* HOME */
 .sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:13px 15px 0}
-.sc-card{background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:12px}
-.sc-card .l{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;font-family:'JetBrains Mono'}
-.sc-card .v{font-size:20px;font-weight:700;font-family:'JetBrains Mono'}
-.sc-card .v.amb{color:var(--amb)}.sc-card .v.teal{color:var(--teal)}
-.sc-card .v.rose{color:var(--rose)}.sc-card .v.sky{color:var(--sky)}
-.sc-card .s{font-size:11px;color:var(--tx3);margin-top:3px}
+.sc-card{background:var(–s2);border:1px solid var(–bd);border-radius:12px;padding:12px}
+.sc-card .l{font-size:10px;color:var(–tx3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;font-family:‘JetBrains Mono’}
+.sc-card .v{font-size:20px;font-weight:700;font-family:‘JetBrains Mono’}
+.sc-card .v.amb{color:var(–amb)}.sc-card .v.teal{color:var(–teal)}
+.sc-card .v.rose{color:var(–rose)}.sc-card .v.sky{color:var(–sky)}
+.sc-card .s{font-size:11px;color:var(–tx3);margin-top:3px}
 .seg{padding:13px 15px 0}
-.seg-t{font-size:11px;letter-spacing:0.7px;text-transform:uppercase;color:var(--tx3);
-  margin-bottom:10px;font-family:'JetBrains Mono';display:flex;align-items:center;justify-content:space-between}
+.seg-t{font-size:11px;letter-spacing:0.7px;text-transform:uppercase;color:var(–tx3);
+margin-bottom:10px;font-family:‘JetBrains Mono’;display:flex;align-items:center;justify-content:space-between}
 
 /* TRANSACTION ITEM */
-.txn{background:var(--s2);border:1px solid var(--bd);border-radius:11px;
-  padding:11px 13px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start}
+.txn{background:var(–s2);border:1px solid var(–bd);border-radius:11px;
+padding:11px 13px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start}
 .txn-ico{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;
-  justify-content:center;font-size:16px;flex-shrink:0;margin-top:1px}
+justify-content:center;font-size:16px;flex-shrink:0;margin-top:1px}
 .txn-ico.ord{background:rgba(232,184,74,0.1)}.txn-ico.pay{background:rgba(58,232,200,0.1)}
 .txn-body{flex:1;min-width:0}
 .txn-v{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.txn-d{font-size:12px;color:var(--tx2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.txn-d{font-size:12px;color:var(–tx2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .txn-tags{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap}
-.tag{font-size:11px;padding:2px 7px;border-radius:7px;border:1px solid var(--bd);
-  color:var(--tx2);font-family:'JetBrains Mono';white-space:nowrap}
+.tag{font-size:11px;padding:2px 7px;border-radius:7px;border:1px solid var(–bd);
+color:var(–tx2);font-family:‘JetBrains Mono’;white-space:nowrap}
 .tag.s{border-color:#5a4010;color:#c49040}.tag.m{border-color:#5a1010;color:#c46060}
 .tag.e{border-color:#10407a;color:#60a0d0}.tag.h{border-color:#10604a;color:#60c0a0}
 .tag.c{border-color:#50506a;color:#a0a0c0}.tag.l{border-color:#604010;color:#c09060}
-.tag.p{border-color:rgba(58,232,200,0.3);color:var(--teal)}
-.tag.due{border-color:rgba(232,93,122,0.3);color:var(--rose)}
+.tag.p{border-color:rgba(58,232,200,0.3);color:var(–teal)}
+.tag.due{border-color:rgba(232,93,122,0.3);color:var(–rose)}
 .txn-right{text-align:right;flex-shrink:0}
-.txn-amt{font-size:14px;font-weight:700;font-family:'JetBrains Mono'}
-.txn-amt.cr{color:var(--teal)}.txn-amt.dr{color:var(--rose)}
-.txn-dt{font-size:11px;color:var(--tx3);margin-top:2px;font-family:'JetBrains Mono'}
+.txn-amt{font-size:14px;font-weight:700;font-family:‘JetBrains Mono’}
+.txn-amt.cr{color:var(–teal)}.txn-amt.dr{color:var(–rose)}
+.txn-dt{font-size:11px;color:var(–tx3);margin-top:2px;font-family:‘JetBrains Mono’}
 
 /* CHAT */
 .chat-wrap{display:flex;flex-direction:column;position:absolute;inset:0}
 .chat-msgs{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
-  padding:13px 13px 6px;display:flex;flex-direction:column;gap:11px}
+padding:13px 13px 6px;display:flex;flex-direction:column;gap:11px}
 .bw{display:flex;gap:8px;max-width:94%}
 .bw.usr{align-self:flex-end;flex-direction:row-reverse}
 .bw.ai{align-self:flex-start}
 .bav{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;
-  justify-content:center;font-size:13px;flex-shrink:0;margin-top:3px}
-.bw.ai .bav{background:linear-gradient(145deg,var(--s3),var(--s4));border:1px solid var(--bd2)}
-.bw.usr .bav{background:var(--s3);border:1px solid var(--bd)}
-.bbl{background:var(--s2);border:1px solid var(--bd);border-radius:13px;
-  padding:11px 14px;font-size:14px;line-height:1.65}
-.bw.usr .bbl{background:var(--s3);border-color:var(--bd2)}
-.bbl b,.bbl strong{color:var(--amb)}
-.bbl .ok{color:var(--teal)}.bbl .bad{color:var(--rose)}.bbl .inf{color:var(--sky)}.bbl .wrn{color:var(--amb)}
-.btime{font-size:10px;color:var(--tx3);margin-top:4px;padding:0 2px;font-family:'JetBrains Mono'}
+justify-content:center;font-size:13px;flex-shrink:0;margin-top:3px}
+.bw.ai .bav{background:linear-gradient(145deg,var(–s3),var(–s4));border:1px solid var(–bd2)}
+.bw.usr .bav{background:var(–s3);border:1px solid var(–bd)}
+.bbl{background:var(–s2);border:1px solid var(–bd);border-radius:13px;
+padding:11px 14px;font-size:14px;line-height:1.65}
+.bw.usr .bbl{background:var(–s3);border-color:var(–bd2)}
+.bbl b,.bbl strong{color:var(–amb)}
+.bbl .ok{color:var(–teal)}.bbl .bad{color:var(–rose)}.bbl .inf{color:var(–sky)}.bbl .wrn{color:var(–amb)}
+.btime{font-size:10px;color:var(–tx3);margin-top:4px;padding:0 2px;font-family:‘JetBrains Mono’}
 .td{display:flex;gap:4px;padding:4px 0}
-.td span{width:7px;height:7px;background:var(--amb);border-radius:50%;animation:tdot 1.2s infinite}
+.td span{width:7px;height:7px;background:var(–amb);border-radius:50%;animation:tdot 1.2s infinite}
 .td span:nth-child(2){animation-delay:.2s}.td span:nth-child(3){animation-delay:.4s}
 @keyframes tdot{0%,80%,100%{opacity:.2;transform:scale(.7)}40%{opacity:1;transform:scale(1)}}
 
 /* CONFIRM CARD */
-.ccard{background:var(--s3);border:1.5px solid rgba(232,184,74,0.3);
-  border-radius:11px;padding:13px;margin-top:10px}
-.ccard-t{color:var(--amb);font-weight:700;font-size:13px;margin-bottom:9px}
+.ccard{background:var(–s3);border:1.5px solid rgba(232,184,74,0.3);
+border-radius:11px;padding:13px;margin-top:10px}
+.ccard-t{color:var(–amb);font-weight:700;font-size:13px;margin-bottom:9px}
 .crow{display:flex;justify-content:space-between;align-items:flex-start;
-  padding:6px 0;border-bottom:1px solid var(--bd);font-size:13px}
+padding:6px 0;border-bottom:1px solid var(–bd);font-size:13px}
 .crow:last-of-type{border-bottom:none}
-.ck{color:var(--tx2);flex-shrink:0;max-width:45%}
-.cv{font-weight:600;font-family:'JetBrains Mono';font-size:12px;text-align:right;
-  word-break:break-word;max-width:55%}
-.cv.ok{color:var(--teal)}.cv.w{color:var(--amb)}.cv.bad{color:var(--rose)}
+.ck{color:var(–tx2);flex-shrink:0;max-width:45%}
+.cv{font-weight:600;font-family:‘JetBrains Mono’;font-size:12px;text-align:right;
+word-break:break-word;max-width:55%}
+.cv.ok{color:var(–teal)}.cv.w{color:var(–amb)}.cv.bad{color:var(–rose)}
 .cacts{display:flex;gap:7px;margin-top:10px}
 
 /* CHAT INPUT */
 .cin-area{padding:9px 12px;padding-bottom:max(10px,env(safe-area-inset-bottom,10px));
-  background:var(--s1);border-top:1px solid var(--bd);flex-shrink:0}
+background:var(–s1);border-top:1px solid var(–bd);flex-shrink:0}
 .chips{display:flex;gap:6px;overflow-x:auto;margin-bottom:8px;padding-bottom:2px}
-.chip{flex-shrink:0;padding:6px 13px;border-radius:20px;border:1px solid var(--bd);
-  background:var(--s2);color:var(--tx2);font-size:12px;cursor:pointer;
-  white-space:nowrap;font-family:'Noto Sans Telugu',sans-serif}
-.chip:active{border-color:var(--amb);color:var(--amb)}
+.chip{flex-shrink:0;padding:6px 13px;border-radius:20px;border:1px solid var(–bd);
+background:var(–s2);color:var(–tx2);font-size:12px;cursor:pointer;
+white-space:nowrap;font-family:‘Noto Sans Telugu’,sans-serif}
+.chip:active{border-color:var(–amb);color:var(–amb)}
 .cin-row{display:flex;gap:8px;align-items:flex-end}
 .cin-acts{display:flex;gap:6px}
-.iab{width:44px;height:44px;border-radius:10px;border:1px solid var(--bd);
-  background:var(--s2);display:flex;align-items:center;justify-content:center;
-  font-size:18px;cursor:pointer;flex-shrink:0}
-.iab:active{background:var(--s3)}
-.iab.rec{background:rgba(232,93,122,0.15);border-color:var(--rose);animation:rp 1s infinite}
+.iab{width:44px;height:44px;border-radius:10px;border:1px solid var(–bd);
+background:var(–s2);display:flex;align-items:center;justify-content:center;
+font-size:18px;cursor:pointer;flex-shrink:0}
+.iab:active{background:var(–s3)}
+.iab.rec{background:rgba(232,93,122,0.15);border-color:var(–rose);animation:rp 1s infinite}
 @keyframes rp{0%,100%{opacity:1}50%{opacity:0.5}}
-.cin{flex:1;background:var(--s2);border:1px solid var(--bd);border-radius:10px;
-  padding:11px 13px;color:var(--tx);font-family:'Noto Sans Telugu',sans-serif;
-  font-size:15px;resize:none;outline:none;min-height:44px;max-height:100px;
-  transition:border-color 0.2s;line-height:1.5}
-.cin:focus{border-color:var(--amb)}
-.cin::placeholder{color:var(--tx3)}
+.cin{flex:1;background:var(–s2);border:1px solid var(–bd);border-radius:10px;
+padding:11px 13px;color:var(–tx);font-family:‘Noto Sans Telugu’,sans-serif;
+font-size:15px;resize:none;outline:none;min-height:44px;max-height:100px;
+transition:border-color 0.2s;line-height:1.5}
+.cin:focus{border-color:var(–amb)}
+.cin::placeholder{color:var(–tx3)}
 .sbtn{width:44px;height:44px;border-radius:10px;border:none;
-  background:var(--amb);color:var(--bg);font-size:20px;cursor:pointer;
-  flex-shrink:0;display:flex;align-items:center;justify-content:center}
+background:var(–amb);color:var(–bg);font-size:20px;cursor:pointer;
+flex-shrink:0;display:flex;align-items:center;justify-content:center}
 .sbtn:disabled{opacity:0.35}
 
 /* DOCS */
-.doc-zone{border:2px dashed var(--bd2);border-radius:14px;padding:30px 20px;
-  text-align:center;cursor:pointer;background:var(--s2);margin:13px 15px 0}
-.doc-zone:active{border-color:var(--amb);background:rgba(232,184,74,0.04)}
+.doc-zone{border:2px dashed var(–bd2);border-radius:14px;padding:30px 20px;
+text-align:center;cursor:pointer;background:var(–s2);margin:13px 15px 0}
+.doc-zone:active{border-color:var(–amb);background:rgba(232,184,74,0.04)}
 .dz-ico{font-size:40px;margin-bottom:10px}
 .dz-t{font-size:16px;font-weight:600;margin-bottom:5px}
-.dz-s{font-size:13px;color:var(--tx2);line-height:1.6}
+.dz-s{font-size:13px;color:var(–tx2);line-height:1.6}
 .dz-chips{display:flex;gap:6px;justify-content:center;margin-top:11px;flex-wrap:wrap}
-.dz-chip{font-size:11px;padding:3px 10px;border-radius:7px;background:var(--s3);
-  color:var(--tx2);border:1px solid var(--bd)}
+.dz-chip{font-size:11px;padding:3px 10px;border-radius:7px;background:var(–s3);
+color:var(–tx2);border:1px solid var(–bd)}
 
 /* DOC RESULT CARD */
-.doc-card{background:var(--s2);border:1px solid var(--bd);border-radius:13px;
-  margin-bottom:10px;overflow:hidden}
-.dc-hdr{padding:13px 14px;border-bottom:1px solid var(--bd);
-  display:flex;align-items:center;gap:10px}
+.doc-card{background:var(–s2);border:1px solid var(–bd);border-radius:13px;
+margin-bottom:10px;overflow:hidden}
+.dc-hdr{padding:13px 14px;border-bottom:1px solid var(–bd);
+display:flex;align-items:center;gap:10px}
 .dc-ico{font-size:22px}
-.dc-name{font-size:15px;font-weight:700;color:var(--amb)}
-.dc-date{font-size:11px;color:var(--tx2);margin-top:2px}
-.dc-badge{margin-left:auto;padding:3px 9px;border-radius:7px;font-size:11px;font-weight:700;font-family:'JetBrains Mono'}
-.dc-badge.reg{background:rgba(90,175,232,0.12);color:var(--sky)}
-.dc-badge.agr{background:rgba(232,184,74,0.12);color:var(--amb)}
-.dc-badge.bil{background:rgba(58,232,200,0.12);color:var(--teal)}
+.dc-name{font-size:15px;font-weight:700;color:var(–amb)}
+.dc-date{font-size:11px;color:var(–tx2);margin-top:2px}
+.dc-badge{margin-left:auto;padding:3px 9px;border-radius:7px;font-size:11px;font-weight:700;font-family:‘JetBrains Mono’}
+.dc-badge.reg{background:rgba(90,175,232,0.12);color:var(–sky)}
+.dc-badge.agr{background:rgba(232,184,74,0.12);color:var(–amb)}
+.dc-badge.bil{background:rgba(58,232,200,0.12);color:var(–teal)}
 
 /* FINANCIALS GRID */
 .fin-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:11px 13px}
-.fin-card{background:var(--s3);border:1px solid var(--bd2);border-radius:10px;padding:11px 12px}
+.fin-card{background:var(–s3);border:1px solid var(–bd2);border-radius:10px;padding:11px 12px}
 .fin-card.hl{border-color:rgba(232,184,74,0.5);background:rgba(232,184,74,0.08)}
 .fin-card.full{grid-column:1/-1}
 .fin-card.invest{border-color:rgba(58,232,200,0.4);background:rgba(58,232,200,0.06);grid-column:1/-1}
-.fin-lbl{font-size:12px;color:var(--sky);font-weight:700;margin-bottom:5px}
-.fin-val{font-size:16px;font-weight:700;font-family:'JetBrains Mono';color:var(--amb)}
-.fin-val.teal{color:var(--teal)}.fin-val.sm{font-size:13px}
-.fin-tel{font-size:11px;color:var(--tx2);margin-top:3px}
+.fin-lbl{font-size:12px;color:var(–sky);font-weight:700;margin-bottom:5px}
+.fin-val{font-size:16px;font-weight:700;font-family:‘JetBrains Mono’;color:var(–amb)}
+.fin-val.teal{color:var(–teal)}.fin-val.sm{font-size:13px}
+.fin-tel{font-size:11px;color:var(–tx2);margin-top:3px}
 
 /* OWNERSHIP CHAIN */
 .chain-wrap{padding:0 13px 11px}
-.chain-title{font-size:14px;color:var(--sky);font-weight:700;margin-bottom:10px}
+.chain-title{font-size:14px;color:var(–sky);font-weight:700;margin-bottom:10px}
 .chain-item{border-radius:9px;padding:11px 12px;margin-bottom:8px}
 .chain-item.current{background:rgba(58,232,200,0.05);border:1px solid rgba(58,232,200,0.4)}
-.chain-item.prev{background:var(--s3);border:1px solid var(--bd2)}
+.chain-item.prev{background:var(–s3);border:1px solid var(–bd2)}
 .chain-meta{display:flex;align-items:center;gap:7px;margin-bottom:8px;flex-wrap:wrap}
-.chain-num{width:24px;height:24px;border-radius:6px;background:var(--s4);
-  display:grid;place-items:center;font-size:12px;font-weight:700;font-family:'JetBrains Mono'}
-.chain-num.c{border:1px solid var(--teal);color:var(--teal)}
-.chain-num.p{border:1px solid var(--amb);color:var(--amb)}
-.chain-date{font-size:14px;font-weight:700;color:var(--teal)}
-.chain-reg{font-size:12px;color:var(--amb);background:rgba(232,184,74,0.12);
-  padding:2px 8px;border-radius:6px;border:1px solid rgba(232,184,74,0.3)}
-.chain-curr-badge{font-size:11px;background:rgba(58,232,200,0.15);color:var(--teal);
-  padding:2px 7px;border-radius:5px}
+.chain-num{width:24px;height:24px;border-radius:6px;background:var(–s4);
+display:grid;place-items:center;font-size:12px;font-weight:700;font-family:‘JetBrains Mono’}
+.chain-num.c{border:1px solid var(–teal);color:var(–teal)}
+.chain-num.p{border:1px solid var(–amb);color:var(–amb)}
+.chain-date{font-size:14px;font-weight:700;color:var(–teal)}
+.chain-reg{font-size:12px;color:var(–amb);background:rgba(232,184,74,0.12);
+padding:2px 8px;border-radius:6px;border:1px solid rgba(232,184,74,0.3)}
+.chain-curr-badge{font-size:11px;background:rgba(58,232,200,0.15);color:var(–teal);
+padding:2px 7px;border-radius:5px}
 .chain-seller{font-size:14px;margin-bottom:4px}
-.chain-seller span{color:var(--sky);font-weight:700}
+.chain-seller span{color:var(–sky);font-weight:700}
 .chain-buyer{font-size:14px;margin-bottom:4px}
-.chain-buyer span{color:var(--teal);font-weight:700}
-.chain-extent{font-size:13px;color:var(--tx2);margin-bottom:3px}
-.chain-amount{font-size:14px;color:var(--amb);font-weight:700;
-  margin-top:6px;padding-top:6px;border-top:1px solid var(--bd)}
+.chain-buyer span{color:var(–teal);font-weight:700}
+.chain-extent{font-size:13px;color:var(–tx2);margin-bottom:3px}
+.chain-amount{font-size:14px;color:var(–amb);font-weight:700;
+margin-top:6px;padding-top:6px;border-top:1px solid var(–bd)}
 
 /* ALL FIELDS TABLE */
 .fields-wrap{padding:0 13px 11px}
-.field-row{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--bd);font-size:13px}
+.field-row{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(–bd);font-size:13px}
 .field-row:last-child{border-bottom:none}
-.field-key{color:var(--tx2);min-width:140px;flex-shrink:0;font-size:12px;padding-top:1px}
+.field-key{color:var(–tx2);min-width:140px;flex-shrink:0;font-size:12px;padding-top:1px}
 .field-val{font-weight:600;word-break:break-word}
-.field-val.alrt{color:var(--amb)}
-.field-val.low-conf{color:var(--rose)}
+.field-val.alrt{color:var(–amb)}
+.field-val.low-conf{color:var(–rose)}
 
 /* ALERT STRIP */
 .alrt-strip{margin:0 13px 9px;background:rgba(232,184,74,0.08);
-  border:1px solid rgba(232,184,74,0.35);border-radius:9px;
-  padding:10px 12px;font-size:13px;color:var(--amb);line-height:1.65}
+border:1px solid rgba(232,184,74,0.35);border-radius:9px;
+padding:10px 12px;font-size:13px;color:var(–amb);line-height:1.65}
 .alrt-strip b{display:block;margin-bottom:3px;font-size:14px}
-.alrt-strip.high{border-color:rgba(232,93,122,0.4);background:rgba(232,93,122,0.07);color:var(--rose)}
+.alrt-strip.high{border-color:rgba(232,93,122,0.4);background:rgba(232,93,122,0.07);color:var(–rose)}
 
 /* VENDOR CARD */
-.vc{background:var(--s2);border:1px solid var(--bd);border-radius:12px;
-  padding:12px 13px;margin-bottom:8px}
+.vc{background:var(–s2);border:1px solid var(–bd);border-radius:12px;
+padding:12px 13px;margin-bottom:8px}
 .vc-top{display:flex;align-items:center;gap:10px}
-.vc-av{width:38px;height:38px;border-radius:10px;background:var(--s3);
-  border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:19px}
+.vc-av{width:38px;height:38px;border-radius:10px;background:var(–s3);
+border:1px solid var(–bd2);display:flex;align-items:center;justify-content:center;font-size:19px}
 .vc-n{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.vc-c{font-size:11px;color:var(--tx2);margin-top:2px}
-.vc-bal{font-size:14px;font-weight:700;font-family:'JetBrains Mono'}
-.vc-bar{height:2px;background:var(--s4);border-radius:1px;margin-top:9px;overflow:hidden}
+.vc-c{font-size:11px;color:var(–tx2);margin-top:2px}
+.vc-bal{font-size:14px;font-weight:700;font-family:‘JetBrains Mono’}
+.vc-bar{height:2px;background:var(–s4);border-radius:1px;margin-top:9px;overflow:hidden}
 .vc-bf{height:100%;border-radius:1px;transition:width 0.5s}
-.vc-nums{display:flex;justify-content:space-between;margin-top:5px;font-size:11px;color:var(--tx3);font-family:'JetBrains Mono'}
+.vc-nums{display:flex;justify-content:space-between;margin-top:5px;font-size:11px;color:var(–tx3);font-family:‘JetBrains Mono’}
 
 /* PRICE */
-.price-group{background:var(--s2);border:1px solid var(--bd);border-radius:12px;margin-bottom:9px;overflow:hidden}
-.pg-head{padding:11px 13px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center}
-.pg-title{font-size:13px;font-weight:700;color:var(--amb)}
-.pg-latest{font-size:12px;font-family:'JetBrains Mono';color:var(--teal)}
-.pr{display:flex;align-items:center;gap:9px;padding:8px 13px;border-bottom:1px solid var(--bd);font-size:13px}
+.price-group{background:var(–s2);border:1px solid var(–bd);border-radius:12px;margin-bottom:9px;overflow:hidden}
+.pg-head{padding:11px 13px;border-bottom:1px solid var(–bd);display:flex;justify-content:space-between;align-items:center}
+.pg-title{font-size:13px;font-weight:700;color:var(–amb)}
+.pg-latest{font-size:12px;font-family:‘JetBrains Mono’;color:var(–teal)}
+.pr{display:flex;align-items:center;gap:9px;padding:8px 13px;border-bottom:1px solid var(–bd);font-size:13px}
 .pr:last-child{border-bottom:none}
-.pr-d{color:var(--tx3);font-family:'JetBrains Mono';font-size:11px;min-width:72px}
-.pr-v{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--tx2)}
-.pr-p{font-family:'JetBrains Mono';font-weight:600}
-.pr-c{font-size:11px;font-family:'JetBrains Mono';min-width:38px;text-align:right}
-.pr-c.up{color:var(--rose)}.pr-c.dn{color:var(--teal)}
+.pr-d{color:var(–tx3);font-family:‘JetBrains Mono’;font-size:11px;min-width:72px}
+.pr-v{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(–tx2)}
+.pr-p{font-family:‘JetBrains Mono’;font-weight:600}
+.pr-c{font-size:11px;font-family:‘JetBrains Mono’;min-width:38px;text-align:right}
+.pr-c.up{color:var(–rose)}.pr-c.dn{color:var(–teal)}
 
 /* SETTINGS */
-.si{background:var(--s2);border:1px solid var(--bd);border-radius:11px;
-  padding:13px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px}
+.si{background:var(–s2);border:1px solid var(–bd);border-radius:11px;
+padding:13px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px}
 .si-ico{font-size:22px;flex-shrink:0}
 .si-body{flex:1;min-width:0}
 .si-t{font-size:14px;font-weight:600}
-.si-s{font-size:12px;color:var(--tx2);margin-top:3px;word-break:break-all}
-.si-v{font-size:12px;color:var(--teal);font-family:'JetBrains Mono';margin-top:3px}
+.si-s{font-size:12px;color:var(–tx2);margin-top:3px;word-break:break-all}
+.si-v{font-size:12px;color:var(–teal);font-family:‘JetBrains Mono’;margin-top:3px}
 
 /* BUTTONS */
 .btn{padding:11px 18px;border-radius:10px;border:none;
-  font-family:'Noto Sans Telugu',sans-serif;font-weight:700;font-size:14px;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:all 0.15s}
+font-family:‘Noto Sans Telugu’,sans-serif;font-weight:700;font-size:14px;
+cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:all 0.15s}
 .btn:active{transform:scale(0.97)}
-.btn.amb{background:var(--amb);color:var(--bg)}
-.btn.teal{background:var(--teal);color:var(--bg)}
-.btn.ghost{background:var(--s2);color:var(--tx2);border:1px solid var(--bd)}
-.btn.rose{background:rgba(232,93,122,0.12);color:var(--rose);border:1px solid rgba(232,93,122,0.35)}
+.btn.amb{background:var(–amb);color:var(–bg)}
+.btn.teal{background:var(–teal);color:var(–bg)}
+.btn.ghost{background:var(–s2);color:var(–tx2);border:1px solid var(–bd)}
+.btn.rose{background:rgba(232,93,122,0.12);color:var(–rose);border:1px solid rgba(232,93,122,0.35)}
 .btn.full{width:100%}
 .btn.sm{padding:7px 12px;font-size:12px;border-radius:8px}
 
 /* MODAL */
 .mover{position:fixed;inset:0;z-index:400;background:rgba(8,9,13,0.9);
-  display:flex;align-items:flex-end;justify-content:center;
-  opacity:0;pointer-events:none;transition:opacity 0.25s;backdrop-filter:blur(4px)}
+display:flex;align-items:flex-end;justify-content:center;
+opacity:0;pointer-events:none;transition:opacity 0.25s;backdrop-filter:blur(4px)}
 .mover.on{opacity:1;pointer-events:all}
-.msheet{background:var(--s1);border:1px solid var(--bd);border-radius:20px 20px 0 0;
-  width:100%;max-width:500px;padding:18px 18px max(20px,env(safe-area-inset-bottom,20px));
-  max-height:80vh;overflow-y:auto;transform:translateY(30px);transition:transform 0.3s}
+.msheet{background:var(–s1);border:1px solid var(–bd);border-radius:20px 20px 0 0;
+width:100%;max-width:500px;padding:18px 18px max(20px,env(safe-area-inset-bottom,20px));
+max-height:80vh;overflow-y:auto;transform:translateY(30px);transition:transform 0.3s}
 .mover.on .msheet{transform:translateY(0)}
-.mgrip{width:34px;height:4px;background:var(--bd2);border-radius:2px;margin:0 auto 16px}
-.mt{font-size:17px;font-weight:700;color:var(--amb);margin-bottom:14px}
+.mgrip{width:34px;height:4px;background:var(–bd2);border-radius:2px;margin:0 auto 16px}
+.mt{font-size:17px;font-weight:700;color:var(–amb);margin-bottom:14px}
 
 /* PROCESSING */
 #proc{position:fixed;inset:0;z-index:700;background:rgba(8,9,13,0.9);
-  display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;
-  backdrop-filter:blur(5px)}
+display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+backdrop-filter:blur(5px)}
 #proc.on{display:flex}
-.proc-ring{width:48px;height:48px;border-radius:50%;border:2.5px solid var(--s4);
-  border-top-color:var(--amb);animation:spin 0.9s linear infinite}
+.proc-ring{width:48px;height:48px;border-radius:50%;border:2.5px solid var(–s4);
+border-top-color:var(–amb);animation:spin 0.9s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-#proc-text{font-size:14px;color:var(--tx2);text-align:center;line-height:1.7;max-width:280px}
+#proc-text{font-size:14px;color:var(–tx2);text-align:center;line-height:1.7;max-width:280px}
 
 /* TOAST */
 #toast{position:fixed;z-index:800;top:calc(env(safe-area-inset-top,0px)+68px);
-  left:50%;transform:translateX(-50%) translateY(-12px);
-  background:var(--s2);border:1px solid var(--bd);border-radius:10px;
-  padding:10px 18px;font-size:13px;opacity:0;transition:all 0.3s;pointer-events:none;
-  white-space:nowrap;max-width:88vw;text-align:center}
+left:50%;transform:translateX(-50%) translateY(-12px);
+background:var(–s2);border:1px solid var(–bd);border-radius:10px;
+padding:10px 18px;font-size:13px;opacity:0;transition:all 0.3s;pointer-events:none;
+white-space:nowrap;max-width:88vw;text-align:center}
 #toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
-#toast.ok{border-color:rgba(58,232,200,0.4);color:var(--teal)}
-#toast.err{border-color:rgba(232,93,122,0.4);color:var(--rose)}
-#toast.info{border-color:rgba(232,184,74,0.4);color:var(--amb)}
+#toast.ok{border-color:rgba(58,232,200,0.4);color:var(–teal)}
+#toast.err{border-color:rgba(232,93,122,0.4);color:var(–rose)}
+#toast.info{border-color:rgba(232,184,74,0.4);color:var(–amb)}
 
 /* INSTALL BANNER */
-.install-banner{margin:13px 15px 0;background:var(--s2);border:1px solid rgba(90,175,232,0.3);
-  border-radius:12px;padding:13px 14px;display:flex;align-items:flex-start;gap:11px}
+.install-banner{margin:13px 15px 0;background:var(–s2);border:1px solid rgba(90,175,232,0.3);
+border-radius:12px;padding:13px 14px;display:flex;align-items:flex-start;gap:11px}
 .ib-ico{font-size:24px;flex-shrink:0;margin-top:2px}
-.ib-body{flex:1}.ib-t{font-size:13px;font-weight:600;color:var(--sky);margin-bottom:3px}
-.ib-s{font-size:11px;color:var(--tx2);line-height:1.6}
-.ib-x{font-size:18px;color:var(--tx3);cursor:pointer}
+.ib-body{flex:1}.ib-t{font-size:13px;font-weight:600;color:var(–sky);margin-bottom:3px}
+.ib-s{font-size:11px;color:var(–tx2);line-height:1.6}
+.ib-x{font-size:18px;color:var(–tx3);cursor:pointer}
 
 /* EMPTY */
-.empty{text-align:center;padding:40px 20px;color:var(--tx3)}
+.empty{text-align:center;padding:40px 20px;color:var(–tx3)}
 .empty .ei{font-size:40px;margin-bottom:11px}
-.empty .et{font-size:14px;color:var(--tx2);margin-bottom:5px;font-weight:500}
+.empty .et{font-size:14px;color:var(–tx2);margin-bottom:5px;font-weight:500}
 .empty .es{font-size:12px;line-height:1.6}
 
 /* SELECT MODE */
 .sel-bar{display:none;align-items:center;gap:9px;padding:9px 14px;
-  background:rgba(232,93,122,0.08);border:1px solid rgba(232,93,122,0.25);
-  border-radius:10px;margin-bottom:9px}
+background:rgba(232,93,122,0.08);border:1px solid rgba(232,93,122,0.25);
+border-radius:10px;margin-bottom:9px}
 .sel-bar.on{display:flex}
-.sel-count{flex:1;font-size:13px;color:var(--rose);font-weight:600}
+.sel-count{flex:1;font-size:13px;color:var(–rose);font-weight:600}
 .doc-wrap{position:relative}
-.sel-chk{width:22px;height:22px;border-radius:6px;border:2px solid var(--bd2);
-  background:var(--s3);display:none;align-items:center;justify-content:center;
-  cursor:pointer;position:absolute;top:12px;left:12px;z-index:5;font-size:12px;font-weight:700}
-.sel-chk.checked{background:var(--rose);border-color:var(--rose);color:#fff}
+.sel-chk{width:22px;height:22px;border-radius:6px;border:2px solid var(–bd2);
+background:var(–s3);display:none;align-items:center;justify-content:center;
+cursor:pointer;position:absolute;top:12px;left:12px;z-index:5;font-size:12px;font-weight:700}
+.sel-chk.checked{background:var(–rose);border-color:var(–rose);color:#fff}
 .select-mode .sel-chk{display:flex}
 .select-mode .doc-card{margin-left:36px}
 
@@ -409,88 +410,93 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
 .fu{animation:fadeup 0.24s ease both}
 
 /* PROJECT CARDS */
-.proj-card{background:var(--s2);border:1px solid var(--bd);border-radius:13px;margin-bottom:10px;overflow:hidden}
-.proj-hdr{padding:13px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px;cursor:pointer}
-.proj-ico{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--s3),var(--s4));border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.proj-card{background:var(–s2);border:1px solid var(–bd);border-radius:13px;margin-bottom:10px;overflow:hidden}
+.proj-hdr{padding:13px 14px;border-bottom:1px solid var(–bd);display:flex;align-items:center;gap:10px;cursor:pointer}
+.proj-ico{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(–s3),var(–s4));border:1px solid var(–bd2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
 .proj-name{font-size:15px;font-weight:700;flex:1}
-.proj-status{font-size:11px;padding:3px 9px;border-radius:7px;font-weight:600;font-family:'JetBrains Mono'}
-.proj-status.active{background:rgba(58,232,200,0.12);color:var(--teal)}
-.proj-status.done{background:rgba(122,200,90,0.12);color:var(--sage)}
-.proj-status.planned{background:rgba(232,184,74,0.12);color:var(--amb)}
+.proj-status{font-size:11px;padding:3px 9px;border-radius:7px;font-weight:600;font-family:‘JetBrains Mono’}
+.proj-status.active{background:rgba(58,232,200,0.12);color:var(–teal)}
+.proj-status.done{background:rgba(122,200,90,0.12);color:var(–sage)}
+.proj-status.planned{background:rgba(232,184,74,0.12);color:var(–amb)}
 .proj-body{padding:12px 14px}
-.proj-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--bd);font-size:13px}
+.proj-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(–bd);font-size:13px}
 .proj-row:last-child{border-bottom:none}
-.proj-label{color:var(--tx2)}
-.proj-val{font-weight:600;font-family:'JetBrains Mono'}
-.proj-val.amb{color:var(--amb)}.proj-val.teal{color:var(--teal)}.proj-val.rose{color:var(--rose)}.proj-val.sage{color:var(--sage)}
-.profit-bar-wrap{margin:10px 14px;background:var(--s3);border-radius:8px;overflow:hidden;height:8px}
+.proj-label{color:var(–tx2)}
+.proj-val{font-weight:600;font-family:‘JetBrains Mono’}
+.proj-val.amb{color:var(–amb)}.proj-val.teal{color:var(–teal)}.proj-val.rose{color:var(–rose)}.proj-val.sage{color:var(–sage)}
+.profit-bar-wrap{margin:10px 14px;background:var(–s3);border-radius:8px;overflow:hidden;height:8px}
 .profit-bar{height:100%;border-radius:8px;transition:width 0.6s ease}
 .house-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;padding:10px 14px}
-.house-tile{background:var(--s3);border:1px solid var(--bd2);border-radius:10px;padding:11px;cursor:pointer;transition:border-color 0.15s}
-.house-tile:active{border-color:var(--amb)}
+.house-tile{background:var(–s3);border:1px solid var(–bd2);border-radius:10px;padding:11px;cursor:pointer;transition:border-color 0.15s}
+.house-tile:active{border-color:var(–amb)}
 .house-tile.sold{border-color:rgba(122,200,90,0.4);background:rgba(122,200,90,0.05)}
 .house-tile.building{border-color:rgba(232,184,74,0.4);background:rgba(232,184,74,0.05)}
 .ht-ico{font-size:22px;margin-bottom:6px}
 .ht-name{font-size:12px;font-weight:600}
-.ht-cost{font-size:11px;font-family:'JetBrains Mono';color:var(--amb);margin-top:3px}
+.ht-cost{font-size:11px;font-family:‘JetBrains Mono’;color:var(–amb);margin-top:3px}
 .ht-status{font-size:10px;margin-top:4px;padding:2px 6px;border-radius:5px;display:inline-block}
-.ht-status.sold{background:rgba(122,200,90,0.15);color:var(--sage)}
-.ht-status.building{background:rgba(232,184,74,0.12);color:var(--amb)}
-.ht-status.planned{background:rgba(90,175,232,0.12);color:var(--sky)}
+.ht-status.sold{background:rgba(122,200,90,0.15);color:var(–sage)}
+.ht-status.building{background:rgba(232,184,74,0.12);color:var(–amb)}
+.ht-status.planned{background:rgba(90,175,232,0.12);color:var(–sky)}
 
 /* PROFITABILITY */
 .profit-summary{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:12px 14px}
-.ps-box{background:var(--s3);border:1px solid var(--bd2);border-radius:10px;padding:10px;text-align:center}
-.ps-box .pl{font-size:10px;color:var(--tx3);margin-bottom:4px;font-family:'JetBrains Mono'}
-.ps-box .pv{font-size:14px;font-weight:700;font-family:'JetBrains Mono'}
+.ps-box{background:var(–s3);border:1px solid var(–bd2);border-radius:10px;padding:10px;text-align:center}
+.ps-box .pl{font-size:10px;color:var(–tx3);margin-bottom:4px;font-family:‘JetBrains Mono’}
+.ps-box .pv{font-size:14px;font-weight:700;font-family:‘JetBrains Mono’}
 
 /* AGREEMENT ALERTS */
-.alert-card{background:var(--s2);border-radius:12px;padding:13px 14px;margin-bottom:9px;display:flex;gap:11px;align-items:flex-start}
+.alert-card{background:var(–s2);border-radius:12px;padding:13px 14px;margin-bottom:9px;display:flex;gap:11px;align-items:flex-start}
 .alert-card.urgent{border:1.5px solid rgba(232,93,122,0.5);background:rgba(232,93,122,0.05)}
 .alert-card.warn{border:1.5px solid rgba(232,184,74,0.4);background:rgba(232,184,74,0.04)}
-.alert-card.ok{border:1px solid var(--bd)}
+.alert-card.ok{border:1px solid var(–bd)}
 .ac-ico{font-size:24px;flex-shrink:0;margin-top:2px}
 .ac-body{flex:1}
 .ac-title{font-size:14px;font-weight:700}
-.ac-sub{font-size:12px;color:var(--tx2);margin-top:3px;line-height:1.6}
-.ac-days{font-size:13px;font-weight:700;font-family:'JetBrains Mono';margin-top:5px}
-.ac-days.urgent{color:var(--rose)}.ac-days.warn{color:var(--amb)}.ac-days.ok{color:var(--teal)}
+.ac-sub{font-size:12px;color:var(–tx2);margin-top:3px;line-height:1.6}
+.ac-days{font-size:13px;font-weight:700;font-family:‘JetBrains Mono’;margin-top:5px}
+.ac-days.urgent{color:var(–rose)}.ac-days.warn{color:var(–amb)}.ac-days.ok{color:var(–teal)}
 
 /* CONTACTS */
-.contact-card{background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:12px 13px;margin-bottom:8px;display:flex;gap:11px;align-items:flex-start}
-.cc-av{width:42px;height:42px;border-radius:11px;background:var(--s3);border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.contact-card{background:var(–s2);border:1px solid var(–bd);border-radius:12px;padding:12px 13px;margin-bottom:8px;display:flex;gap:11px;align-items:flex-start}
+.cc-av{width:42px;height:42px;border-radius:11px;background:var(–s3);border:1px solid var(–bd2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
 .cc-body{flex:1;min-width:0}
 .cc-name{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cc-role{font-size:11px;padding:2px 8px;border-radius:6px;display:inline-block;margin-top:3px;font-weight:600}
-.cc-role.buyer{background:rgba(58,232,200,0.12);color:var(--teal)}
-.cc-role.seller{background:rgba(232,184,74,0.12);color:var(--amb)}
-.cc-role.vendor{background:rgba(90,175,232,0.12);color:var(--sky)}
-.cc-detail{font-size:12px;color:var(--tx2);margin-top:4px;line-height:1.6}
+.cc-role.buyer{background:rgba(58,232,200,0.12);color:var(–teal)}
+.cc-role.seller{background:rgba(232,184,74,0.12);color:var(–amb)}
+.cc-role.vendor{background:rgba(90,175,232,0.12);color:var(–sky)}
+.cc-detail{font-size:12px;color:var(–tx2);margin-top:4px;line-height:1.6}
 .cc-actions{display:flex;gap:7px;margin-top:8px}
 
 /* LAND BANK */
-.land-card{background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:13px 14px;margin-bottom:9px}
+.land-card{background:var(–s2);border:1px solid var(–bd);border-radius:12px;padding:13px 14px;margin-bottom:9px}
 .lc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
 .lc-name{font-size:14px;font-weight:700}
 .lc-badge{font-size:11px;padding:3px 9px;border-radius:7px;font-weight:600}
-.lc-badge.avail{background:rgba(58,232,200,0.12);color:var(--teal)}
-.lc-badge.sold{background:rgba(122,200,90,0.12);color:var(--sage)}
-.lc-badge.building{background:rgba(232,184,74,0.12);color:var(--amb)}
-.lc-bar{height:6px;background:var(--s4);border-radius:3px;margin:10px 0;overflow:hidden}
-.lc-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--teal),var(--amb))}
+.lc-badge.avail{background:rgba(58,232,200,0.12);color:var(–teal)}
+.lc-badge.sold{background:rgba(122,200,90,0.12);color:var(–sage)}
+.lc-badge.building{background:rgba(232,184,74,0.12);color:var(–amb)}
+.lc-bar{height:6px;background:var(–s4);border-radius:3px;margin:10px 0;overflow:hidden}
+.lc-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(–teal),var(–amb))}
 </style>
+
 </head>
 <body>
 
 <!-- SPLASH -->
+
 <div id="splash">
-  <div class="sp-box">🏗️</div>
-  <div class="sp-name">Nirmit</div>
-  <div class="sp-tag">Kadapa Builder · AI Ledger · Cloud Sync</div>
+  <div class="sp-box" style="background:linear-gradient(145deg,#1a3a6a,#0d2244);border:2px solid #2a5298">
+    <span style="font-size:46px">📒</span>
+  </div>
+  <div class="sp-name">SiteBook</div>
+  <div class="sp-tag">Daily Transactions · Vendors · Documents · All in One Place</div>
   <div class="sp-bar"><div class="sp-fill"></div></div>
 </div>
 
 <!-- PROCESSING -->
+
 <div id="proc">
   <div class="proc-ring"></div>
   <div id="proc-text">Processing...</div>
@@ -501,9 +507,11 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
 </div>
 
 <!-- TOAST -->
+
 <div id="toast"></div>
 
 <!-- ===================== SETUP WIZARD ===================== -->
+
 <div id="setup">
 <div class="wiz">
   <div class="wiz-grip"></div>
@@ -516,10 +524,11 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
   </div>
 
   <!-- STEP 0: Welcome -->
+
   <div class="step on" id="stp0">
     <div class="wiz-head" style="padding-top:0">
-      <div class="wiz-title">నమస్కారం! 🏗️</div>
-      <div class="wiz-sub">Nirmit — మీ AI construction manager. 3 minutes లో setup అవుతుంది.</div>
+      <div class="wiz-title">నమస్కారం! 📒</div>
+      <div class="wiz-sub">SiteBook — మీ AI construction manager. 3 minutes లో setup అవుతుంది.</div>
     </div>
     <div class="wiz-body">
       <div class="panel tl">
@@ -544,6 +553,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
   </div>
 
   <!-- STEP 1: Google Sheet -->
+
   <div class="step" id="stp1">
     <div class="wiz-head" style="padding-top:0">
       <div class="wiz-title">☁️ Google Sheet Setup</div>
@@ -554,7 +564,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
         <div class="ph"><span class="pi">📋</span><span class="pt">Sheet create చేయండి (2 min)</span></div>
         <ol class="steps-list">
           <li><strong>sheets.google.com</strong> లో new spreadsheet create చేయండి</li>
-          <li>Name: <strong>"Nirmit Ledger"</strong> పెట్టండి</li>
+          <li>Name: <strong>"SiteBook Ledger"</strong> పెట్టండి</li>
           <li>URL లో <code style="color:var(--teal)">/d/XXXXXX/edit</code> లో XXXXXX copy చేయండి</li>
           <li><strong>Extensions → Apps Script</strong> → old code delete → below script paste చేయండి</li>
           <li>Save → <strong>Deploy → New deployment → Web app → Anyone → Deploy</strong></li>
@@ -574,6 +584,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
   </div>
 
   <!-- STEP 2: Gemini Key -->
+
   <div class="step" id="stp2">
     <div class="wiz-head" style="padding-top:0">
       <div class="wiz-title">🤖 Gemini API Key</div>
@@ -606,11 +617,12 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
 </div>
 
 <!-- ===================== MAIN APP ===================== -->
+
 <div id="app">
   <div class="hdr">
-    <div class="hdr-logo">🏗️</div>
+    <div class="hdr-logo" style="background:linear-gradient(145deg,#1a3a6a,#0d2244);border:1px solid #2a5298;font-size:19px">📒</div>
     <div class="hdr-info">
-      <div class="hdr-title">Nirmit</div>
+      <div class="hdr-title">SiteBook</div>
       <div class="hdr-sub">
         <div class="sync-dot" id="sync-dot"></div>
         <span id="sync-lbl">Ready</span>
@@ -622,7 +634,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
   </div>
 
   <div class="nav">
-    <div class="ni on" onclick="showSc('home')"><div class="ico">🏠</div><div class="lbl">Home</div></div>
+    <div class="ni on" onclick="showSc('home')"><div class="ico">📒</div><div class="lbl">Home</div></div>
     <div class="ni" onclick="showSc('chat')"><div class="ico">💬</div><div class="lbl">AI Chat</div></div>
     <div class="ni" onclick="showSc('projects')"><div class="ico">🏗️</div><div class="lbl">Projects</div></div>
     <div class="ni" onclick="showSc('contacts')"><div class="ico">👥</div><div class="lbl">Contacts</div></div>
@@ -632,204 +644,207 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
 
   <div class="screens">
 
-    <!-- HOME -->
-    <div class="sc on" id="sc-home">
-      <div class="install-banner" id="install-banner" style="display:none">
-        <div class="ib-ico">📲</div>
-        <div class="ib-body">
-          <div class="ib-t">Home Screen కి Add చేయండి</div>
-          <div class="ib-s"><b>iPhone:</b> Safari → Share → "Add to Home Screen"<br><b>Android:</b> Chrome → Menu → "Add to Home screen"</div>
+```
+<!-- HOME -->
+<div class="sc on" id="sc-home">
+  <div class="install-banner" id="install-banner" style="display:none">
+    <div class="ib-ico">📲</div>
+    <div class="ib-body">
+      <div class="ib-t">Home Screen కి Add చేయండి</div>
+      <div class="ib-s"><b>iPhone:</b> Safari → Share → "Add to Home Screen"<br><b>Android:</b> Chrome → Menu → "Add to Home screen"</div>
+    </div>
+    <div class="ib-x" onclick="this.closest('.install-banner').style.display='none'">✕</div>
+  </div>
+  <div class="sum-grid">
+    <div class="sc-card"><div class="l">మొత్తం ఆర్డర్లు</div><div class="v amb" id="s-ord">₹0</div><div class="s" id="s-ordc">0 orders</div></div>
+    <div class="sc-card"><div class="l">చెల్లించినది</div><div class="v teal" id="s-paid">₹0</div><div class="s" id="s-paidc">0 payments</div></div>
+    <div class="sc-card"><div class="l">బకాయి మొత్తం</div><div class="v rose" id="s-due">₹0</div><div class="s">outstanding</div></div>
+    <div class="sc-card"><div class="l">Vendors</div><div class="v sky" id="s-vc">0</div><div class="s">suppliers</div></div>
+  </div>
+  <div class="seg">
+    <div class="seg-t"><span>Recent Transactions</span><span id="last-sync" style="font-size:10px;color:var(--tx3)"></span></div>
+    <div id="recent-list"><div class="empty"><div class="ei">📋</div><div class="et">ఇంకా ఏమీ లేదు</div><div class="es">AI Chat లో మీ ఆర్డర్లు చెప్పండి</div></div></div>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div class="sc" id="sc-chat">
+  <div class="chat-wrap">
+    <div class="chat-msgs" id="chat-msgs"></div>
+    <div class="cin-area">
+      <div class="chips" id="chat-chips">
+        <div class="chip" onclick="qt('ఇసుక ఆర్డర్: ')">🪨 ఇసుక</div>
+        <div class="chip" onclick="qt('electrical items ')">⚡ Electrical</div>
+        <div class="chip" onclick="qt('steel TMT bars ')">🔩 Steel</div>
+        <div class="chip" onclick="qt('cement bags ')">🏗️ Cement</div>
+        <div class="chip" onclick="qt('hardware items ')">🔧 Hardware</div>
+        <div class="chip" onclick="qt('కూలి చెల్లించాను ')">👷 Labour</div>
+        <div class="chip" onclick="qt('చెల్లించాను ₹')">💰 Payment</div>
+        <div class="chip" onclick="doSend('అందరికీ ఎంత బకాయి చెప్పు')">📊 Summary</div>
+        <div class="chip" style="border-color:rgba(90,175,232,0.4);color:var(--sky)" onclick="doSend('uploaded document లో survey number correct గా ఉందా? recheck చేయి')">🔍 Recheck Doc</div>
+        <div class="chip" style="border-color:rgba(90,175,232,0.4);color:var(--sky)" onclick="doSend('document లో financial amounts అన్నీ correct గా ఉన్నాయా? verify చేయి')">💰 Verify Amounts</div>
+        <div class="chip" style="border-color:rgba(90,175,232,0.4);color:var(--sky)" onclick="doSend('ownership chain లో అన్ని transactions కనిపిస్తున్నాయా? check చేయి')">🔗 Check Chain</div>
+      </div>
+      <div class="cin-row">
+        <div class="cin-acts">
+          <button class="iab" id="voice-btn" onclick="toggleVoice()">🎙️</button>
+          <button class="iab" onclick="document.getElementById('chat-photo').click()">📷</button>
         </div>
-        <div class="ib-x" onclick="this.closest('.install-banner').style.display='none'">✕</div>
-      </div>
-      <div class="sum-grid">
-        <div class="sc-card"><div class="l">మొత్తం ఆర్డర్లు</div><div class="v amb" id="s-ord">₹0</div><div class="s" id="s-ordc">0 orders</div></div>
-        <div class="sc-card"><div class="l">చెల్లించినది</div><div class="v teal" id="s-paid">₹0</div><div class="s" id="s-paidc">0 payments</div></div>
-        <div class="sc-card"><div class="l">బకాయి మొత్తం</div><div class="v rose" id="s-due">₹0</div><div class="s">outstanding</div></div>
-        <div class="sc-card"><div class="l">Vendors</div><div class="v sky" id="s-vc">0</div><div class="s">suppliers</div></div>
-      </div>
-      <div class="seg">
-        <div class="seg-t"><span>Recent Transactions</span><span id="last-sync" style="font-size:10px;color:var(--tx3)"></span></div>
-        <div id="recent-list"><div class="empty"><div class="ei">📋</div><div class="et">ఇంకా ఏమీ లేదు</div><div class="es">AI Chat లో మీ ఆర్డర్లు చెప్పండి</div></div></div>
+        <textarea class="cin" id="chat-in"
+          placeholder="Telugu లేదా English లో చెప్పండి..."
+          rows="1" onkeydown="handleKey(event)" oninput="autoR(this)"></textarea>
+        <button class="sbtn" id="sbtn" onclick="sendMsg()">➤</button>
       </div>
     </div>
+  </div>
+  <input type="file" id="chat-photo" accept="image/*,application/pdf" style="display:none" onchange="handlePhoto(event,'chat')">
+</div>
 
-    <!-- CHAT -->
-    <div class="sc" id="sc-chat">
-      <div class="chat-wrap">
-        <div class="chat-msgs" id="chat-msgs"></div>
-        <div class="cin-area">
-          <div class="chips" id="chat-chips">
-            <div class="chip" onclick="qt('ఇసుక ఆర్డర్: ')">🪨 ఇసుక</div>
-            <div class="chip" onclick="qt('electrical items ')">⚡ Electrical</div>
-            <div class="chip" onclick="qt('steel TMT bars ')">🔩 Steel</div>
-            <div class="chip" onclick="qt('cement bags ')">🏗️ Cement</div>
-            <div class="chip" onclick="qt('hardware items ')">🔧 Hardware</div>
-            <div class="chip" onclick="qt('కూలి చెల్లించాను ')">👷 Labour</div>
-            <div class="chip" onclick="qt('చెల్లించాను ₹')">💰 Payment</div>
-            <div class="chip" onclick="doSend('అందరికీ ఎంత బకాయి చెప్పు')">📊 Summary</div>
-            <div class="chip" style="border-color:rgba(90,175,232,0.4);color:var(--sky)" onclick="doSend('uploaded document లో survey number correct గా ఉందా? recheck చేయి')">🔍 Recheck Doc</div>
-            <div class="chip" style="border-color:rgba(90,175,232,0.4);color:var(--sky)" onclick="doSend('document లో financial amounts అన్నీ correct గా ఉన్నాయా? verify చేయి')">💰 Verify Amounts</div>
-            <div class="chip" style="border-color:rgba(90,175,232,0.4);color:var(--sky)" onclick="doSend('ownership chain లో అన్ని transactions కనిపిస్తున్నాయా? check చేయి')">🔗 Check Chain</div>
-          </div>
-          <div class="cin-row">
-            <div class="cin-acts">
-              <button class="iab" id="voice-btn" onclick="toggleVoice()">🎙️</button>
-              <button class="iab" onclick="document.getElementById('chat-photo').click()">📷</button>
-            </div>
-            <textarea class="cin" id="chat-in"
-              placeholder="Telugu లేదా English లో చెప్పండి..."
-              rows="1" onkeydown="handleKey(event)" oninput="autoR(this)"></textarea>
-            <button class="sbtn" id="sbtn" onclick="sendMsg()">➤</button>
-          </div>
-        </div>
-      </div>
-      <input type="file" id="chat-photo" accept="image/*,application/pdf" style="display:none" onchange="handlePhoto(event,'chat')">
+
+
+<!-- PROJECTS screen -->
+<div class="sc" id="sc-projects">
+  <div class="seg">
+    <div class="seg-t">
+      <span>🏗️ Projects · నిర్మాణాలు</span>
+      <button class="btn amb sm" onclick="openModal('add-project')">+ New Project</button>
     </div>
-
-
-
-    <!-- PROJECTS screen -->
-    <div class="sc" id="sc-projects">
-      <div class="seg">
-        <div class="seg-t">
-          <span>🏗️ Projects · నిర్మాణాలు</span>
-          <button class="btn amb sm" onclick="openModal('add-project')">+ New Project</button>
-        </div>
-        <!-- Agreement Alerts -->
-        <div id="agreement-alerts"></div>
-        <!-- Projects list -->
-        <div id="project-list">
-          <div class="empty"><div class="ei">🏗️</div><div class="et">Projects లేవు</div><div class="es">New Project add చేయండి</div></div>
-        </div>
-        <!-- Profitability Summary -->
-        <div class="seg-t" style="margin-top:14px">Overall Profitability</div>
-        <div id="overall-profit">
-          <div class="empty"><div class="ei">📊</div><div class="et">Projects add చేసిన తర్వాత profit summary కనపడుతుంది</div></div>
-        </div>
-      </div>
+    <!-- Agreement Alerts -->
+    <div id="agreement-alerts"></div>
+    <!-- Projects list -->
+    <div id="project-list">
+      <div class="empty"><div class="ei">🏗️</div><div class="et">Projects లేవు</div><div class="es">New Project add చేయండి</div></div>
     </div>
+    <!-- Profitability Summary -->
+    <div class="seg-t" style="margin-top:14px">Overall Profitability</div>
+    <div id="overall-profit">
+      <div class="empty"><div class="ei">📊</div><div class="et">Projects add చేసిన తర్వాత profit summary కనపడుతుంది</div></div>
+    </div>
+  </div>
+</div>
 
-    <!-- CONTACTS screen -->
-    <div class="sc" id="sc-contacts">
-      <div class="seg">
-        <div class="seg-t">
-          <span>👥 Contacts · పరిచయాలు</span>
-          <button class="btn amb sm" onclick="openModal('add-contact')">+ Add</button>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:12px">
-          <button class="btn ghost sm" id="cf-all" onclick="filterContacts('all')" style="font-size:11px;border-color:var(--amb);color:var(--amb)">All</button>
-          <button class="btn ghost sm" id="cf-buyer" onclick="filterContacts('buyer')" style="font-size:11px">Buyers</button>
-          <button class="btn ghost sm" id="cf-seller" onclick="filterContacts('seller')" style="font-size:11px">Sellers</button>
-        </div>
-        <div id="contact-list">
-          <div class="empty"><div class="ei">👥</div><div class="et">Contacts లేవు</div><div class="es">Documents scan చేస్తే auto-add అవుతారు<br>లేదా manually add చేయండి</div></div>
-        </div>
+<!-- CONTACTS screen -->
+<div class="sc" id="sc-contacts">
+  <div class="seg">
+    <div class="seg-t">
+      <span>👥 Contacts · పరిచయాలు</span>
+      <button class="btn amb sm" onclick="openModal('add-contact')">+ Add</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:12px">
+      <button class="btn ghost sm" id="cf-all" onclick="filterContacts('all')" style="font-size:11px;border-color:var(--amb);color:var(--amb)">All</button>
+      <button class="btn ghost sm" id="cf-buyer" onclick="filterContacts('buyer')" style="font-size:11px">Buyers</button>
+      <button class="btn ghost sm" id="cf-seller" onclick="filterContacts('seller')" style="font-size:11px">Sellers</button>
+    </div>
+    <div id="contact-list">
+      <div class="empty"><div class="ei">👥</div><div class="et">Contacts లేవు</div><div class="es">Documents scan చేస్తే auto-add అవుతారు<br>లేదా manually add చేయండి</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- keep existing docs/vendors/prices/settings screens -->
+<div class="sc" id="sc-docs">
+  <div class="doc-zone" onclick="document.getElementById('doc-file').click()">
+    <div class="dz-ico">📄</div>
+    <div class="dz-t">Document Upload చేయండి</div>
+    <div class="dz-s">Registration, Agreement, Bill — photo తీసి upload చేయండి<br>AI Telugu లో చదివి key points చెప్తుంది</div>
+    <div class="dz-chips">
+      <span class="dz-chip">📷 Photo</span>
+      <span class="dz-chip">📄 PDF</span>
+      <span class="dz-chip">🏛️ Registration</span>
+      <span class="dz-chip">📝 Agreement</span>
+      <span class="dz-chip">🧾 Bill</span>
+    </div>
+  </div>
+  <input type="file" id="doc-file" accept="image/*,application/pdf" style="display:none" onchange="handlePhoto(event,'docs')">
+  <div class="seg">
+    <div class="seg-t">
+      <span>Scanned Documents</span>
+      <div style="display:flex;gap:7px">
+        <button class="btn ghost sm" id="sel-mode-btn" onclick="toggleSelMode()" style="font-size:11px;color:var(--sky);border-color:rgba(90,175,232,0.3)">☑️ Select</button>
+        <button class="btn ghost sm" onclick="clearDocs()" style="font-size:11px;color:var(--rose);border-color:rgba(232,93,122,0.3)">🗑️ Clear All</button>
       </div>
     </div>
+    <div class="sel-bar" id="sel-bar">
+      <span class="sel-count" id="sel-count">0 selected</span>
+      <button class="btn ghost sm" onclick="selectAllDocs()" style="font-size:11px;color:var(--sky)">All</button>
+      <button class="btn ghost sm" onclick="deleteSelected()" style="font-size:11px;color:var(--rose)">🗑️ Delete</button>
+      <button class="btn ghost sm" onclick="toggleSelMode()" style="font-size:11px">✕</button>
+    </div>
+    <div id="doc-list"></div>
+  </div>
+</div>
 
-    <!-- keep existing docs/vendors/prices/settings screens -->
-    <div class="sc" id="sc-docs">
-      <div class="doc-zone" onclick="document.getElementById('doc-file').click()">
-        <div class="dz-ico">📄</div>
-        <div class="dz-t">Document Upload చేయండి</div>
-        <div class="dz-s">Registration, Agreement, Bill — photo తీసి upload చేయండి<br>AI Telugu లో చదివి key points చెప్తుంది</div>
-        <div class="dz-chips">
-          <span class="dz-chip">📷 Photo</span>
-          <span class="dz-chip">📄 PDF</span>
-          <span class="dz-chip">🏛️ Registration</span>
-          <span class="dz-chip">📝 Agreement</span>
-          <span class="dz-chip">🧾 Bill</span>
+<div class="sc" id="sc-vendors">
+  <div class="seg">
+    <div class="seg-t"><span>All Vendors</span>
+      <button class="btn amb sm" onclick="openModal('add-vendor')">+ Add</button>
+    </div>
+    <div id="vendor-list"></div>
+  </div>
+</div>
+
+<div class="sc" id="sc-prices">
+  <div class="seg">
+    <div class="seg-t">Price History — ధరల చరిత్ర</div>
+    <div id="price-list"></div>
+  </div>
+</div>
+
+<div class="sc" id="sc-settings">
+  <div class="seg">
+    <!-- Hardcoded config banner -->
+    <div id="hardcoded-banner" style="display:none;align-items:center;gap:10px;
+      background:rgba(58,232,200,0.07);border:1px solid rgba(58,232,200,0.3);
+      border-radius:11px;padding:12px 14px;margin-bottom:12px">
+      <span style="font-size:22px">🔒</span>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:700;color:var(--teal)">Config locked in GitHub</div>
+        <div style="font-size:12px;color:var(--tx2);margin-top:2px">
+          Keys are hardcoded in private repo — New phone లో automatically loaded అవుతాయి
         </div>
-      </div>
-      <input type="file" id="doc-file" accept="image/*,application/pdf" style="display:none" onchange="handlePhoto(event,'docs')">
-      <div class="seg">
-        <div class="seg-t">
-          <span>Scanned Documents</span>
-          <div style="display:flex;gap:7px">
-            <button class="btn ghost sm" id="sel-mode-btn" onclick="toggleSelMode()" style="font-size:11px;color:var(--sky);border-color:rgba(90,175,232,0.3)">☑️ Select</button>
-            <button class="btn ghost sm" onclick="clearDocs()" style="font-size:11px;color:var(--rose);border-color:rgba(232,93,122,0.3)">🗑️ Clear All</button>
-          </div>
-        </div>
-        <div class="sel-bar" id="sel-bar">
-          <span class="sel-count" id="sel-count">0 selected</span>
-          <button class="btn ghost sm" onclick="selectAllDocs()" style="font-size:11px;color:var(--sky)">All</button>
-          <button class="btn ghost sm" onclick="deleteSelected()" style="font-size:11px;color:var(--rose)">🗑️ Delete</button>
-          <button class="btn ghost sm" onclick="toggleSelMode()" style="font-size:11px">✕</button>
-        </div>
-        <div id="doc-list"></div>
       </div>
     </div>
-
-    <div class="sc" id="sc-vendors">
-      <div class="seg">
-        <div class="seg-t"><span>All Vendors</span>
-          <button class="btn amb sm" onclick="openModal('add-vendor')">+ Add</button>
-        </div>
-        <div id="vendor-list"></div>
+    <div class="seg-t">Configuration</div>
+    <div class="si"><div class="si-ico">📊</div><div class="si-body"><div class="si-t">Google Sheet</div><div class="si-s">Data ఇక్కడ save అవుతుంది</div><div class="si-v" id="cfg-sheet">Not configured</div></div><button class="btn ghost sm" onclick="openSheetInBrowser()">Open ↗</button></div>
+    <div class="si"><div class="si-ico">🔗</div><div class="si-body"><div class="si-t">Apps Script URL</div><div class="si-s">Script URL update చేయండి</div><div class="si-v" id="cfg-script" style="font-size:11px">Not configured</div></div><button class="btn ghost sm" onclick="changeScriptUrl()">Change</button></div>
+    <div class="si"><div class="si-ico">🤖</div><div class="si-body"><div class="si-t">Gemini AI Keys</div><div class="si-s">Free — 15 req/min per key. Multiple keys = more quota</div><div class="si-v" id="cfg-ai">Not configured</div></div><button class="btn ghost sm" onclick="openModal('manage-keys')">Manage</button></div>
+    <div class="si"><div class="si-ico">☁️</div><div class="si-body"><div class="si-t">Sync Status</div><div class="si-s" id="cfg-sync">Last sync: Never</div></div><button class="btn ghost sm" onclick="syncNow()">Sync</button></div>
+    <div class="si" style="border-color:rgba(58,232,200,0.3)">
+      <div class="si-ico">📁</div>
+      <div class="si-body">
+        <div class="si-t" style="color:var(--teal)">Google Drive</div>
+        <div class="si-s">Documents, Bills, Registrations saved here</div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="btn ghost sm" style="color:var(--teal);border-color:rgba(58,232,200,0.3)" onclick="getDriveUrl()">Open ↗</button>
+        <button class="btn ghost sm" style="color:var(--amb);border-color:rgba(232,184,74,0.3);font-size:11px" onclick="testDriveUpload()">Test</button>
       </div>
     </div>
-
-    <div class="sc" id="sc-prices">
-      <div class="seg">
-        <div class="seg-t">Price History — ధరల చరిత్ర</div>
-        <div id="price-list"></div>
+    <div class="si"><div class="si-ico">📱</div><div class="si-body"><div class="si-t">New Phone Setup</div><div class="si-s">Same Sheet ID + Gemini Key enter చేయండి</div></div><button class="btn ghost sm" onclick="showGuide()">Guide</button></div>
+    <div class="si" style="border-color:rgba(58,232,200,0.3);background:rgba(58,232,200,0.03)">
+      <div class="si-ico">📲</div>
+      <div class="si-body">
+        <div class="si-t" style="color:var(--teal)">QR Code Transfer</div>
+        <div class="si-s">New phone లో scan చేస్తే — all keys instant setup!</div>
       </div>
+      <button class="btn teal sm" onclick="generateQR()">Generate QR</button>
     </div>
-
-    <div class="sc" id="sc-settings">
-      <div class="seg">
-        <!-- Hardcoded config banner -->
-        <div id="hardcoded-banner" style="display:none;align-items:center;gap:10px;
-          background:rgba(58,232,200,0.07);border:1px solid rgba(58,232,200,0.3);
-          border-radius:11px;padding:12px 14px;margin-bottom:12px">
-          <span style="font-size:22px">🔒</span>
-          <div style="flex:1">
-            <div style="font-size:13px;font-weight:700;color:var(--teal)">Config locked in GitHub</div>
-            <div style="font-size:12px;color:var(--tx2);margin-top:2px">
-              Keys are hardcoded in private repo — New phone లో automatically loaded అవుతాయి
-            </div>
-          </div>
-        </div>
-        <div class="seg-t">Configuration</div>
-        <div class="si"><div class="si-ico">📊</div><div class="si-body"><div class="si-t">Google Sheet</div><div class="si-s">Data ఇక్కడ save అవుతుంది</div><div class="si-v" id="cfg-sheet">Not configured</div></div><button class="btn ghost sm" onclick="openSheetInBrowser()">Open ↗</button></div>
-        <div class="si"><div class="si-ico">🔗</div><div class="si-body"><div class="si-t">Apps Script URL</div><div class="si-s">Script URL update చేయండి</div><div class="si-v" id="cfg-script" style="font-size:11px">Not configured</div></div><button class="btn ghost sm" onclick="changeScriptUrl()">Change</button></div>
-        <div class="si"><div class="si-ico">🤖</div><div class="si-body"><div class="si-t">Gemini AI Keys</div><div class="si-s">Free — 15 req/min per key. Multiple keys = more quota</div><div class="si-v" id="cfg-ai">Not configured</div></div><button class="btn ghost sm" onclick="openModal('manage-keys')">Manage</button></div>
-        <div class="si"><div class="si-ico">☁️</div><div class="si-body"><div class="si-t">Sync Status</div><div class="si-s" id="cfg-sync">Last sync: Never</div></div><button class="btn ghost sm" onclick="syncNow()">Sync</button></div>
-        <div class="si" style="border-color:rgba(58,232,200,0.3)">
-          <div class="si-ico">📁</div>
-          <div class="si-body">
-            <div class="si-t" style="color:var(--teal)">Google Drive</div>
-            <div class="si-s">Documents, Bills, Registrations saved here</div>
-          </div>
-          <div style="display:flex;gap:6px">
-            <button class="btn ghost sm" style="color:var(--teal);border-color:rgba(58,232,200,0.3)" onclick="getDriveUrl()">Open ↗</button>
-            <button class="btn ghost sm" style="color:var(--amb);border-color:rgba(232,184,74,0.3);font-size:11px" onclick="testDriveUpload()">Test</button>
-          </div>
-        </div>
-        <div class="si"><div class="si-ico">📱</div><div class="si-body"><div class="si-t">New Phone Setup</div><div class="si-s">Same Sheet ID + Gemini Key enter చేయండి</div></div><button class="btn ghost sm" onclick="showGuide()">Guide</button></div>
-        <div class="si" style="border-color:rgba(58,232,200,0.3);background:rgba(58,232,200,0.03)">
-          <div class="si-ico">📲</div>
-          <div class="si-body">
-            <div class="si-t" style="color:var(--teal)">QR Code Transfer</div>
-            <div class="si-s">New phone లో scan చేస్తే — all keys instant setup!</div>
-          </div>
-          <button class="btn teal sm" onclick="generateQR()">Generate QR</button>
-        </div>
-        <div style="height:1px;background:var(--bd);margin:10px 0 14px"></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px">
-          <button class="btn rose sm full" onclick="clearDocs()">🗑️ Clear Docs</button>
-          <button class="btn rose sm full" onclick="clearTxns()">🗑️ Clear Transactions</button>
-        </div>
-        <button class="btn rose sm full" style="margin-bottom:9px" onclick="clearAll()">🗑️ Clear ALL Data</button>
-        <button class="btn ghost sm full" style="color:var(--tx3)" onclick="resetApp()">🔄 Reconfigure from scratch</button>
-      </div>
+    <div style="height:1px;background:var(--bd);margin:10px 0 14px"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px">
+      <button class="btn rose sm full" onclick="clearDocs()">🗑️ Clear Docs</button>
+      <button class="btn rose sm full" onclick="clearTxns()">🗑️ Clear Transactions</button>
     </div>
+    <button class="btn rose sm full" style="margin-bottom:9px" onclick="clearAll()">🗑️ Clear ALL Data</button>
+    <button class="btn ghost sm full" style="color:var(--tx3)" onclick="resetApp()">🔄 Reconfigure from scratch</button>
+  </div>
+</div>
+```
 
   </div>
 </div>
 
 <!-- Add Vendor Modal -->
+
 <div class="mover" id="add-vendor">
   <div class="msheet">
     <div class="mgrip"></div>
@@ -865,6 +880,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
 </div>
 
 <!-- New Phone Guide Modal -->
+
 <div class="mover" id="guide-modal">
   <div class="msheet">
     <div class="mgrip"></div>
@@ -886,6 +902,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
 </div>
 
 <!-- Add Project Modal -->
+
 <div class="mover" id="add-project">
   <div class="msheet">
     <div class="mgrip"></div>
@@ -930,6 +947,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
 </div>
 
 <!-- Add Contact Modal -->
+
 <div class="mover" id="add-contact">
   <div class="msheet">
     <div class="mgrip"></div>
@@ -963,6 +981,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
 </div>
 
 <!-- House Detail Modal -->
+
 <div class="mover" id="house-modal">
   <div class="msheet">
     <div class="mgrip"></div>
@@ -972,6 +991,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
 </div>
 
 <!-- EC Search Modal -->
+
 <div class="mover" id="ec-modal">
   <div class="msheet">
     <div class="mgrip"></div>
@@ -980,66 +1000,70 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
       Website paste allow చేయదు — ఈ values చూసి manually type చేయండి. Keep this open while typing.
     </div>
 
-    <!-- All 4 fields in a clean reference card -->
-    <div style="background:var(--s3);border:1.5px solid rgba(232,184,74,0.3);border-radius:13px;overflow:hidden;margin-bottom:14px">
+```
+<!-- All 4 fields in a clean reference card -->
+<div style="background:var(--s3);border:1.5px solid rgba(232,184,74,0.3);border-radius:13px;overflow:hidden;margin-bottom:14px">
 
-      <div style="padding:11px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px">
-        <span style="width:26px;height:26px;border-radius:7px;background:var(--amb);color:var(--bg);display:grid;place-items:center;font-size:13px;font-weight:700;flex-shrink:0">1</span>
-        <div style="flex:1">
-          <div style="font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:0.5px">Encumbrance Type</div>
-          <div style="font-size:17px;font-weight:700;color:var(--amb);margin-top:2px">Document No</div>
-        </div>
-        <span style="font-size:11px;color:var(--tx3)">dropdown</span>
-      </div>
-
-      <div style="padding:11px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px">
-        <span style="width:26px;height:26px;border-radius:7px;background:var(--amb);color:var(--bg);display:grid;place-items:center;font-size:13px;font-weight:700;flex-shrink:0">2</span>
-        <div style="flex:1">
-          <div style="font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:0.5px">Document Number</div>
-          <div id="ec-docnum" style="font-size:28px;font-weight:700;color:var(--amb);margin-top:2px;font-family:JetBrains Mono;letter-spacing:2px">—</div>
-        </div>
-        <span style="font-size:11px;color:var(--tx3)">type</span>
-      </div>
-
-      <div style="padding:11px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px">
-        <span style="width:26px;height:26px;border-radius:7px;background:var(--teal);color:var(--bg);display:grid;place-items:center;font-size:13px;font-weight:700;flex-shrink:0">3</span>
-        <div style="flex:1">
-          <div style="font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:0.5px">Year of Registration</div>
-          <div id="ec-year" style="font-size:28px;font-weight:700;color:var(--teal);margin-top:2px;font-family:JetBrains Mono;letter-spacing:2px">—</div>
-        </div>
-        <span style="font-size:11px;color:var(--tx3)">select</span>
-      </div>
-
-      <div style="padding:11px 14px;display:flex;align-items:center;gap:10px">
-        <span style="width:26px;height:26px;border-radius:7px;background:var(--sky);color:var(--bg);display:grid;place-items:center;font-size:13px;font-weight:700;flex-shrink:0">4</span>
-        <div style="flex:1">
-          <div style="font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:0.5px">Registered at SRO</div>
-          <div id="ec-sro" style="font-size:16px;font-weight:700;color:var(--sky);margin-top:2px;word-break:break-word">—</div>
-        </div>
-        <span style="font-size:11px;color:var(--tx3)">search</span>
-      </div>
-
+  <div style="padding:11px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px">
+    <span style="width:26px;height:26px;border-radius:7px;background:var(--amb);color:var(--bg);display:grid;place-items:center;font-size:13px;font-weight:700;flex-shrink:0">1</span>
+    <div style="flex:1">
+      <div style="font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:0.5px">Encumbrance Type</div>
+      <div style="font-size:17px;font-weight:700;color:var(--amb);margin-top:2px">Document No</div>
     </div>
+    <span style="font-size:11px;color:var(--tx3)">dropdown</span>
+  </div>
 
-    <div style="background:rgba(232,93,122,0.06);border:1px solid rgba(232,93,122,0.2);border-radius:10px;padding:10px 13px;margin-bottom:14px;display:flex;align-items:center;gap:9px">
-      <span style="font-size:20px">🔐</span>
-      <div style="font-size:12px;color:var(--rose);line-height:1.6">
-        <b>Step 5 — CAPTCHA</b><br>Website లో solve చేయాలి
-      </div>
+  <div style="padding:11px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px">
+    <span style="width:26px;height:26px;border-radius:7px;background:var(--amb);color:var(--bg);display:grid;place-items:center;font-size:13px;font-weight:700;flex-shrink:0">2</span>
+    <div style="flex:1">
+      <div style="font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:0.5px">Document Number</div>
+      <div id="ec-docnum" style="font-size:28px;font-weight:700;color:var(--amb);margin-top:2px;font-family:JetBrains Mono;letter-spacing:2px">—</div>
     </div>
+    <span style="font-size:11px;color:var(--tx3)">type</span>
+  </div>
 
-    <a href="https://registration.ec.ap.gov.in/ecSearch" target="_blank"
-      style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
-      background:linear-gradient(135deg,var(--amb),var(--amb2));color:var(--bg);
-      border-radius:11px;padding:14px;font-size:15px;font-weight:700;
-      text-decoration:none;margin-bottom:10px">
-      🌐 Open EC Website
-    </a>
-    <button class="btn ghost full" onclick="closeModal('ec-modal')">Close</button>
+  <div style="padding:11px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px">
+    <span style="width:26px;height:26px;border-radius:7px;background:var(--teal);color:var(--bg);display:grid;place-items:center;font-size:13px;font-weight:700;flex-shrink:0">3</span>
+    <div style="flex:1">
+      <div style="font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:0.5px">Year of Registration</div>
+      <div id="ec-year" style="font-size:28px;font-weight:700;color:var(--teal);margin-top:2px;font-family:JetBrains Mono;letter-spacing:2px">—</div>
+    </div>
+    <span style="font-size:11px;color:var(--tx3)">select</span>
+  </div>
+
+  <div style="padding:11px 14px;display:flex;align-items:center;gap:10px">
+    <span style="width:26px;height:26px;border-radius:7px;background:var(--sky);color:var(--bg);display:grid;place-items:center;font-size:13px;font-weight:700;flex-shrink:0">4</span>
+    <div style="flex:1">
+      <div style="font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:0.5px">Registered at SRO</div>
+      <div id="ec-sro" style="font-size:16px;font-weight:700;color:var(--sky);margin-top:2px;word-break:break-word">—</div>
+    </div>
+    <span style="font-size:11px;color:var(--tx3)">search</span>
+  </div>
+
+</div>
+
+<div style="background:rgba(232,93,122,0.06);border:1px solid rgba(232,93,122,0.2);border-radius:10px;padding:10px 13px;margin-bottom:14px;display:flex;align-items:center;gap:9px">
+  <span style="font-size:20px">🔐</span>
+  <div style="font-size:12px;color:var(--rose);line-height:1.6">
+    <b>Step 5 — CAPTCHA</b><br>Website లో solve చేయాలి
+  </div>
+</div>
+
+<a href="https://registration.ec.ap.gov.in/ecSearch" target="_blank"
+  style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  background:linear-gradient(135deg,var(--amb),var(--amb2));color:var(--bg);
+  border-radius:11px;padding:14px;font-size:15px;font-weight:700;
+  text-decoration:none;margin-bottom:10px">
+  🌐 Open EC Website
+</a>
+<button class="btn ghost full" onclick="closeModal('ec-modal')">Close</button>
+```
+
   </div>
 </div>
 
 <!-- Manage API Keys Modal -->
+
 <div class="mover" id="manage-keys">
   <div class="msheet">
     <div class="mgrip"></div>
@@ -1067,85 +1091,90 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
 </div>
 
 <!-- QR Code Modal -->
+
 <div class="mover" id="qr-modal">
   <div class="msheet">
     <div class="mgrip"></div>
     <div class="mt" id="qr-modal-title">📲 Setup QR Code</div>
 
-    <!-- QR Display mode -->
-    <div id="qr-show-section">
-      <div style="font-size:13px;color:var(--tx2);margin-bottom:14px;line-height:1.7">
-        ఈ QR code screenshot తీసి Google Drive లో save చేయండి.<br>
-        New phone లో "Scan QR" tap చేసి scan చేయండి — all keys automatic!
-      </div>
-      <div style="background:white;border-radius:13px;padding:16px;margin-bottom:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px">
-        <canvas id="qr-canvas" width="220" height="220"></canvas>
-        <div id="qr-fallback-text" style="display:none;width:100%">
-          <div style="font-size:11px;color:#888;margin-bottom:5px;text-align:center">QR image load కాలేదు — ఈ code copy చేయండి:</div>
-          <textarea id="qr-fallback-val" readonly onclick="this.select()"
-            style="width:100%;height:60px;font-size:10px;font-family:monospace;
-            background:#f5f5f5;border:1px solid #ddd;border-radius:6px;padding:6px;
-            color:#333;resize:none"></textarea>
-        </div>
-      </div>
-      <div style="background:rgba(232,184,74,0.08);border:1px solid rgba(232,184,74,0.25);border-radius:9px;padding:11px 13px;font-size:12px;color:var(--amb);line-height:1.7;margin-bottom:14px">
-        <b style="display:block;margin-bottom:3px">⚠️ Security Note</b>
-        ఈ QR లో మీ API keys ఉన్నాయి. Screenshot trusted లో మాత్రమే share చేయండి. Google Drive personal folder లో save చేయండి.
-      </div>
-      <div style="display:flex;gap:9px">
-        <button class="btn ghost full" onclick="closeModal('qr-modal')">Close</button>
-        <button class="btn amb full" onclick="saveQRImage()">📸 Save as Image</button>
-      </div>
-      <div style="margin-top:12px;text-align:center">
-        <button onclick="showQRScanner()" style="background:none;border:none;color:var(--teal);font-size:13px;cursor:pointer;text-decoration:underline">
-          New phone లో ఉన్నారా? → Scan QR
-        </button>
+```
+<!-- QR Display mode -->
+<div id="qr-show-section">
+  <div style="font-size:13px;color:var(--tx2);margin-bottom:14px;line-height:1.7">
+    ఈ QR code screenshot తీసి Google Drive లో save చేయండి.<br>
+    New phone లో "Scan QR" tap చేసి scan చేయండి — all keys automatic!
+  </div>
+  <div style="background:white;border-radius:13px;padding:16px;margin-bottom:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px">
+    <canvas id="qr-canvas" width="220" height="220"></canvas>
+    <div id="qr-fallback-text" style="display:none;width:100%">
+      <div style="font-size:11px;color:#888;margin-bottom:5px;text-align:center">QR image load కాలేదు — ఈ code copy చేయండి:</div>
+      <textarea id="qr-fallback-val" readonly onclick="this.select()"
+        style="width:100%;height:60px;font-size:10px;font-family:monospace;
+        background:#f5f5f5;border:1px solid #ddd;border-radius:6px;padding:6px;
+        color:#333;resize:none"></textarea>
+    </div>
+  </div>
+  <div style="background:rgba(232,184,74,0.08);border:1px solid rgba(232,184,74,0.25);border-radius:9px;padding:11px 13px;font-size:12px;color:var(--amb);line-height:1.7;margin-bottom:14px">
+    <b style="display:block;margin-bottom:3px">⚠️ Security Note</b>
+    ఈ QR లో మీ API keys ఉన్నాయి. Screenshot trusted లో మాత్రమే share చేయండి. Google Drive personal folder లో save చేయండి.
+  </div>
+  <div style="display:flex;gap:9px">
+    <button class="btn ghost full" onclick="closeModal('qr-modal')">Close</button>
+    <button class="btn amb full" onclick="saveQRImage()">📸 Save as Image</button>
+  </div>
+  <div style="margin-top:12px;text-align:center">
+    <button onclick="showQRScanner()" style="background:none;border:none;color:var(--teal);font-size:13px;cursor:pointer;text-decoration:underline">
+      New phone లో ఉన్నారా? → Scan QR
+    </button>
+  </div>
+</div>
+
+<!-- QR Scan mode -->
+<div id="qr-scan-section" style="display:none">
+  <div style="font-size:13px;color:var(--tx2);margin-bottom:12px;line-height:1.7">
+    Camera తో QR code scan చేయండి — పాత phone లో generate చేసిన QR చూపించండి.
+  </div>
+
+  <!-- Camera video with visible container -->
+  <div style="width:100%;background:#000;border-radius:13px;overflow:hidden;margin-bottom:12px;min-height:260px;position:relative;display:flex;align-items:center;justify-content:center">
+    <video id="qr-video" autoplay playsinline muted
+      style="width:100%;max-height:320px;display:block;border-radius:13px"></video>
+    <!-- Scan overlay -->
+    <div style="position:absolute;inset:0;pointer-events:none;display:flex;align-items:center;justify-content:center">
+      <div style="width:200px;height:200px;position:relative">
+        <div style="position:absolute;top:0;left:0;width:30px;height:30px;border-top:3px solid var(--teal);border-left:3px solid var(--teal);border-radius:3px 0 0 0"></div>
+        <div style="position:absolute;top:0;right:0;width:30px;height:30px;border-top:3px solid var(--teal);border-right:3px solid var(--teal);border-radius:0 3px 0 0"></div>
+        <div style="position:absolute;bottom:0;left:0;width:30px;height:30px;border-bottom:3px solid var(--teal);border-left:3px solid var(--teal);border-radius:0 0 0 3px"></div>
+        <div style="position:absolute;bottom:0;right:0;width:30px;height:30px;border-bottom:3px solid var(--teal);border-right:3px solid var(--teal);border-radius:0 0 3px 0"></div>
       </div>
     </div>
-
-    <!-- QR Scan mode -->
-    <div id="qr-scan-section" style="display:none">
-      <div style="font-size:13px;color:var(--tx2);margin-bottom:12px;line-height:1.7">
-        Camera తో QR code scan చేయండి — పాత phone లో generate చేసిన QR చూపించండి.
-      </div>
-
-      <!-- Camera video with visible container -->
-      <div style="width:100%;background:#000;border-radius:13px;overflow:hidden;margin-bottom:12px;min-height:260px;position:relative;display:flex;align-items:center;justify-content:center">
-        <video id="qr-video" autoplay playsinline muted
-          style="width:100%;max-height:320px;display:block;border-radius:13px"></video>
-        <!-- Scan overlay -->
-        <div style="position:absolute;inset:0;pointer-events:none;display:flex;align-items:center;justify-content:center">
-          <div style="width:200px;height:200px;position:relative">
-            <div style="position:absolute;top:0;left:0;width:30px;height:30px;border-top:3px solid var(--teal);border-left:3px solid var(--teal);border-radius:3px 0 0 0"></div>
-            <div style="position:absolute;top:0;right:0;width:30px;height:30px;border-top:3px solid var(--teal);border-right:3px solid var(--teal);border-radius:0 3px 0 0"></div>
-            <div style="position:absolute;bottom:0;left:0;width:30px;height:30px;border-bottom:3px solid var(--teal);border-left:3px solid var(--teal);border-radius:0 0 0 3px"></div>
-            <div style="position:absolute;bottom:0;right:0;width:30px;height:30px;border-bottom:3px solid var(--teal);border-right:3px solid var(--teal);border-radius:0 0 3px 0"></div>
-          </div>
-        </div>
-        <!-- Loading indicator before camera starts -->
-        <div id="qr-loading" style="position:absolute;text-align:center;color:#fff;font-size:13px">
-          <div style="font-size:30px;margin-bottom:8px">📷</div>
-          Camera starting...
-        </div>
-      </div>
-
-      <div id="qr-scan-status" style="text-align:center;font-size:13px;color:var(--teal);margin-bottom:12px;font-weight:600">
-        QR code ని box లో చూపించండి...
-      </div>
-
-      <!-- Alternative: upload QR image -->
-      <div style="text-align:center;margin-bottom:12px;font-size:12px;color:var(--tx3)">లేదా</div>
-      <label style="display:block;width:100%;background:rgba(58,232,200,0.08);border:1px dashed rgba(58,232,200,0.4);border-radius:10px;padding:12px;text-align:center;cursor:pointer;color:var(--teal);font-size:13px;margin-bottom:12px">
-        🖼️ QR Image Upload చేయండి (Gallery నుండి)
-        <input type="file" accept="image/*" style="display:none" onchange="scanQRFromImage(event)">
-      </label>
-
-      <button class="btn ghost full" onclick="stopQRScan();closeModal('qr-modal')">Cancel</button>
+    <!-- Loading indicator before camera starts -->
+    <div id="qr-loading" style="position:absolute;text-align:center;color:#fff;font-size:13px">
+      <div style="font-size:30px;margin-bottom:8px">📷</div>
+      Camera starting...
     </div>
+  </div>
+
+  <div id="qr-scan-status" style="text-align:center;font-size:13px;color:var(--teal);margin-bottom:12px;font-weight:600">
+    QR code ని box లో చూపించండి...
+  </div>
+
+  <!-- Alternative: upload QR image -->
+  <div style="text-align:center;margin-bottom:12px;font-size:12px;color:var(--tx3)">లేదా</div>
+  <label style="display:block;width:100%;background:rgba(58,232,200,0.08);border:1px dashed rgba(58,232,200,0.4);border-radius:10px;padding:12px;text-align:center;cursor:pointer;color:var(--teal);font-size:13px;margin-bottom:12px">
+    🖼️ QR Image Upload చేయండి (Gallery నుండి)
+    <input type="file" accept="image/*" style="display:none" onchange="scanQRFromImage(event)">
+  </label>
+
+  <button class="btn ghost full" onclick="stopQRScan();closeModal('qr-modal')">Cancel</button>
+</div>
+```
+
   </div>
 </div>
 
 <!-- Script URL Modal -->
+
 <div class="mover" id="script-url-modal">
   <div class="msheet">
     <div class="mgrip"></div>
@@ -1165,6 +1194,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
 </div>
 
 <!-- Apps Script Code Modal -->
+
 <div class="mover" id="script-modal">
   <div class="msheet">
     <div class="mgrip"></div>
@@ -1223,8 +1253,8 @@ var APPS_SCRIPT_CODE = [
   '',
   '    // ── SAVE FILE TO DRIVE ──',
   '    if (action === "saveFile") {',
-  '      // Get or create Nirmit Docs root folder',
-  '      var rootFolder = getOrCreateFolder("Nirmit Docs", DriveApp.getRootFolder());',
+  '      // Get or create SiteBook Docs root folder',
+  '      var rootFolder = getOrCreateFolder("SiteBook Docs", DriveApp.getRootFolder());',
   '',
   '      // Determine subfolder based on fileType',
   '      var folder;',
@@ -1259,7 +1289,7 @@ var APPS_SCRIPT_CODE = [
   '',
   '    // ── GET DRIVE FOLDER URL ──',
   '    if (action === "getDriveUrl") {',
-  '      var root = getOrCreateFolder("Nirmit Docs", DriveApp.getRootFolder());',
+  '      var root = getOrCreateFolder("SiteBook Docs", DriveApp.getRootFolder());',
   '      return ok({url: "https://drive.google.com/drive/folders/" + root.getId()});',
   '    }',
   '',
@@ -1298,10 +1328,10 @@ var APPS_SCRIPT_CODE = [
   '  try {',
   '    var params = e.parameter;',
   '    if (params.action === "getDriveUrl" && params.sheetId) {',
-  '      var root = getOrCreateFolder("Nirmit Docs", DriveApp.getRootFolder());',
+  '      var root = getOrCreateFolder("SiteBook Docs", DriveApp.getRootFolder());',
   '      return ok({url: "https://drive.google.com/drive/folders/" + root.getId()});',
   '    }',
-  '    return ContentService.createTextOutput(JSON.stringify({ok: true, msg: "Nirmit API v2"}))',
+  '    return ContentService.createTextOutput(JSON.stringify({ok: true, msg: "SiteBook API v2"}))',
   '      .setMimeType(ContentService.MimeType.JSON);',
   '  } catch(err) {',
   '    return ContentService.createTextOutput(JSON.stringify({ok: false, error: err.toString()}))',
@@ -1948,7 +1978,7 @@ function injectWelcome() {
   w.className = 'bw ai fu';
   w.innerHTML = '<div class="bav">🤖</div>'
     +'<div><div class="bbl">'
-    +'<b>నమస్కారం! నేను మీ Nirmit AI 🏗️</b><br><br>'
+    +'<b>నమస్కారం! నేను మీ SiteBook AI 📒</b><br><br>'
     +'Telugu లేదా English లో చెప్పండి:<br>'
     +'• "ఇసుక 3 ట్రాక్టర్ మురళి దగ్గర ₹4500"<br>'
     +'• "రాం Electricals కి ₹10000 advance"<br>'
@@ -2027,7 +2057,7 @@ async function callGemini(imageData, imageMime, docPromptOverride) {
     totalPaid:    Object.values(state.vendors).reduce(function(s,v){ return s+(Number(v.totalPaid)||0); },0)
   });
 
-  var systemText = 'You are Nirmit AI, site manager for a builder from Kadapa, Andhra Pradesh. '
+  var systemText = 'You are SiteBook AI, site manager for a builder from Kadapa, Andhra Pradesh. '
     +'He builds small houses on 3-cent plots. He speaks Telugu and English. Reply in the same language he uses.\n\n'
     +'LEDGER STATE: '+ledgerCtx+'\n\n'
     +'ANDHRA MARKET RATES (Kadapa):\n'
@@ -3261,24 +3291,24 @@ function saveToDrive(b64, mimeType, fileName, docType, result) {
 }
 
 function getDriveUrl() {
-  window.open('https://drive.google.com/drive/search?q=Nirmit+Docs', '_blank');
-  toast('Google Drive open అయింది — "Nirmit Docs" folder కనపడుతుంది', 'info');
+  window.open('https://drive.google.com/drive/search?q=SiteBook+Docs', '_blank');
+  toast('Google Drive open అయింది — "SiteBook Docs" folder కనపడుతుంది', 'info');
 }
 
 function testDriveUpload() {
   if (!cfg.scriptUrl || !cfg.sheetId) { toast('Setup complete చేయండి first', 'err'); return; }
   showProc('Testing Drive upload...');
-  var testB64 = btoa('Nirmit Drive Test - ' + new Date().toISOString());
+  var testB64 = btoa('SiteBook Drive Test - ' + new Date().toISOString());
   var payload = JSON.stringify({
     action: 'saveFile',
     sheetId: cfg.sheetId,
     fileBase64: testB64,
     mimeType: 'text/plain',
-    fileName: 'Nirmit_Test_' + Date.now() + '.txt',
+    fileName: 'SiteBook_Test_' + Date.now() + '.txt',
     fileType: 'Other',
     propertyFolder: '',
     monthFolder: '',
-    description: 'Test file from Nirmit app'
+    description: 'Test file from SiteBook app'
   });
   // Must use no-cors — Apps Script doesn't send CORS headers for browser requests
   fetch(cfg.scriptUrl, { method: 'POST', mode: 'no-cors', body: payload })
@@ -3286,7 +3316,7 @@ function testDriveUpload() {
     hideProc();
     toast('📁 Test file sent to Drive! 30 seconds wait చేసి Drive check చేయండి', 'ok');
     setTimeout(function(){
-      window.open('https://drive.google.com/drive/search?q=Nirmit_Test', '_blank');
+      window.open('https://drive.google.com/drive/search?q=SiteBook_Test', '_blank');
     }, 2000);
   })
   .catch(function(err){
@@ -3314,7 +3344,7 @@ function generateQR() {
     ks: (cfg.apiKeys||[]).map(function(k){ return {k:k.key, l:k.label}; })
   };
   var encoded = btoa(unescape(encodeURIComponent(JSON.stringify(qrData))));
-  var qrText = 'NIRMIT:' + encoded;
+  var qrText = 'SITEBOOK:' + encoded;
 
   document.getElementById('qr-show-section').style.display = 'block';
   document.getElementById('qr-scan-section').style.display = 'none';
@@ -3374,7 +3404,7 @@ function generateQR() {
 function saveQRImage() {
   var canvas = document.getElementById('qr-canvas');
   var link = document.createElement('a');
-  link.download = 'Nirmit_Setup_QR_' + today().replace(/ /g,'-') + '.png';
+  link.download = 'SiteBook_Setup_QR_' + today().replace(/ /g,'-') + '.png';
   link.href = canvas.toDataURL('image/png');
   link.click();
   toast('QR Image saved! Google Drive లో upload చేయండి', 'ok');
@@ -3437,7 +3467,7 @@ function startQRDecode() {
     scanCtx.drawImage(video, 0, 0);
     var imageData = scanCtx.getImageData(0, 0, scanCanvas.width, scanCanvas.height);
     var code = jsQR(imageData.data, imageData.width, imageData.height);
-    if (code && code.data && code.data.startsWith('NIRMIT:')) {
+    if (code && code.data && code.data.startsWith('SITEBOOK:')) {
       stopQRScan();
       applyQRConfig(code.data);
     }
@@ -3473,17 +3503,17 @@ function scanQRFromImage(e) {
 
     if (typeof jsQR !== 'undefined') {
       var code = jsQR(imageData.data, imageData.width, imageData.height);
-      if (code && code.data && code.data.startsWith('NIRMIT:')) {
+      if (code && code.data && code.data.startsWith('SITEBOOK:')) {
         stopQRScan();
         applyQRConfig(code.data);
       } else {
-        if (statusEl) statusEl.textContent = 'QR code found కాలేదు. Nirmit QR image చూపించండి.';
+        if (statusEl) statusEl.textContent = 'QR code found కాలేదు. SiteBook QR image చూపించండి.';
       }
     } else {
       loadScript('https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.js')
         .then(function(){
           var code = jsQR(imageData.data, imageData.width, imageData.height);
-          if (code && code.data && code.data.startsWith('NIRMIT:')) {
+          if (code && code.data && code.data.startsWith('SITEBOOK:')) {
             stopQRScan();
             applyQRConfig(code.data);
           } else {
@@ -3497,7 +3527,7 @@ function scanQRFromImage(e) {
 
 function applyQRConfig(qrText) {
   try {
-    var encoded = qrText.replace('NIRMIT:', '');
+    var encoded = qrText.replace('SITEBOOK:', '');
     var data = JSON.parse(atob(encoded));
     if (data.s) cfg.sheetId   = data.s;
     if (data.u) cfg.scriptUrl = data.u;
@@ -3513,7 +3543,7 @@ function applyQRConfig(qrText) {
     toast('✓ Setup complete! All keys loaded from QR', 'ok');
     setTimeout(function(){ launchApp(); }, 500);
   } catch(e) {
-    document.getElementById('qr-scan-status').textContent = 'Invalid QR code. Nirmit QR మాత్రమే scan చేయండి.';
+    document.getElementById('qr-scan-status').textContent = 'Invalid QR code. SiteBook QR మాత్రమే scan చేయండి.';
   }
 }
 
@@ -3617,7 +3647,7 @@ function init() {
 
 // Global error safety — if splash gets stuck, show setup
 window.onerror = function(msg, src, line, col, err) {
-  console.error('Nirmit error:', msg, line);
+  console.error('SiteBook error:', msg, line);
   var splash = document.getElementById('splash');
   if (splash && splash.style.display !== 'none' && !splash.classList.contains('out')) {
     splash.style.display = 'none';
@@ -3630,5 +3660,6 @@ window.onerror = function(msg, src, line, col, err) {
 
 init();
 </script>
+
 </body>
 </html>
