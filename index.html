@@ -407,6 +407,77 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
 
 @keyframes fadeup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .fu{animation:fadeup 0.24s ease both}
+
+/* PROJECT CARDS */
+.proj-card{background:var(--s2);border:1px solid var(--bd);border-radius:13px;margin-bottom:10px;overflow:hidden}
+.proj-hdr{padding:13px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px;cursor:pointer}
+.proj-ico{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--s3),var(--s4));border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.proj-name{font-size:15px;font-weight:700;flex:1}
+.proj-status{font-size:11px;padding:3px 9px;border-radius:7px;font-weight:600;font-family:'JetBrains Mono'}
+.proj-status.active{background:rgba(58,232,200,0.12);color:var(--teal)}
+.proj-status.done{background:rgba(122,200,90,0.12);color:var(--sage)}
+.proj-status.planned{background:rgba(232,184,74,0.12);color:var(--amb)}
+.proj-body{padding:12px 14px}
+.proj-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--bd);font-size:13px}
+.proj-row:last-child{border-bottom:none}
+.proj-label{color:var(--tx2)}
+.proj-val{font-weight:600;font-family:'JetBrains Mono'}
+.proj-val.amb{color:var(--amb)}.proj-val.teal{color:var(--teal)}.proj-val.rose{color:var(--rose)}.proj-val.sage{color:var(--sage)}
+.profit-bar-wrap{margin:10px 14px;background:var(--s3);border-radius:8px;overflow:hidden;height:8px}
+.profit-bar{height:100%;border-radius:8px;transition:width 0.6s ease}
+.house-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;padding:10px 14px}
+.house-tile{background:var(--s3);border:1px solid var(--bd2);border-radius:10px;padding:11px;cursor:pointer;transition:border-color 0.15s}
+.house-tile:active{border-color:var(--amb)}
+.house-tile.sold{border-color:rgba(122,200,90,0.4);background:rgba(122,200,90,0.05)}
+.house-tile.building{border-color:rgba(232,184,74,0.4);background:rgba(232,184,74,0.05)}
+.ht-ico{font-size:22px;margin-bottom:6px}
+.ht-name{font-size:12px;font-weight:600}
+.ht-cost{font-size:11px;font-family:'JetBrains Mono';color:var(--amb);margin-top:3px}
+.ht-status{font-size:10px;margin-top:4px;padding:2px 6px;border-radius:5px;display:inline-block}
+.ht-status.sold{background:rgba(122,200,90,0.15);color:var(--sage)}
+.ht-status.building{background:rgba(232,184,74,0.12);color:var(--amb)}
+.ht-status.planned{background:rgba(90,175,232,0.12);color:var(--sky)}
+
+/* PROFITABILITY */
+.profit-summary{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:12px 14px}
+.ps-box{background:var(--s3);border:1px solid var(--bd2);border-radius:10px;padding:10px;text-align:center}
+.ps-box .pl{font-size:10px;color:var(--tx3);margin-bottom:4px;font-family:'JetBrains Mono'}
+.ps-box .pv{font-size:14px;font-weight:700;font-family:'JetBrains Mono'}
+
+/* AGREEMENT ALERTS */
+.alert-card{background:var(--s2);border-radius:12px;padding:13px 14px;margin-bottom:9px;display:flex;gap:11px;align-items:flex-start}
+.alert-card.urgent{border:1.5px solid rgba(232,93,122,0.5);background:rgba(232,93,122,0.05)}
+.alert-card.warn{border:1.5px solid rgba(232,184,74,0.4);background:rgba(232,184,74,0.04)}
+.alert-card.ok{border:1px solid var(--bd)}
+.ac-ico{font-size:24px;flex-shrink:0;margin-top:2px}
+.ac-body{flex:1}
+.ac-title{font-size:14px;font-weight:700}
+.ac-sub{font-size:12px;color:var(--tx2);margin-top:3px;line-height:1.6}
+.ac-days{font-size:13px;font-weight:700;font-family:'JetBrains Mono';margin-top:5px}
+.ac-days.urgent{color:var(--rose)}.ac-days.warn{color:var(--amb)}.ac-days.ok{color:var(--teal)}
+
+/* CONTACTS */
+.contact-card{background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:12px 13px;margin-bottom:8px;display:flex;gap:11px;align-items:flex-start}
+.cc-av{width:42px;height:42px;border-radius:11px;background:var(--s3);border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.cc-body{flex:1;min-width:0}
+.cc-name{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cc-role{font-size:11px;padding:2px 8px;border-radius:6px;display:inline-block;margin-top:3px;font-weight:600}
+.cc-role.buyer{background:rgba(58,232,200,0.12);color:var(--teal)}
+.cc-role.seller{background:rgba(232,184,74,0.12);color:var(--amb)}
+.cc-role.vendor{background:rgba(90,175,232,0.12);color:var(--sky)}
+.cc-detail{font-size:12px;color:var(--tx2);margin-top:4px;line-height:1.6}
+.cc-actions{display:flex;gap:7px;margin-top:8px}
+
+/* LAND BANK */
+.land-card{background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:13px 14px;margin-bottom:9px}
+.lc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.lc-name{font-size:14px;font-weight:700}
+.lc-badge{font-size:11px;padding:3px 9px;border-radius:7px;font-weight:600}
+.lc-badge.avail{background:rgba(58,232,200,0.12);color:var(--teal)}
+.lc-badge.sold{background:rgba(122,200,90,0.12);color:var(--sage)}
+.lc-badge.building{background:rgba(232,184,74,0.12);color:var(--amb)}
+.lc-bar{height:6px;background:var(--s4);border-radius:3px;margin:10px 0;overflow:hidden}
+.lc-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--teal),var(--amb))}
 </style>
 </head>
 <body>
@@ -542,9 +613,9 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
   <div class="nav">
     <div class="ni on" onclick="showSc('home')"><div class="ico">🏠</div><div class="lbl">Home</div></div>
     <div class="ni" onclick="showSc('chat')"><div class="ico">💬</div><div class="lbl">AI Chat</div></div>
+    <div class="ni" onclick="showSc('projects')"><div class="ico">🏗️</div><div class="lbl">Projects</div></div>
+    <div class="ni" onclick="showSc('contacts')"><div class="ico">👥</div><div class="lbl">Contacts</div></div>
     <div class="ni" onclick="showSc('docs')"><div class="ico">📄</div><div class="lbl">Docs</div></div>
-    <div class="ni" onclick="showSc('vendors')"><div class="ico">🏪</div><div class="lbl">Vendors</div></div>
-    <div class="ni" onclick="showSc('prices')"><div class="ico">📈</div><div class="lbl">Prices</div></div>
     <div class="ni" onclick="showSc('settings')"><div class="ico">⚙️</div><div class="lbl">Settings</div></div>
   </div>
 
@@ -605,7 +676,48 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
       <input type="file" id="chat-photo" accept="image/*,application/pdf" style="display:none" onchange="handlePhoto(event,'chat')">
     </div>
 
-    <!-- DOCS -->
+
+
+    <!-- PROJECTS screen -->
+    <div class="sc" id="sc-projects">
+      <div class="seg">
+        <div class="seg-t">
+          <span>🏗️ Projects · నిర్మాణాలు</span>
+          <button class="btn amb sm" onclick="openModal('add-project')">+ New Project</button>
+        </div>
+        <!-- Agreement Alerts -->
+        <div id="agreement-alerts"></div>
+        <!-- Projects list -->
+        <div id="project-list">
+          <div class="empty"><div class="ei">🏗️</div><div class="et">Projects లేవు</div><div class="es">New Project add చేయండి</div></div>
+        </div>
+        <!-- Profitability Summary -->
+        <div class="seg-t" style="margin-top:14px">Overall Profitability</div>
+        <div id="overall-profit">
+          <div class="empty"><div class="ei">📊</div><div class="et">Projects add చేసిన తర్వాత profit summary కనపడుతుంది</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACTS screen -->
+    <div class="sc" id="sc-contacts">
+      <div class="seg">
+        <div class="seg-t">
+          <span>👥 Contacts · పరిచయాలు</span>
+          <button class="btn amb sm" onclick="openModal('add-contact')">+ Add</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:12px">
+          <button class="btn ghost sm" id="cf-all" onclick="filterContacts('all')" style="font-size:11px;border-color:var(--amb);color:var(--amb)">All</button>
+          <button class="btn ghost sm" id="cf-buyer" onclick="filterContacts('buyer')" style="font-size:11px">Buyers</button>
+          <button class="btn ghost sm" id="cf-seller" onclick="filterContacts('seller')" style="font-size:11px">Sellers</button>
+        </div>
+        <div id="contact-list">
+          <div class="empty"><div class="ei">👥</div><div class="et">Contacts లేవు</div><div class="es">Documents scan చేస్తే auto-add అవుతారు<br>లేదా manually add చేయండి</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- keep existing docs/vendors/prices/settings screens -->
     <div class="sc" id="sc-docs">
       <div class="doc-zone" onclick="document.getElementById('doc-file').click()">
         <div class="dz-ico">📄</div>
@@ -634,52 +746,33 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
           <button class="btn ghost sm" onclick="deleteSelected()" style="font-size:11px;color:var(--rose)">🗑️ Delete</button>
           <button class="btn ghost sm" onclick="toggleSelMode()" style="font-size:11px">✕</button>
         </div>
-        <div id="doc-list"><div class="empty"><div class="ei">🏛️</div><div class="et">Documents లేవు</div><div class="es">Registration, Agreement docs upload చేయండి</div></div></div>
+        <div id="doc-list"></div>
       </div>
     </div>
 
-    <!-- VENDORS -->
     <div class="sc" id="sc-vendors">
       <div class="seg">
         <div class="seg-t"><span>All Vendors</span>
           <button class="btn amb sm" onclick="openModal('add-vendor')">+ Add</button>
         </div>
-        <div id="vendor-list"><div class="empty"><div class="ei">🏪</div><div class="et">Vendors లేవు</div><div class="es">Orders ఇవ్వండి, auto add అవుతారు</div></div></div>
+        <div id="vendor-list"></div>
       </div>
     </div>
 
-    <!-- PRICES -->
     <div class="sc" id="sc-prices">
       <div class="seg">
         <div class="seg-t">Price History — ధరల చరిత్ర</div>
-        <div id="price-list"><div class="empty"><div class="ei">📈</div><div class="et">Price history లేదు</div><div class="es">Orders తర్వాత trends ఇక్కడ కనపడతాయి</div></div></div>
+        <div id="price-list"></div>
       </div>
     </div>
 
-    <!-- SETTINGS -->
     <div class="sc" id="sc-settings">
       <div class="seg">
         <div class="seg-t">Configuration</div>
-        <div class="si">
-          <div class="si-ico">📊</div>
-          <div class="si-body"><div class="si-t">Google Sheet</div><div class="si-s">Data ఇక్కడ save అవుతుంది</div><div class="si-v" id="cfg-sheet">Not configured</div></div>
-          <button class="btn ghost sm" onclick="openSheetInBrowser()">Open ↗</button>
-        </div>
-        <div class="si">
-          <div class="si-ico">🤖</div>
-          <div class="si-body"><div class="si-t">Gemini AI</div><div class="si-s">Free AI — Telugu support</div><div class="si-v" id="cfg-ai">Not configured</div></div>
-          <button class="btn ghost sm" onclick="changeKey()">Change</button>
-        </div>
-        <div class="si">
-          <div class="si-ico">☁️</div>
-          <div class="si-body"><div class="si-t">Sync Status</div><div class="si-s" id="cfg-sync">Last sync: Never</div></div>
-          <button class="btn ghost sm" onclick="syncNow()">Sync</button>
-        </div>
-        <div class="si">
-          <div class="si-ico">📱</div>
-          <div class="si-body"><div class="si-t">New Phone Setup</div><div class="si-s">Same Sheet ID + Gemini Key enter చేయండి → Data వస్తుంది</div></div>
-          <button class="btn ghost sm" onclick="showGuide()">Guide</button>
-        </div>
+        <div class="si"><div class="si-ico">📊</div><div class="si-body"><div class="si-t">Google Sheet</div><div class="si-s">Data ఇక్కడ save అవుతుంది</div><div class="si-v" id="cfg-sheet">Not configured</div></div><button class="btn ghost sm" onclick="openSheetInBrowser()">Open ↗</button></div>
+        <div class="si"><div class="si-ico">🤖</div><div class="si-body"><div class="si-t">Gemini AI</div><div class="si-s">Free AI — Telugu support</div><div class="si-v" id="cfg-ai">Not configured</div></div><button class="btn ghost sm" onclick="changeKey()">Change</button></div>
+        <div class="si"><div class="si-ico">☁️</div><div class="si-body"><div class="si-t">Sync Status</div><div class="si-s" id="cfg-sync">Last sync: Never</div></div><button class="btn ghost sm" onclick="syncNow()">Sync</button></div>
+        <div class="si"><div class="si-ico">📱</div><div class="si-body"><div class="si-t">New Phone Setup</div><div class="si-s">Same Sheet ID + Gemini Key enter చేయండి</div></div><button class="btn ghost sm" onclick="showGuide()">Guide</button></div>
         <div style="height:1px;background:var(--bd);margin:10px 0 14px"></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px">
           <button class="btn rose sm full" onclick="clearDocs()">🗑️ Clear Docs</button>
@@ -749,6 +842,92 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
   </div>
 </div>
 
+<!-- Add Project Modal -->
+<div class="mover" id="add-project">
+  <div class="msheet">
+    <div class="mgrip"></div>
+    <div class="mt">🏗️ New Project</div>
+    <label class="fl">Project Name *</label>
+    <input class="fi" id="p-name" placeholder="ఉదా: Chinnachowk Plot, Muddanur Land">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div>
+        <label class="fl">Land Cost (₹)</label>
+        <input class="fi fi-mono" id="p-landcost" type="number" placeholder="1263000">
+      </div>
+      <div>
+        <label class="fl">Total Cents</label>
+        <input class="fi fi-mono" id="p-cents" type="number" placeholder="3.16">
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div>
+        <label class="fl">Houses Planned</label>
+        <input class="fi fi-mono" id="p-houses" type="number" placeholder="2" value="1">
+      </div>
+      <div>
+        <label class="fl">Status</label>
+        <select class="fi" id="p-status">
+          <option value="planned">📋 Planned</option>
+          <option value="active">🏗️ Under Construction</option>
+          <option value="done">✅ Completed</option>
+        </select>
+      </div>
+    </div>
+    <label class="fl">Purchase Date</label>
+    <input class="fi" id="p-date" type="date">
+    <label class="fl">Location / Survey No</label>
+    <input class="fi" id="p-location" placeholder="ఉదా: Chinnachowk, Survey 620/1">
+    <label class="fl">Expected Sale Price per House (₹)</label>
+    <input class="fi fi-mono" id="p-saleprice" type="number" placeholder="4500000">
+    <div style="display:flex;gap:9px;margin-top:4px">
+      <button class="btn ghost full" onclick="closeModal('add-project')">Cancel</button>
+      <button class="btn amb full" onclick="saveProject()">✓ Save Project</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Contact Modal -->
+<div class="mover" id="add-contact">
+  <div class="msheet">
+    <div class="mgrip"></div>
+    <div class="mt">👤 Contact Add చేయండి</div>
+    <label class="fl">పేరు *</label>
+    <input class="fi" id="con-name" placeholder="Full name">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div>
+        <label class="fl">Phone</label>
+        <input class="fi" id="con-phone" type="tel" placeholder="9xxxxxxxxx">
+      </div>
+      <div>
+        <label class="fl">Role</label>
+        <select class="fi" id="con-role">
+          <option value="buyer">🟢 Buyer (కొనుగోలుదారు)</option>
+          <option value="seller">🟡 Seller (అమ్మకందారు)</option>
+          <option value="vendor">🔵 Vendor</option>
+          <option value="other">⚪ Other</option>
+        </select>
+      </div>
+    </div>
+    <label class="fl">Address</label>
+    <input class="fi" id="con-addr" placeholder="Address">
+    <label class="fl">Notes (ఏ property, ఏ amount, ఏ date)</label>
+    <input class="fi" id="con-notes" placeholder="ఉదా: Survey 620/1 కొన్నారు, ₹12.63L, 24.07.2024">
+    <div style="display:flex;gap:9px;margin-top:4px">
+      <button class="btn ghost full" onclick="closeModal('add-contact')">Cancel</button>
+      <button class="btn amb full" onclick="saveContact()">✓ Save Contact</button>
+    </div>
+  </div>
+</div>
+
+<!-- House Detail Modal -->
+<div class="mover" id="house-modal">
+  <div class="msheet">
+    <div class="mgrip"></div>
+    <div class="mt" id="house-modal-title">🏠 House Details</div>
+    <div id="house-modal-body"></div>
+  </div>
+</div>
+
 <script>
 // ════════════════════════════════════════════════════════
 // APPS SCRIPT CODE
@@ -775,7 +954,7 @@ function loadCfg()  { return STORE.get(CFG_KEY)  || {}; }
 function saveCfg()  { STORE.set(CFG_KEY, cfg); }
 function loadData() { return STORE.get(DATA_KEY) || freshData(); }
 function saveData() { STORE.set(DATA_KEY, state); }
-function freshData(){ return {entries:[],vendors:{},priceHistory:{},documents:[],nextId:1,chatHistory:[],lastSync:null}; }
+function freshData(){ return {entries:[],vendors:{},priceHistory:{},documents:[],projects:[],contacts:[],nextId:1,chatHistory:[],lastSync:null}; }
 
 var cfg   = loadCfg();
 var state = loadData();
@@ -876,6 +1055,8 @@ function launchApp() {
   app.classList.add('on');
   refreshUI();
   renderDocList();
+  renderProjects();
+  renderContacts();
   injectWelcome();
   updateSettingsUI();
   syncFromSheet();
@@ -1516,6 +1697,8 @@ async function handlePhoto(e, source) {
       ['id','date','type','propertyType','summary','fileName'],
       [doc.id, doc.date, doc.type, doc.propertyType, (result.summary||'').substring(0,200), file.name]
     );
+    // Auto-add buyer/seller to contacts
+    autoAddContactFromDoc(result);
 
     hideProc();
 
@@ -1738,14 +1921,381 @@ function resetApp() {
   cfg = {}; saveCfg(); location.reload();
 }
 
+
+// ════════════════════════════════════════════════════════
+// PROJECTS — Per-House Cost Tracker + Profitability
+// ════════════════════════════════════════════════════════
+function saveProject() {
+  var name = document.getElementById('p-name').value.trim();
+  if (!name) { toast('Project name enter చేయండి', 'err'); return; }
+  var proj = {
+    id: 'proj_' + Date.now(),
+    name: name,
+    landCost: Number(document.getElementById('p-landcost').value) || 0,
+    totalCents: Number(document.getElementById('p-cents').value) || 0,
+    housesPlanned: Number(document.getElementById('p-houses').value) || 1,
+    status: document.getElementById('p-status').value,
+    date: document.getElementById('p-date').value || today(),
+    location: document.getElementById('p-location').value.trim(),
+    expectedSalePerHouse: Number(document.getElementById('p-saleprice').value) || 0,
+    houses: [],
+    agreements: []
+  };
+  // Auto-create house slots
+  for (var i = 1; i <= proj.housesPlanned; i++) {
+    proj.houses.push({
+      id: 'h_' + Date.now() + '_' + i,
+      name: 'House ' + i,
+      status: 'planned',
+      constructionCost: 0,
+      salePrice: 0,
+      buyer: '',
+      phases: { foundation:0, structure:0, roof:0, electrical:0, plumbing:0, finishing:0 }
+    });
+  }
+  if (!state.projects) state.projects = [];
+  state.projects.push(proj);
+  saveData();
+  renderProjects();
+  closeModal('add-project');
+  // Clear form
+  ['p-name','p-landcost','p-cents','p-houses','p-location','p-saleprice'].forEach(function(id){ document.getElementById(id).value=''; });
+  toast('Project saved!', 'ok');
+  pushToSheet('Projects', ['id','name','landCost','totalCents','housesPlanned','status','location','date'],
+    [proj.id,proj.name,proj.landCost,proj.totalCents,proj.housesPlanned,proj.status,proj.location,proj.date]);
+}
+
+function renderProjects() {
+  var el = document.getElementById('project-list');
+  if (!state.projects || !state.projects.length) {
+    el.innerHTML = '<div class="empty"><div class="ei">🏗️</div><div class="et">Projects లేవు</div><div class="es">+ New Project tap చేయండి</div></div>';
+    renderAgreementAlerts([]);
+    renderOverallProfit([]);
+    return;
+  }
+
+  var html = '';
+  state.projects.forEach(function(proj, pidx) {
+    var totalConstruction = proj.houses.reduce(function(s,h){ return s+h.constructionCost; }, 0);
+    var totalInvest = proj.landCost + totalConstruction;
+    var totalSaleExpected = proj.expectedSalePerHouse * proj.housesPlanned;
+    var profit = totalSaleExpected - totalInvest;
+    var profitPct = totalInvest > 0 ? ((profit/totalInvest)*100).toFixed(1) : 0;
+    var profitColor = profit>0?'var(--sage)':profit<0?'var(--rose)':'var(--amb)';
+    var soldHouses = proj.houses.filter(function(h){ return h.status==='sold'; }).length;
+    var statusMap = {planned:'Planned',active:'Building',done:'Done'};
+
+    var houseTiles = '';
+    proj.houses.forEach(function(h, hi) {
+      var sc2 = h.status==='sold'?'sold':h.status==='building'?'building':'';
+      var si2 = h.status==='sold'?'🏠':h.status==='building'?'🏗️':'📋';
+      var st2 = h.status==='sold'?'Sold':h.status==='building'?'Building':'Planned';
+      houseTiles += '<div class="house-tile '+sc2+'" data-proj="'+pidx+'" data-house="'+hi+'" onclick="openHouseByIndex(this)">'
+        +'<div class="ht-ico">'+si2+'</div>'
+        +'<div class="ht-name">'+escH(h.name)+'</div>'
+        +'<div class="ht-cost">'+rup(h.constructionCost)+'</div>'
+        +'<div class="ht-status '+h.status+'">'+st2+'</div>'
+        +'</div>';
+    });
+
+    html += '<div class="proj-card fu">'
+      +'<div class="proj-hdr" data-proj="'+pidx+'" onclick="toggleProjDetail(this)">'
+        +'<div class="proj-ico">🏗️</div>'
+        +'<div style="flex:1;min-width:0">'
+          +'<div class="proj-name">'+escH(proj.name)+'</div>'
+          +'<div style="font-size:11px;color:var(--tx2);margin-top:2px">'+escH(proj.location||'')+(proj.totalCents?' · '+proj.totalCents+' cents':'')+'</div>'
+        +'</div>'
+        +'<span class="proj-status '+proj.status+'">'+(statusMap[proj.status]||proj.status)+'</span>'
+      +'</div>'
+      +'<div class="proj-body" id="pd'+pidx+'" style="display:none">'
+        +'<div class="profit-summary">'
+          +'<div class="ps-box"><div class="pl">Land Cost</div><div class="pv" style="color:var(--amb)">'+rup(proj.landCost)+'</div></div>'
+          +'<div class="ps-box"><div class="pl">Construction</div><div class="pv" style="color:var(--sky)">'+rup(totalConstruction)+'</div></div>'
+          +'<div class="ps-box"><div class="pl">Total Invest</div><div class="pv" style="color:var(--rose)">'+rup(totalInvest)+'</div></div>'
+        +'</div>'
+        +'<div class="profit-summary" style="padding-top:0">'
+          +'<div class="ps-box"><div class="pl">Exp. Sale</div><div class="pv" style="color:var(--teal)">'+rup(totalSaleExpected)+'</div></div>'
+          +'<div class="ps-box"><div class="pl">Profit</div><div class="pv" style="color:'+profitColor+'">'+rup(profit)+'</div></div>'
+          +'<div class="ps-box"><div class="pl">ROI</div><div class="pv" style="color:'+profitColor+'">'+profitPct+'%</div></div>'
+        +'</div>'
+        +'<div style="padding:0 14px 6px;font-size:12px;color:var(--tx2)">Houses: '+soldHouses+'/'+proj.housesPlanned+' sold</div>'
+        +'<div class="house-grid">'+houseTiles+'</div>'
+        +'<div style="display:flex;gap:8px;padding:0 14px 12px">'
+          +'<button class="btn ghost sm" style="flex:1;font-size:12px;color:var(--rose)" data-proj="'+pidx+'" onclick="deleteProjByIndex(this)">🗑️ Delete</button>'
+        +'</div>'
+      +'</div>'
+    +'</div>';
+  });
+
+  el.innerHTML = html;
+  renderAgreementAlerts(state.projects);
+  renderOverallProfit(state.projects);
+}
+
+function toggleProjDetail(el) {
+  var idx = el.dataset.proj;
+  var body = document.getElementById('pd'+idx);
+  if (body) body.style.display = body.style.display==='none' ? 'block' : 'none';
+}
+
+function deleteProjByIndex(el) {
+  var idx = Number(el.dataset.proj);
+  if (!confirm('Delete this project?')) return;
+  state.projects.splice(idx, 1);
+  saveData(); renderProjects(); toast('Project deleted', 'ok');
+}
+
+function openHouseByIndex(el) {
+  var pi = Number(el.dataset.proj);
+  var hi = Number(el.dataset.house);
+  var proj = state.projects[pi];
+  if (!proj) return;
+  var house = proj.houses[hi];
+  if (!house) return;
+
+  document.getElementById('house-modal-title').textContent = proj.name + ' — ' + house.name;
+  var totalPhase = Object.values(house.phases).reduce(function(s,v){ return s+v; }, 0);
+  var phases = ['foundation','structure','roof','electrical','plumbing','finishing'];
+  var phaseNames = {foundation:'Foundation 🏗️',structure:'Structure 🧱',roof:'Roof 🏠',electrical:'Electrical ⚡',plumbing:'Plumbing 🔧',finishing:'Finishing 🎨'};
+
+  var body = '<div style="margin-bottom:12px"><div class="seg-t">Construction Phases (ఖర్చులు)</div>';
+  phases.forEach(function(ph){
+    body += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:9px">'
+      +'<span style="flex:1;font-size:13px">'+phaseNames[ph]+'</span>'
+      +'<input type="number" value="'+(house.phases[ph]||0)+'" '
+      +'data-pi="'+pi+'" data-hi="'+hi+'" data-ph="'+ph+'" '
+      +'onchange="updatePhaseByIdx(this)" '
+      +'style="width:110px;background:var(--s2);border:1px solid var(--bd);border-radius:8px;padding:7px 10px;color:var(--tx);font-family:JetBrains Mono;font-size:13px;text-align:right">'
+    +'</div>';
+  });
+  body += '<div style="display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid var(--bd)">'
+    +'<span style="color:var(--tx2)">Total Construction</span>'
+    +'<span style="font-weight:700;font-family:JetBrains Mono;color:var(--amb)" id="hm-total">'+rup(totalPhase)+'</span>'
+  +'</div></div>';
+
+  body += '<div class="seg-t">Sale Details</div>';
+  body += '<label class="fl">Status</label>'
+    +'<select class="fi" data-pi="'+pi+'" data-hi="'+hi+'" onchange="updateHouseStatusByIdx(this)">'
+    +'<option value="planned" '+(house.status==='planned'?'selected':'')+'>📋 Planned</option>'
+    +'<option value="building" '+(house.status==='building'?'selected':'')+'>🏗️ Building</option>'
+    +'<option value="sold" '+(house.status==='sold'?'selected':'')+'>✅ Sold</option>'
+    +'</select>';
+  body += '<label class="fl" style="margin-top:9px">Sale Price (₹)</label>'
+    +'<input type="number" class="fi fi-mono" value="'+(house.salePrice||'')+'" placeholder="Expected sale price" '
+    +'data-pi="'+pi+'" data-hi="'+hi+'" onchange="updateHouseSaleByIdx(this)">';
+  body += '<label class="fl" style="margin-top:9px">Buyer Name</label>'
+    +'<input type="text" class="fi" value="'+escH(house.buyer||'')+'" placeholder="Buyer పేరు" '
+    +'data-pi="'+pi+'" data-hi="'+hi+'" onchange="updateHouseBuyerByIdx(this)">';
+  body += '<button class="btn amb full" style="margin-top:12px" onclick="closeModal(\'house-modal\');renderProjects()">✓ Done</button>';
+
+  document.getElementById('house-modal-body').innerHTML = body;
+  openModal('house-modal');
+}
+
+function updatePhaseByIdx(el) {
+  var pi=Number(el.dataset.pi), hi=Number(el.dataset.hi), ph=el.dataset.ph;
+  state.projects[pi].houses[hi].phases[ph] = Number(el.value)||0;
+  state.projects[pi].houses[hi].constructionCost = Object.values(state.projects[pi].houses[hi].phases).reduce(function(s,v){return s+v;},0);
+  var tot = document.getElementById('hm-total');
+  if (tot) tot.textContent = rup(state.projects[pi].houses[hi].constructionCost);
+  saveData();
+}
+
+function updateHouseStatusByIdx(el) {
+  state.projects[Number(el.dataset.pi)].houses[Number(el.dataset.hi)].status = el.value;
+  saveData();
+}
+
+function updateHouseSaleByIdx(el) {
+  state.projects[Number(el.dataset.pi)].houses[Number(el.dataset.hi)].salePrice = Number(el.value)||0;
+  saveData();
+}
+
+function updateHouseBuyerByIdx(el) {
+  state.projects[Number(el.dataset.pi)].houses[Number(el.dataset.hi)].buyer = el.value;
+  saveData();
+}
+
+
+function renderAgreementAlerts(projects) {
+  var el = document.getElementById('agreement-alerts');
+  var alerts = [];
+  var now = new Date();
+  // Check agreements from documents
+  (state.documents||[]).forEach(function(doc){
+    var r = doc.result||{};
+    if (r.docType!=='Agreement') return;
+    (r.keyDates||[]).forEach(function(kd){
+      if (!kd.date) return;
+      var parts = kd.date.split('.');
+      if (parts.length<3) return;
+      var d = new Date(parts[2], parts[1]-1, parts[0]);
+      var diff = Math.floor((d-now)/(1000*60*60*24));
+      if (diff >= 0 && diff <= 60) {
+        alerts.push({ label: kd.label, date: kd.date, days: diff, source: doc.fileName });
+      }
+    });
+  });
+  if (!alerts.length) { el.innerHTML=''; return; }
+  alerts.sort(function(a,b){ return a.days-b.days; });
+  el.innerHTML = '<div class="seg-t" style="color:var(--rose)">⚠️ Payment Deadlines — గడువులు</div>'
+    + alerts.map(function(a){
+      var cls = a.days<=7?'urgent':a.days<=30?'warn':'ok';
+      return '<div class="alert-card '+cls+'">'
+        +'<div class="ac-ico">'+(a.days<=7?'🔴':a.days<=30?'🟡':'🟢')+'</div>'
+        +'<div class="ac-body">'
+          +'<div class="ac-title">'+escH(a.label)+'</div>'
+          +'<div class="ac-sub">'+escH(a.source)+'</div>'
+          +'<div class="ac-days '+cls+'">'+a.date+' — '+a.days+' days remaining</div>'
+        +'</div>'
+      +'</div>';
+    }).join('');
+}
+
+function renderOverallProfit(projects) {
+  var el = document.getElementById('overall-profit');
+  if (!projects||!projects.length) { el.innerHTML=''; return; }
+  var totalLand=0, totalConst=0, totalExpSale=0, totalActSale=0;
+  projects.forEach(function(p){
+    totalLand += p.landCost||0;
+    totalConst += p.houses.reduce(function(s,h){ return s+h.constructionCost; },0);
+    totalExpSale += (p.expectedSalePerHouse||0)*(p.housesPlanned||1);
+    totalActSale += p.houses.reduce(function(s,h){ return s+(h.salePrice||0); },0);
+  });
+  var totalInvest = totalLand+totalConst;
+  var expProfit = totalExpSale-totalInvest;
+  var expROI = totalInvest>0?((expProfit/totalInvest)*100).toFixed(1):0;
+  el.innerHTML = '<div class="profit-summary">'
+    +'<div class="ps-box"><div class="pl">Total Land</div><div class="pv" style="color:var(--amb)">'+rup(totalLand)+'</div></div>'
+    +'<div class="ps-box"><div class="pl">Construction</div><div class="pv" style="color:var(--sky)">'+rup(totalConst)+'</div></div>'
+    +'<div class="ps-box"><div class="pl">Total Invested</div><div class="pv" style="color:var(--rose)">'+rup(totalInvest)+'</div></div>'
+    +'<div class="ps-box"><div class="pl">Expected Sale</div><div class="pv" style="color:var(--teal)">'+rup(totalExpSale)+'</div></div>'
+    +'<div class="ps-box"><div class="pl">Expected Profit</div><div class="pv" style="color:'+(expProfit>0?'var(--sage)':'var(--rose)')+'">'+rup(expProfit)+'</div></div>'
+    +'<div class="ps-box"><div class="pl">ROI %</div><div class="pv" style="color:'+(expROI>0?'var(--sage)':'var(--rose)')+'">'+expROI+'%</div></div>'
+  +'</div>';
+}
+
+// ════════════════════════════════════════════════════════
+// CONTACTS — Buyer/Seller Contact Book
+// ════════════════════════════════════════════════════════
+var contactFilter = 'all';
+
+function saveContact() {
+  var name = document.getElementById('con-name').value.trim();
+  if (!name) { toast('Name enter చేయండి', 'err'); return; }
+  var contact = {
+    id: 'con_' + Date.now(),
+    name: name,
+    phone: document.getElementById('con-phone').value.trim(),
+    role: document.getElementById('con-role').value,
+    address: document.getElementById('con-addr').value.trim(),
+    notes: document.getElementById('con-notes').value.trim(),
+    addedDate: today()
+  };
+  if (!state.contacts) state.contacts = [];
+  // Avoid duplicate by name+phone
+  var exists = state.contacts.find(function(c){ return c.name===name && c.phone===contact.phone; });
+  if (exists) { toast('Contact already exists', 'info'); closeModal('add-contact'); return; }
+  state.contacts.push(contact);
+  saveData(); renderContacts();
+  closeModal('add-contact');
+  ['con-name','con-phone','con-addr','con-notes'].forEach(function(id){ document.getElementById(id).value=''; });
+  toast('Contact saved!', 'ok');
+}
+
+function autoAddContactFromDoc(result) {
+  if (!result || !result.ownershipChain || !result.ownershipChain.length) return;
+  if (!state.contacts) state.contacts = [];
+  result.ownershipChain.forEach(function(step, i) {
+    // Add buyer
+    if (step.buyer && step.buyer.length > 2) {
+      var bname = step.buyer.replace(/\(.*?\)/g,'').trim().substring(0,50);
+      if (bname && bname !== '—') {
+        var exists = state.contacts.find(function(c){ return c.name.toLowerCase()===bname.toLowerCase(); });
+        if (!exists) {
+          state.contacts.push({
+            id: 'con_'+Date.now()+'_b'+i,
+            name: bname, phone: '', role: 'buyer', address: '',
+            notes: (result.documentDate||today())+' · '+(step.amount||'')+(step.surveyNumber?' · Survey '+step.surveyNumber:''),
+            addedDate: today(), autoAdded: true
+          });
+        }
+      }
+    }
+    // Add seller
+    if (step.seller && step.seller.length > 2) {
+      var sname = step.seller.replace(/\(.*?\)/g,'').trim().substring(0,50);
+      if (sname && sname !== '—') {
+        var exists2 = state.contacts.find(function(c){ return c.name.toLowerCase()===sname.toLowerCase(); });
+        if (!exists2) {
+          state.contacts.push({
+            id: 'con_'+Date.now()+'_s'+i,
+            name: sname, phone: '', role: 'seller', address: '',
+            notes: (result.documentDate||today())+' · '+(step.amount||'')+(step.surveyNumber?' · Survey '+step.surveyNumber:''),
+            addedDate: today(), autoAdded: true
+          });
+        }
+      }
+    }
+  });
+  saveData();
+  renderContacts();
+}
+
+function filterContacts(f) {
+  contactFilter = f;
+  document.querySelectorAll('[id^="cf-"]').forEach(function(b){
+    b.style.borderColor = ''; b.style.color = '';
+  });
+  var btn = document.getElementById('cf-'+f);
+  if (btn) { btn.style.borderColor='var(--amb)'; btn.style.color='var(--amb)'; }
+  renderContacts();
+}
+
+function renderContacts() {
+  var el = document.getElementById('contact-list');
+  if (!el) return;
+  var all = state.contacts||[];
+  var filtered = contactFilter==='all' ? all : all.filter(function(c){ return c.role===contactFilter; });
+  if (!filtered.length) {
+    el.innerHTML = '<div class="empty"><div class="ei">👥</div><div class="et">Contacts లేవు</div><div class="es">Documents scan చేస్తే auto-add అవుతారు</div></div>';
+    return;
+  }
+  var roleIco = {buyer:'🟢',seller:'🟡',vendor:'🔵',other:'⚪'};
+  var roleLbl = {buyer:'Buyer',seller:'Seller',vendor:'Vendor',other:'Other'};
+  el.innerHTML = filtered.map(function(c){
+    return '<div class="contact-card fu">'
+      +'<div class="cc-av">'+(roleIco[c.role]||'👤')+'</div>'
+      +'<div class="cc-body">'
+        +'<div class="cc-name">'+escH(c.name)+'</div>'
+        +'<span class="cc-role '+c.role+'">'+roleLbl[c.role]+'</span>'
+        +(c.phone?'<div class="cc-detail">📞 '+escH(c.phone)+'</div>':'')
+        +(c.address?'<div class="cc-detail">📍 '+escH(c.address)+'</div>':'')
+        +(c.notes?'<div class="cc-detail" style="color:var(--tx3)">📝 '+escH(c.notes)+'</div>':'')
+        +'<div class="cc-actions">'
+          +(c.phone?'<a href="tel:'+c.phone+'" class="btn ghost sm" style="font-size:12px;text-decoration:none">📞 Call</a>':'')
+          +'<button class="btn ghost sm" style="font-size:12px;color:var(--rose)" onclick="deleteContact(this)" data-cid="'+c.id+'">🗑️</button>'
+        +'</div>'
+      +'</div>'
+    +'</div>';
+  }).join('');
+}
+
+function deleteContact(el) { var id = el.dataset.cid;
+  state.contacts = (state.contacts||[]).filter(function(c){ return c.id!==id; });
+  saveData(); renderContacts(); toast('Contact deleted', 'ok');
+}
+
+
 // ════════════════════════════════════════════════════════
 // NAVIGATION
 // ════════════════════════════════════════════════════════
 function showSc(name) {
   document.querySelectorAll('.sc').forEach(function(s){ s.classList.remove('on'); });
   document.querySelectorAll('.ni').forEach(function(n){ n.classList.remove('on'); });
-  document.getElementById('sc-'+name).classList.add('on');
-  var names=['home','chat','docs','vendors','prices','settings'];
+  var scEl = document.getElementById('sc-'+name);
+  if (scEl) scEl.classList.add('on');
+  var names=['home','chat','projects','contacts','docs','settings'];
   var idx = names.indexOf(name);
   var ni = document.querySelectorAll('.ni')[idx];
   if (ni) ni.classList.add('on');
@@ -1753,6 +2303,8 @@ function showSc(name) {
     setTimeout(function(){ var c=document.getElementById('chat-msgs'); c.scrollTop=c.scrollHeight; }, 80);
     if (!document.getElementById('chat-msgs').children.length) injectWelcome();
   }
+  if (name==='projects') renderProjects();
+  if (name==='contacts') renderContacts();
 }
 
 function openModal(id)  { document.getElementById(id).classList.add('on'); }
