@@ -2171,8 +2171,13 @@ async function handlePhoto(e, source) {
     );
     // Auto-add buyer/seller to contacts
     autoAddContactFromDoc(result);
-    // Save original file to Google Drive
-    saveToDrive(b64, file.type, file.name, result.docType||'Other', result);
+    // Save original file to Google Drive (max 5MB)
+    var fileSizeMB = (b64.length * 0.75) / (1024 * 1024);
+    if (fileSizeMB <= 5) {
+      saveToDrive(b64, file.type, file.name, result.docType||'Other', result);
+    } else {
+      toast('File size ' + fileSizeMB.toFixed(1) + 'MB — Drive upload skip (max 5MB)', 'info');
+    }
 
     hideProc();
 
@@ -3030,24 +3035,24 @@ function saveToDrive(b64, mimeType, fileName, docType, result) {
   }
 
   // Push to Apps Script → Drive
-  fetch(cfg.scriptUrl, {
-    method: 'POST',
-    body: JSON.stringify({
-      action: 'saveFile',
-      sheetId: cfg.sheetId,
-      fileBase64: b64,
-      mimeType: mimeType,
-      fileName: fileName,
-      fileType: fileType,
-      propertyFolder: propertyFolder || '',
-      monthFolder: monthFolder || '',
-      description: desc
-    })
-  })
+  // Must use no-cors like pushToSheet — can't read response but file gets saved
+  var payload = JSON.stringify({
+    action: 'saveFile',
+    sheetId: cfg.sheetId,
+    fileBase64: b64,
+    mimeType: mimeType,
+    fileName: fileName,
+    fileType: fileType,
+    propertyFolder: propertyFolder || '',
+    monthFolder: monthFolder || '',
+    description: desc
+  });
+
+  // Try with-cors first to get Drive URL back
+  fetch(cfg.scriptUrl, { method: 'POST', body: payload })
   .then(function(r){ return r.json(); })
   .then(function(data){
     if (data.ok && data.fileUrl) {
-      // Save drive URL to document record
       var lastDoc = state.documents[state.documents.length-1];
       if (lastDoc) {
         lastDoc.driveUrl = data.fileUrl;
@@ -3055,12 +3060,18 @@ function saveToDrive(b64, mimeType, fileName, docType, result) {
         saveData();
         renderDocList();
       }
-      toast('📁 Drive లో saved!', 'ok');
+      toast('📁 Drive లో saved! ↗', 'ok');
     }
   })
-  .catch(function(err){
-    console.log('Drive save failed:', err.message);
-    // Silent fail — don't block user
+  .catch(function(){
+    // CORS blocked — retry with no-cors (file saves but no URL back)
+    fetch(cfg.scriptUrl, { method: 'POST', mode: 'no-cors', body: payload })
+    .then(function(){
+      toast('📁 Drive కి upload చేశాం', 'ok');
+    })
+    .catch(function(err){
+      console.log('Drive save failed:', err.message);
+    });
   });
 }
 
