@@ -3051,30 +3051,14 @@ function saveToDrive(b64, mimeType, fileName, docType, result) {
     description: desc
   });
 
-  // Try with-cors first to get Drive URL back
-  fetch(cfg.scriptUrl, { method: 'POST', body: payload })
-  .then(function(r){ return r.json(); })
-  .then(function(data){
-    if (data.ok && data.fileUrl) {
-      var lastDoc = state.documents[state.documents.length-1];
-      if (lastDoc) {
-        lastDoc.driveUrl = data.fileUrl;
-        lastDoc.driveFileId = data.fileId;
-        saveData();
-        renderDocList();
-      }
-      toast('📁 Drive లో saved! ↗', 'ok');
-    }
+  // Always use no-cors — Apps Script blocks CORS from browser
+  // File gets saved to Drive even without response
+  fetch(cfg.scriptUrl, { method: 'POST', mode: 'no-cors', body: payload })
+  .then(function(){
+    toast('📁 Drive కి upload అవుతోంది...', 'info');
   })
-  .catch(function(){
-    // CORS blocked — retry with no-cors (file saves but no URL back)
-    fetch(cfg.scriptUrl, { method: 'POST', mode: 'no-cors', body: payload })
-    .then(function(){
-      toast('📁 Drive కి upload చేశాం', 'ok');
-    })
-    .catch(function(err){
-      console.log('Drive save failed:', err.message);
-    });
+  .catch(function(err){
+    console.log('Drive upload failed:', err.message);
   });
 }
 
@@ -3086,7 +3070,6 @@ function getDriveUrl() {
 function testDriveUpload() {
   if (!cfg.scriptUrl || !cfg.sheetId) { toast('Setup complete చేయండి first', 'err'); return; }
   showProc('Testing Drive upload...');
-  // Send a tiny test file
   var testB64 = btoa('Nirmit Drive Test - ' + new Date().toISOString());
   var payload = JSON.stringify({
     action: 'saveFile',
@@ -3099,20 +3082,18 @@ function testDriveUpload() {
     monthFolder: '',
     description: 'Test file from Nirmit app'
   });
-  fetch(cfg.scriptUrl, { method: 'POST', body: payload })
-  .then(function(r){ return r.json(); })
-  .then(function(data){
+  // Must use no-cors — Apps Script doesn't send CORS headers for browser requests
+  fetch(cfg.scriptUrl, { method: 'POST', mode: 'no-cors', body: payload })
+  .then(function(){
     hideProc();
-    if (data.ok && data.fileUrl) {
-      toast('✅ Drive upload working! File saved.', 'ok');
-      setTimeout(function(){ window.open(data.fileUrl, '_blank'); }, 1000);
-    } else {
-      toast('❌ Error: ' + (data.error||'Unknown'), 'err');
-    }
+    toast('📁 Test file sent to Drive! 30 seconds wait చేసి Drive check చేయండి', 'ok');
+    setTimeout(function(){
+      window.open('https://drive.google.com/drive/search?q=Nirmit_Test', '_blank');
+    }, 2000);
   })
   .catch(function(err){
     hideProc();
-    toast('❌ CORS error: ' + err.message, 'err');
+    toast('Failed: ' + err.message, 'err');
   });
 }
 
