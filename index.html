@@ -1576,9 +1576,14 @@ function renderDocList() {
       r.fields.forEach(function(f){
         var conf = f.confidence||100;
         var cls  = conf<70?'field-val low-conf':f.alert?'field-val alrt':'field-val';
+        // f.value can be string or object {value, telugu, confidence}
+        var rawV = f.value;
+        var displayVal = '';
+        if (rawV && typeof rawV === 'object') displayVal = String(rawV.value||rawV.telugu||'—');
+        else displayVal = String(rawV||'—');
         fieldsHtml += '<div class="field-row">'
           +'<span class="field-key">'+escH(f.key||'')+'</span>'
-          +'<span class="'+cls+'">'+escH(f.value||'—')+(conf<85?' <span style="font-size:10px;opacity:0.7">('+conf+'%)</span>':'')+'</span>'
+          +'<span class="'+cls+'">'+escH(displayVal)+(conf<85?' <span style="font-size:10px;opacity:0.7">('+conf+'%)</span>':'')+'</span>'
         +'</div>';
       });
       fieldsHtml += '</div>';
@@ -2088,18 +2093,21 @@ function buildEcButton(r) {
   // Extract doc number, year, SRO from fields
   var docNum = '', docYear = '', sroName = '';
   (r.fields||[]).forEach(function(f){
-    var k = (f.key||'').toLowerCase();
-    var v = (f.value||'').trim();
-    if (k.includes('document number') || k.includes('doc no') || k.includes('డాక్యుమెంట్ నంబర్')) {
+    var k = String(f.key||'').toLowerCase();
+    // f.value might be object {value,telugu,confidence} or plain string - handle both
+    var rawVal = f.value;
+    var v = '';
+    if (rawVal && typeof rawVal === 'object') v = String(rawVal.value || rawVal.telugu || '');
+    else v = String(rawVal || '');
+    v = v.trim();
+
+    if (k.includes('document number') || k.includes('doc no') || k.includes('డాక్యుమెంట్')) {
       var clean = v.replace(/[^0-9\/]/g,'');
       var parts = clean.split('/');
       docNum = parts[0] || '';
       if (parts[1] && parts[1].length === 4) docYear = parts[1];
     }
-    if (k.includes('sub-registrar') || k.includes('సబ్ రిజిస్ట్రార్')) {
-      // Extract just the office name e.g. "CUDDAPAH (R.O)" from "Cuddapah (RO) (కడప)"
-      sroName = v.split('(')[0].trim().toUpperCase() || v;
-      // Keep full value for display
+    if (k.includes('sub-registrar') || k.includes('సబ్')) {
       sroName = v;
     }
   });
