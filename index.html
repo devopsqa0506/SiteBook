@@ -1524,13 +1524,18 @@ function renderDocList() {
     var hasAnyFin = fv(fin.saleAmount)||fv(fin.stampDuty)||fv(fin.totalInvestment);
     if (hasAnyFin) {
       finHtml = '<div class="fin-grid">';
-      if (fv(fin.saleAmount))    finHtml += '<div class="fin-card hl"><div class="fin-lbl">💰 విక్రయ మొత్తం (Sale Amount)'+cb(fc(fin.saleAmount))+'</div><div class="fin-val">'+fv(fin.saleAmount)+'</div>'+(ft(fin.saleAmount)?'<div class="fin-tel">'+ft(fin.saleAmount)+'</div>':'')+'</div>';
-      if (fv(fin.marketValue))   finHtml += '<div class="fin-card"><div class="fin-lbl">🏠 మార్కెట్ విలువ'+cb(fc(fin.marketValue))+'</div><div class="fin-val teal">'+fv(fin.marketValue)+'</div></div>';
-      if (fv(fin.stampDuty))     finHtml += '<div class="fin-card"><div class="fin-lbl">📋 స్టాంప్ డ్యూటీ</div><div class="fin-val sm">'+fv(fin.stampDuty)+'</div></div>';
-      if (fv(fin.registrationFee)) finHtml += '<div class="fin-card"><div class="fin-lbl">🏛️ రిజి. రుసుము</div><div class="fin-val sm">'+fv(fin.registrationFee)+'</div></div>';
-      if (fv(fin.totalInvestment)) finHtml += '<div class="fin-card invest"><div class="fin-lbl" style="color:var(--teal)">💎 మొత్తం పెట్టుబడి (Sale+Stamp+RegFee)'+cb(fc(fin.totalInvestment))+'</div><div class="fin-val teal">'+fv(fin.totalInvestment)+'</div>'+(ft(fin.totalInvestment)?'<div class="fin-tel">'+ft(fin.totalInvestment)+'</div>':'')+'</div>';
-      if (fv(fin.pricePerCent)&&isLand) finHtml += '<div class="fin-card full"><div class="fin-lbl">📐 సెంట్ కి ధర</div><div class="fin-val sm">'+fv(fin.pricePerCent)+'</div></div>';
-      if (r.propertyType)        finHtml += '<div class="fin-card full"><div class="fin-lbl">🏘️ ఆస్తి రకం</div><div class="fin-val sm" style="color:var(--sky)">'+r.propertyType+(r.transactionType?' · '+r.transactionType:'')+'</div></div>';
+      // Row 1: Sale Amount + Market Value
+      if (fv(fin.saleAmount))      finHtml += '<div class="fin-card hl"><div class="fin-lbl">💰 విక్రయ మొత్తం (Sale Amount)'+cb(fc(fin.saleAmount))+'</div><div class="fin-val">'+fv(fin.saleAmount)+'</div>'+(ft(fin.saleAmount)?'<div class="fin-tel">'+ft(fin.saleAmount)+'</div>':'')+'</div>';
+      if (fv(fin.marketValue))     finHtml += '<div class="fin-card"><div class="fin-lbl">🏠 మార్కెట్ విలువ'+cb(fc(fin.marketValue))+'</div><div class="fin-val teal">'+fv(fin.marketValue)+'</div></div>';
+      // Row 2: Stamp Duty + Registration Fee
+      if (fv(fin.stampDuty))       finHtml += '<div class="fin-card"><div class="fin-lbl">📋 స్టాంప్ డ్యూటీ (Stamp Duty)</div><div class="fin-val sm">'+fv(fin.stampDuty)+'</div></div>';
+      else                          finHtml += '<div class="fin-card" style="opacity:0.4"><div class="fin-lbl">📋 స్టాంప్ డ్యూటీ</div><div class="fin-val sm" style="color:var(--tx3)">Not in doc</div></div>';
+      if (fv(fin.registrationFee)) finHtml += '<div class="fin-card"><div class="fin-lbl">🏛️ రిజి. రుసుము (Reg Fee)</div><div class="fin-val sm">'+fv(fin.registrationFee)+'</div></div>';
+      else                          finHtml += '<div class="fin-card" style="opacity:0.4"><div class="fin-lbl">🏛️ రిజి. రుసుము</div><div class="fin-val sm" style="color:var(--tx3)">Not in doc</div></div>';
+      // Row 3: Total Investment — full width, prominent
+      if (fv(fin.totalInvestment)) finHtml += '<div class="fin-card invest"><div class="fin-lbl" style="color:var(--teal)">💎 మొత్తం పెట్టుబడి = Sale + Stamp Duty + Reg Fee'+cb(fc(fin.totalInvestment))+'</div><div class="fin-val teal">'+fv(fin.totalInvestment)+'</div>'+(ft(fin.totalInvestment)?'<div class="fin-tel">'+ft(fin.totalInvestment)+'</div>':'')+'</div>';
+      // Property type
+      if (r.propertyType)          finHtml += '<div class="fin-card full"><div class="fin-lbl">🏘️ ఆస్తి రకం (Property Type)</div><div class="fin-val sm" style="color:var(--sky)">'+r.propertyType+(r.transactionType?' · '+r.transactionType:'')+'</div></div>';
       finHtml += '</div>';
     }
 
@@ -2021,13 +2026,12 @@ function buildDocResultHtml(r) {
   // Financials
   if (fv(fin.saleAmount)||fv(fin.totalInvestment)) {
     html += '<div class="ccard" style="margin-top:10px"><div class="ccard-t">💰 Financial Details (ఆర్థిక వివరాలు)</div>';
-    if(fv(fin.saleAmount))     html+='<div class="crow"><span class="ck">💰 విక్రయ మొత్తం</span><span class="cv ok">'+fv(fin.saleAmount)+cb(fc(fin.saleAmount))+'</span></div>';
-    if(fv(fin.marketValue))    html+='<div class="crow"><span class="ck">🏠 మార్కెట్ విలువ</span><span class="cv">'+fv(fin.marketValue)+'</span></div>';
-    if(fv(fin.stampDuty))      html+='<div class="crow"><span class="ck">📋 స్టాంప్ డ్యూటీ</span><span class="cv w">'+fv(fin.stampDuty)+'</span></div>';
-    if(fv(fin.registrationFee))html+='<div class="crow"><span class="ck">🏛️ రిజి. రుసుము</span><span class="cv">'+fv(fin.registrationFee)+'</span></div>';
-    if(fv(fin.totalInvestment))html+='<div class="crow"><span class="ck">💎 మొత్తం పెట్టుబడి</span><span class="cv" style="color:var(--teal)">'+fv(fin.totalInvestment)+cb(fc(fin.totalInvestment))+'</span></div>';
-    if(fv(fin.pricePerCent)&&isLand)html+='<div class="crow"><span class="ck">📐 సెంట్ కి ధర</span><span class="cv ok">'+fv(fin.pricePerCent)+'</span></div>';
-    if(r.propertyType) html+='<div class="crow"><span class="ck">🏘️ ఆస్తి రకం</span><span class="cv" style="color:var(--sky)">'+r.propertyType+(r.transactionType?' · '+r.transactionType:'')+'</span></div>';
+    if(fv(fin.saleAmount))      html+='<div class="crow"><span class="ck">💰 విక్రయ మొత్తం</span><span class="cv ok">'+fv(fin.saleAmount)+cb(fc(fin.saleAmount))+'</span></div>';
+    if(fv(fin.marketValue))     html+='<div class="crow"><span class="ck">🏠 మార్కెట్ విలువ</span><span class="cv">'+fv(fin.marketValue)+'</span></div>';
+    html+='<div class="crow"><span class="ck">📋 స్టాంప్ డ్యూటీ</span><span class="cv w">'+(fv(fin.stampDuty)||'<span style="color:var(--tx3)">Not in doc</span>')+'</span></div>';
+    html+='<div class="crow"><span class="ck">🏛️ రిజి. రుసుము</span><span class="cv">'+(fv(fin.registrationFee)||'<span style="color:var(--tx3)">Not in doc</span>')+'</span></div>';
+    if(fv(fin.totalInvestment)) html+='<div class="crow" style="border-top:1px solid var(--bd2);padding-top:8px"><span class="ck" style="color:var(--teal)">💎 మొత్తం పెట్టుబడి</span><span class="cv" style="color:var(--teal);font-size:14px">'+fv(fin.totalInvestment)+cb(fc(fin.totalInvestment))+'</span></div>';
+    if(r.propertyType)          html+='<div class="crow"><span class="ck">🏘️ ఆస్తి రకం</span><span class="cv" style="color:var(--sky)">'+r.propertyType+(r.transactionType?' · '+r.transactionType:'')+'</span></div>';
     html += '</div>';
   }
 
