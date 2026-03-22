@@ -932,81 +932,63 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
 <div class="mover" id="ec-modal">
   <div class="msheet">
     <div class="mgrip"></div>
-    <div class="mt">🔍 EC Search Details</div>
+    <div class="mt">🔍 EC Search — Type These Values</div>
     <div style="font-size:13px;color:var(--tx2);margin-bottom:14px;line-height:1.7">
-      EC website లో ఈ details enter చేయాలి. Each field దగ్గర Copy button tap చేయండి → website లో paste చేయండి.
+      Website paste allow చేయదు — ఈ values చూసి manually type చేయండి. Keep this open while typing.
     </div>
 
-    <!-- Step 1 -->
-    <div style="background:var(--s2);border:1px solid var(--bd);border-radius:11px;padding:13px;margin-bottom:10px">
-      <div style="font-size:11px;color:var(--tx3);margin-bottom:8px;font-family:JetBrains Mono;letter-spacing:0.5px">STEP 1 — ENCUMBRANCE TYPE</div>
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <div>
-          <div style="font-size:13px;color:var(--tx2)">Select from dropdown:</div>
-          <div style="font-size:16px;font-weight:700;color:var(--amb);margin-top:4px">Document No</div>
+    <!-- All 4 fields in a clean reference card -->
+    <div style="background:var(--s3);border:1.5px solid rgba(232,184,74,0.3);border-radius:13px;overflow:hidden;margin-bottom:14px">
+
+      <div style="padding:11px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px">
+        <span style="width:26px;height:26px;border-radius:7px;background:var(--amb);color:var(--bg);display:grid;place-items:center;font-size:13px;font-weight:700;flex-shrink:0">1</span>
+        <div style="flex:1">
+          <div style="font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:0.5px">Encumbrance Type</div>
+          <div style="font-size:17px;font-weight:700;color:var(--amb);margin-top:2px">Document No</div>
         </div>
-        <button onclick="navigator.clipboard&&navigator.clipboard.writeText('Document No').then(function(){toast('Copied!','ok')})" 
-          style="background:rgba(232,184,74,0.12);border:1px solid rgba(232,184,74,0.3);border-radius:8px;padding:7px 13px;color:var(--amb);font-size:12px;cursor:pointer">
-          📋 Copy
-        </button>
+        <span style="font-size:11px;color:var(--tx3)">dropdown</span>
       </div>
-    </div>
 
-    <!-- Step 2 -->
-    <div style="background:var(--s2);border:1px solid var(--bd);border-radius:11px;padding:13px;margin-bottom:10px">
-      <div style="font-size:11px;color:var(--tx3);margin-bottom:8px;font-family:JetBrains Mono;letter-spacing:0.5px">STEP 2 — DOCUMENT NUMBER</div>
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <div>
-          <div style="font-size:13px;color:var(--tx2)">Enter this number:</div>
-          <div id="ec-docnum" style="font-size:22px;font-weight:700;color:var(--amb);margin-top:4px;font-family:JetBrains Mono">—</div>
+      <div style="padding:11px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px">
+        <span style="width:26px;height:26px;border-radius:7px;background:var(--amb);color:var(--bg);display:grid;place-items:center;font-size:13px;font-weight:700;flex-shrink:0">2</span>
+        <div style="flex:1">
+          <div style="font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:0.5px">Document Number</div>
+          <div id="ec-docnum" style="font-size:28px;font-weight:700;color:var(--amb);margin-top:2px;font-family:JetBrains Mono;letter-spacing:2px">—</div>
         </div>
-        <button onclick="copyEcField('ec-docnum','Doc Number')"
-          style="background:rgba(232,184,74,0.12);border:1px solid rgba(232,184,74,0.3);border-radius:8px;padding:7px 13px;color:var(--amb);font-size:12px;cursor:pointer">
-          📋 Copy
-        </button>
+        <span style="font-size:11px;color:var(--tx3)">type</span>
       </div>
-    </div>
 
-    <!-- Step 3 -->
-    <div style="background:var(--s2);border:1px solid var(--bd);border-radius:11px;padding:13px;margin-bottom:10px">
-      <div style="font-size:11px;color:var(--tx3);margin-bottom:8px;font-family:JetBrains Mono;letter-spacing:0.5px">STEP 3 — YEAR OF REGISTRATION</div>
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <div>
-          <div style="font-size:13px;color:var(--tx2)">Select year:</div>
-          <div id="ec-year" style="font-size:22px;font-weight:700;color:var(--teal);margin-top:4px;font-family:JetBrains Mono">—</div>
+      <div style="padding:11px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px">
+        <span style="width:26px;height:26px;border-radius:7px;background:var(--teal);color:var(--bg);display:grid;place-items:center;font-size:13px;font-weight:700;flex-shrink:0">3</span>
+        <div style="flex:1">
+          <div style="font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:0.5px">Year of Registration</div>
+          <div id="ec-year" style="font-size:28px;font-weight:700;color:var(--teal);margin-top:2px;font-family:JetBrains Mono;letter-spacing:2px">—</div>
         </div>
-        <button onclick="copyEcField('ec-year','Year')"
-          style="background:rgba(58,232,200,0.1);border:1px solid rgba(58,232,200,0.3);border-radius:8px;padding:7px 13px;color:var(--teal);font-size:12px;cursor:pointer">
-          📋 Copy
-        </button>
+        <span style="font-size:11px;color:var(--tx3)">select</span>
       </div>
-    </div>
 
-    <!-- Step 4 -->
-    <div style="background:var(--s2);border:1px solid var(--bd);border-radius:11px;padding:13px;margin-bottom:14px">
-      <div style="font-size:11px;color:var(--tx3);margin-bottom:8px;font-family:JetBrains Mono;letter-spacing:0.5px">STEP 4 — REGISTERED AT SRO</div>
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
-        <div style="flex:1;min-width:0">
-          <div style="font-size:13px;color:var(--tx2)">Search and select:</div>
-          <div id="ec-sro" style="font-size:14px;font-weight:700;color:var(--sky);margin-top:4px;word-break:break-word">—</div>
+      <div style="padding:11px 14px;display:flex;align-items:center;gap:10px">
+        <span style="width:26px;height:26px;border-radius:7px;background:var(--sky);color:var(--bg);display:grid;place-items:center;font-size:13px;font-weight:700;flex-shrink:0">4</span>
+        <div style="flex:1">
+          <div style="font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:0.5px">Registered at SRO</div>
+          <div id="ec-sro" style="font-size:16px;font-weight:700;color:var(--sky);margin-top:2px;word-break:break-word">—</div>
         </div>
-        <button onclick="copyEcField('ec-sro','SRO Name')"
-          style="background:rgba(90,175,232,0.1);border:1px solid rgba(90,175,232,0.3);border-radius:8px;padding:7px 13px;color:var(--sky);font-size:12px;cursor:pointer;flex-shrink:0">
-          📋 Copy
-        </button>
+        <span style="font-size:11px;color:var(--tx3)">search</span>
       </div>
+
     </div>
 
-    <!-- Step 5 -->
-    <div style="background:rgba(232,93,122,0.06);border:1px solid rgba(232,93,122,0.25);border-radius:10px;padding:11px;margin-bottom:14px;font-size:12px;color:var(--rose)">
-      <b style="display:block;margin-bottom:3px">Step 5 — CAPTCHA (manual only)</b>
-      Website లో CAPTCHA solve చేయాలి — automatic కాదు
+    <div style="background:rgba(232,93,122,0.06);border:1px solid rgba(232,93,122,0.2);border-radius:10px;padding:10px 13px;margin-bottom:14px;display:flex;align-items:center;gap:9px">
+      <span style="font-size:20px">🔐</span>
+      <div style="font-size:12px;color:var(--rose);line-height:1.6">
+        <b>Step 5 — CAPTCHA</b><br>Website లో solve చేయాలి
+      </div>
     </div>
 
     <a href="https://registration.ec.ap.gov.in/ecSearch" target="_blank"
       style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
       background:linear-gradient(135deg,var(--amb),var(--amb2));color:var(--bg);
-      border-radius:11px;padding:13px;font-size:15px;font-weight:700;
+      border-radius:11px;padding:14px;font-size:15px;font-weight:700;
       text-decoration:none;margin-bottom:10px">
       🌐 Open EC Website
     </a>
@@ -1524,8 +1506,16 @@ function renderDocList() {
     var fin    = r.financials || {};
 
     // Helper
-    function fv(f){ return f ? (typeof f==='object' ? f.value : f) : null; }
-    function ft(f){ return f ? (typeof f==='object' ? f.telugu : null) : null; }
+    function fv(f){
+      if (!f) return null;
+      if (typeof f === 'object') {
+        var v = f.value || f.Value || f.amount || f.Amount || '';
+        return (v && String(v).trim() && String(v).trim() !== 'null' && String(v).trim() !== 'N/A') ? String(v).trim() : null;
+      }
+      var s = String(f).trim();
+      return (s && s !== 'null' && s !== 'N/A' && s !== 'Not mentioned' && s !== 'undefined') ? s : null;
+    }
+    function ft(f){ return f ? (typeof f==='object' ? (f.telugu||f.Telugu||null) : null) : null; }
     function fc(f){ return f ? (typeof f==='object' ? (f.confidence||100) : 100) : 100; }
     function cb(c){ return c<70?'<span style="font-size:10px;color:var(--rose)"> ('+c+'%)</span>':c<85?'<span style="font-size:10px;color:var(--amb)"> ('+c+'%)</span>':''; }
 
@@ -1858,7 +1848,7 @@ var DOC_PROMPT = 'You are a specialist reading Andhra Pradesh property documents
   +'DATE RULE: documentDate = date in FIRST LINE of this document (tedi: DD.MM.YYYY or Telugu words for date). NEVER use a previous owners purchase date. NEVER use todays date.\n\n'
   +'FINANCIALS: saleAmount=consideration amount. stampDuty=tax (small). registrationFee=fee (small). totalInvestment=saleAmount+stampDuty+registrationFee. totalRegistrationCost=stampDuty+regFee only (NEVER equals saleAmount).\n\n'
   +'PROPERTY TYPE: gruha vikrayam/house/building=House. Plot/site=Plot. Agricultural=Agricultural. Land only=Land. pricePerCent: only for Land/Plot/Agricultural, null for House.\n\n'
-  +'FIELDS TO EXTRACT (extract all visible): Document Number, Registration Date, Property Type, Transaction Type, Sub-Registrar Office, District, Mandal, Village/Locality, Ward Number, Door Number, Survey Number, Land Extent (MUST show sq yards AND cents both), Built-up Area (sq feet), Seller Full Name, Seller Address, Seller Phone (సెల్ నెం.), Seller Aadhaar (full 12 digits), Buyer Full Name, Buyer Address, Buyer Phone (సెల్ నెం.), Buyer Aadhaar (full 12 digits), Sale Amount, Market Value, Stamp Duty, Registration Fee, Witnesses, Boundaries (East/West/North/South).\n\nPHONE NUMBER RULE: Look for patterns like "సెల్ నెం.XXXXXXXXXX" or "Cell No.XXXXXXXXXX" or "Ph.XXXXXXXXXX" or any 10-digit number starting with 6,7,8,9. Extract ALL phone numbers found for each person. Indian mobile numbers are 10 digits starting with 6/7/8/9.\n\n'
+  +'FIELDS TO EXTRACT (extract all visible): Document Number, Registration Date, Property Type, Transaction Type, Sub-Registrar Office, District, Mandal, Village/Locality, Ward Number, Door Number, Survey Number, Land Extent (MUST show sq yards AND cents both), Built-up Area (sq feet), Seller Full Name, Seller Address, Seller Phone (సెల్ నెం.), Seller Aadhaar (full 12 digits), Buyer Full Name, Buyer Address, Buyer Phone (సెల్ నెం.), Buyer Aadhaar (full 12 digits), Sale Amount, Market Value, Stamp Duty, Registration Fee, Witnesses, Boundaries (East/West/North/South).\n\nPHONE vs AADHAAR RULE: Aadhaar=12 digits (e.g. 935805283619), Phone=10 digits starting with 6/7/8/9 (e.g. 8886084008). NEVER mix. Label sel No.=phone, Aadhaar No.=aadhaar. Store separately in sellerPhone/buyerPhone and sellerAadhaar/buyerAadhaar.\n\n'
   +'OWNERSHIP CHAIN: Extract ALL transactions from endorsement pages. '
   +'ownershipChain[0]=CURRENT (this document, most recent seller to buyer). '
   +'ownershipChain[1]=Previous transaction. ownershipChain[2]=Before that. '
@@ -2012,8 +2002,16 @@ async function handlePhoto(e, source) {
 function buildDocResultHtml(r) {
   var fin = r.financials || {};
   var isLand = r.propertyType==='Land'||r.propertyType==='Plot'||r.propertyType==='Agricultural';
-  function fv(f){ return f?(typeof f==='object'?f.value:f):null; }
-  function ft(f){ return f?(typeof f==='object'?f.telugu:null):null; }
+  function fv(f){
+    if (!f) return null;
+    if (typeof f === 'object') {
+      var v = f.value || f.Value || f.amount || f.Amount || '';
+      return (v && String(v).trim() && String(v).trim() !== 'null' && String(v).trim() !== 'N/A') ? String(v).trim() : null;
+    }
+    var s = String(f).trim();
+    return (s && s !== 'null' && s !== 'N/A' && s !== 'Not mentioned' && s !== 'undefined') ? s : null;
+  }
+  function ft(f){ return f?(typeof f==='object'?(f.telugu||f.Telugu||null):null):null; }
   function fc(f){ return f?(typeof f==='object'?(f.confidence||100):100):100; }
   function cb(c){ return c<70?' <span style="font-size:10px;color:var(--rose)">('+c+'%)</span>':c<85?' <span style="font-size:10px;color:var(--amb)">('+c+'%)</span>':''; }
 
@@ -2556,8 +2554,17 @@ function saveContact() {
 }
 
 function extractPhones(text) {
-  // Extract all 10-digit Indian mobile numbers from text
-  var matches = (text||'').match(/[6-9][0-9]{9}/g) || [];
+  var str = (text||'');
+  // Remove Aadhaar numbers first (12-digit sequences) to avoid confusion
+  // Aadhaar pattern: 12 consecutive digits (with or without spaces)
+  str = str.replace(/\d{4}\s\d{4}\s\d{4}/g, '');  // spaced format
+  str = str.replace(/\d{12}/g, '');                  // unspaced format
+  // Now extract 10-digit Indian mobile numbers starting with 6-9
+  var matches = str.match(/[6-9][0-9]{9}/g) || [];
+  // Filter: must be exactly 10 digits (not part of longer number)
+  matches = matches.filter(function(p) {
+    return p.length === 10;
+  });
   return matches.filter(function(p,i,a){ return a.indexOf(p)===i; }); // unique
 }
 
