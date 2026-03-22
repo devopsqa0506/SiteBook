@@ -1066,8 +1066,15 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
         ఈ QR code screenshot తీసి Google Drive లో save చేయండి.<br>
         New phone లో "Scan QR" tap చేసి scan చేయండి — all keys automatic!
       </div>
-      <div style="background:white;border-radius:13px;padding:16px;margin-bottom:14px;display:flex;align-items:center;justify-content:center">
+      <div style="background:white;border-radius:13px;padding:16px;margin-bottom:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px">
         <canvas id="qr-canvas" width="220" height="220"></canvas>
+        <div id="qr-fallback-text" style="display:none;width:100%">
+          <div style="font-size:11px;color:#888;margin-bottom:5px;text-align:center">QR image load కాలేదు — ఈ code copy చేయండి:</div>
+          <textarea id="qr-fallback-val" readonly onclick="this.select()"
+            style="width:100%;height:60px;font-size:10px;font-family:monospace;
+            background:#f5f5f5;border:1px solid #ddd;border-radius:6px;padding:6px;
+            color:#333;resize:none"></textarea>
+        </div>
       </div>
       <div style="background:rgba(232,184,74,0.08);border:1px solid rgba(232,184,74,0.25);border-radius:9px;padding:11px 13px;font-size:12px;color:var(--amb);line-height:1.7;margin-bottom:14px">
         <b style="display:block;margin-bottom:3px">⚠️ Security Note</b>
@@ -2898,15 +2905,14 @@ function generateQR() {
     toast('Settings configure చేయండి first', 'err');
     return;
   }
-  // Build config object to encode
   var qrData = {
-    v: 1, // version
+    v: 1,
     s: cfg.sheetId || '',
     u: cfg.scriptUrl || '',
     k: cfg.geminiKey || '',
     ks: (cfg.apiKeys||[]).map(function(k){ return {k:k.key, l:k.label}; })
   };
-  var encoded = btoa(JSON.stringify(qrData));
+  var encoded = btoa(unescape(encodeURIComponent(JSON.stringify(qrData))));
   var qrText = 'NIRMIT:' + encoded;
 
   document.getElementById('qr-show-section').style.display = 'block';
@@ -2914,26 +2920,53 @@ function generateQR() {
   document.getElementById('qr-modal-title').textContent = '📲 Setup QR Code';
   openModal('qr-modal');
 
-  // Generate QR using qrcode.js library
+  // Use Google Charts API to generate QR — no library needed, always works
   setTimeout(function(){
     var canvas = document.getElementById('qr-canvas');
-    if (typeof QRCode !== 'undefined') {
-      QRCode.toCanvas(canvas, qrText, {
-        width: 220, margin: 2,
-        color: { dark: '#000000', light: '#ffffff' }
-      }, function(err){ if(err) toast('QR generate failed: '+err,'err'); });
-    } else {
-      // Fallback: load QRCode library dynamically
-      var script = document.createElement('script');
-      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
-      script.onload = function(){
-        QRCode.toCanvas(canvas, qrText, {
-          width: 220, margin: 2,
-          color: { dark: '#000000', light: '#ffffff' }
-        }, function(err){ if(err) toast('QR generate failed','err'); });
+    var ctx = canvas.getContext('2d');
+    // Show loading
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, 220, 220);
+    ctx.fillStyle = '#888';
+    ctx.font = '13px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Loading QR...', 110, 110);
+
+    // Load QR via image from Google Charts
+    var encodedText = encodeURIComponent(qrText);
+    var img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = function(){
+      ctx.clearRect(0, 0, 220, 220);
+      ctx.drawImage(img, 0, 0, 220, 220);
+    };
+    img.onerror = function(){
+      // Fallback: use qrserver.com
+      var img2 = new Image();
+      img2.crossOrigin = 'anonymous';
+      img2.onload = function(){
+        ctx.clearRect(0, 0, 220, 220);
+        ctx.drawImage(img2, 0, 0, 220, 220);
       };
-      document.head.appendChild(script);
-    }
+      img2.onerror = function(){
+        // Last fallback: show text to copy
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, 220, 220);
+        ctx.fillStyle = '#333';
+        ctx.font = '11px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('QR load failed.', 110, 90);
+        ctx.fillText('Use text below', 110, 110);
+        ctx.fillText('to transfer keys.', 110, 130);
+        document.getElementById('qr-fallback-text').style.display = 'block';
+        document.getElementById('qr-fallback-val').textContent = qrText;
+      };
+      img2.src = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + encodedText;
+    };
+    img.src = 'https://chart.googleapis.com/chart?chs=220x220&cht=qr&chl=' + encodedText + '&choe=UTF-8';
+
+    // Store qrText for saveQRImage
+    window._currentQRText = qrText;
   }, 300);
 }
 
