@@ -3088,98 +3088,103 @@ function deleteContact(el) { var id = el.dataset.cid;
 // GOOGLE DRIVE — FILE SAVING
 // ════════════════════════════════════════════════════════
 async function compressAndUpload(file, docType, result) {
-  var isPDF = file.type === 'application/pdf';
+  var b64 = await fileToB64(file);
 
   if (file.type.startsWith('image/')) {
-    // Compress image using canvas
+    // Compress image
     try {
-      var compressed = await compressImage(file, 0.7, 1200);
-      var compressedB64 = compressed.split(',')[1];
-      var origMB = file.size / (1024*1024);
-      var newMB = (compressedB64.length * 0.75) / (1024*1024);
-      console.log('Image compressed:', origMB.toFixed(2)+'MB → '+newMB.toFixed(2)+'MB');
-      toast('📁 Image compressed ' + origMB.toFixed(1) + 'MB → ' + newMB.toFixed(1) + 'MB', 'info');
-      saveToDrive(compressedB64, 'image/jpeg', file.name.replace(/\.[^.]+$/, '.jpg'), docType, result);
+      var img = new Image();
+      var url = URL.createObjectURL(file);
+      await new Promise(function(res){ img.onload=res; img.src=url; });
+      URL.revokeObjectURL(url);
+      var canvas = document.createElement('canvas');
+      var w = img.width, h = img.height;
+      var maxW = 1200;
+      if (w > maxW) { h = Math.round(h*maxW/w); w = maxW; }
+      canvas.width=w; canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      var compB64 = canvas.toDataURL('image/jpeg', 0.75).split(',')[1];
+      var origMB = file.size/(1024*1024);
+      var newMB  = (compB64.length*0.75)/(1024*1024);
+      toast('📁 Compressed '+origMB.toFixed(1)+'MB → '+newMB.toFixed(1)+'MB', 'info');
+      chunkUpload(compB64, 'image/jpeg', file.name, docType, result);
     } catch(e) {
-      console.log('Compression failed, uploading original');
-      var b64 = await fileToB64(file);
-      saveToDrive(b64, file.type, file.name, docType, result);
+      chunkUpload(b64, file.type, file.name, docType, result);
     }
     return;
   }
 
-  if (isPDF) {
-    // For PDF — use PDF.js to render each page as compressed image
-    toast('📄 PDF compressing for Drive upload...', 'info');
-    try {
-      // Load PDF.js
-      if (typeof pdfjsLib === 'undefined') {
-        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-      }
-      var arrayBuffer = await file.arrayBuffer();
-      var pdfDoc = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
-      var totalPages = pdfDoc.numPages;
-      var pageImages = [];
-      var canvas = document.createElement('canvas');
-      var ctx = canvas.getContext('2d');
-
-      for (var i = 1; i <= totalPages; i++) {
-        var page = await pdfDoc.getPage(i);
-        var viewport = page.getViewport({scale: 1.2}); // Good quality, smaller size
-        canvas.width  = viewport.width;
-        canvas.height = viewport.height;
-        await page.render({canvasContext: ctx, viewport: viewport}).promise;
-        var imgData = canvas.toDataURL('image/jpeg', 0.75); // 75% quality
-        pageImages.push(imgData.split(',')[1]);
-      }
-
-      // Upload first page as main file, rest as numbered files
-      var baseName = file.name.replace('.pdf','');
-      var origMB = file.size / (1024*1024);
-      var totalCompMB = 0;
-      for (var j = 0; j < pageImages.length; j++) {
-        var pgB64 = pageImages[j];
-        var pgMB = (pgB64.length * 0.75) / (1024*1024);
-        totalCompMB += pgMB;
-        var pgName = pageImages.length === 1
-          ? baseName + '.jpg'
-          : baseName + '_page' + (j+1) + '.jpg';
-        saveToDrive(pgB64, 'image/jpeg', pgName, docType, j===0 ? result : null);
-      }
-      console.log('PDF compressed:', origMB.toFixed(2)+'MB → '+totalCompMB.toFixed(2)+'MB ('+totalPages+' pages)');
-      toast('📁 PDF ' + origMB.toFixed(1) + 'MB → ' + totalCompMB.toFixed(1) + 'MB (' + totalPages + ' pages) Drive కి upload అవుతోంది', 'ok');
-    } catch(pdfErr) {
-      console.log('PDF compression failed:', pdfErr.message);
-      // Fallback: try original
-      var origB64 = await fileToB64(file);
-      var origMB2 = (origB64.length * 0.75) / (1024*1024);
-      if (origMB2 <= 10) {
-        saveToDrive(origB64, file.type, file.name, docType, result);
-      } else {
-        toast('PDF too large for Drive (' + origMB2.toFixed(1) + 'MB). Compress చేసి try చేయండి.', 'err');
-      }
-    }
-  }
+  // PDF — send as-is via chunked upload
+  var sizeMB = (b64.length*0.75)/(1024*1024);
+  toast('📄 PDF uploading to Drive ('+sizeMB.toFixed(1)+'MB)...', 'info');
+  chunkUpload(b64, file.type, file.name, docType, result);
 }
 
-function compressImage(file, quality, maxWidth) {
-  return new Promise(function(resolve, reject) {
-    var img = new Image();
-    var url = URL.createObjectURL(file);
-    img.onload = function() {
-      URL.revokeObjectURL(url);
-      var canvas = document.createElement('canvas');
-      var w = img.width, h = img.height;
-      if (w > maxWidth) { h = Math.round(h * maxWidth / w); w = maxWidth; }
-      canvas.width = w; canvas.height = h;
-      var ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, w, h);
-      resolve(canvas.toDataURL('image/jpeg', quality));
-    };
-    img.onerror = reject;
-    img.src = url;
-  });
+// Chunked upload — splits large base64 into 1MB chunks
+async function chunkUpload(b64, mimeType, fileName, docType, result) {
+  if (!cfg.scriptUrl || !cfg.sheetId) return;
+
+  var CHUNK_SIZE = 700000; // ~700KB per chunk (safe for no-cors)
+  var totalChunks = Math.ceil(b64.length / CHUNK_SIZE);
+  var uploadId = 'u_' + Date.now();
+
+  // Build folder info
+  var fileType = docType || 'Other';
+  var propertyFolder = '';
+  var monthFolder = '';
+  var r = result || {};
+
+  if (fileType === 'Registration' || fileType === 'Agreement') {
+    var surveyNo = '', location = '';
+    (r.fields||[]).forEach(function(f){
+      var k = (f.key||'').toLowerCase();
+      var v = typeof f.value==='object'?(f.value&&f.value.value||''):(f.value||'');
+      if (k.includes('survey')) surveyNo = String(v).replace(/[^0-9\/]/g,'').substring(0,15);
+      if (k.includes('village')||k.includes('locality')) location = String(v).split(',')[0].trim().substring(0,20);
+    });
+    var pn = '';
+    if (location) pn += location.replace(/\s+/g,'_');
+    if (surveyNo) pn += (pn?'_':'')+'Survey_'+surveyNo.replace('/','_');
+    propertyFolder = pn || 'Unknown_Property';
+  } else if (fileType === 'Bill') {
+    var d = new Date();
+    monthFolder = d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2);
+  }
+
+  var desc = fileType+' | '+today();
+
+  console.log('Chunked upload: '+totalChunks+' chunks for '+fileName);
+
+  // Send all chunks
+  for (var i = 0; i < totalChunks; i++) {
+    var chunk = b64.slice(i*CHUNK_SIZE, (i+1)*CHUNK_SIZE);
+    var payload = JSON.stringify({
+      action: 'uploadChunk',
+      sheetId: cfg.sheetId,
+      uploadId: uploadId,
+      chunkIndex: i,
+      totalChunks: totalChunks,
+      chunk: chunk,
+      fileName: fileName,
+      mimeType: mimeType,
+      fileType: fileType,
+      propertyFolder: propertyFolder,
+      monthFolder: monthFolder,
+      description: desc
+    });
+    try {
+      await fetch(cfg.scriptUrl, { method:'POST', mode:'no-cors', body:payload });
+      var pct = Math.round(((i+1)/totalChunks)*100);
+      showProc('📁 Drive upload: '+pct+'% ('+(i+1)+'/'+totalChunks+' chunks)');
+    } catch(err) {
+      console.log('Chunk '+i+' failed:', err.message);
+    }
+    // Small delay between chunks
+    await new Promise(function(r){ setTimeout(r, 300); });
+  }
+
+  hideProc();
+  toast('📁 Drive upload complete! ('+totalChunks+' parts)', 'ok');
 }
 
 function loadScript(src) {
