@@ -1437,17 +1437,21 @@ function renderDocList() {
     let finHtml='';
     const fin=r.financials;
     if(fin && Object.values(fin).some(v=>v&&v!=='N/A'&&v!=='Not mentioned')){
-      // Only show land rate calculations if it's a land/plot sale (not house/building)
       const isLandOnly = r.propertyType === 'Land' || r.propertyType === 'Plot' || r.propertyType === 'Agricultural';
+      // Helper: get value from both old format (string) and new format ({value, telugu, confidence})
+      const fv = (f) => f ? (typeof f === 'object' ? f.value : f) : null;
+      const ft = (f) => f ? (typeof f === 'object' ? f.telugu : null) : null;
+      const fc = (f) => f ? (typeof f === 'object' ? (f.confidence||100) : 100) : 100;
+      const confBadge = (c) => c < 70 ? `<span style="font-size:10px;background:rgba(232,93,122,0.2);color:var(--rose);padding:1px 6px;border-radius:5px;margin-left:6px">⚠️ ${c}% sure</span>` : c < 85 ? `<span style="font-size:10px;background:rgba(232,184,74,0.15);color:var(--amb);padding:1px 6px;border-radius:5px;margin-left:6px">${c}%</span>` : '';
       finHtml=`<div class="fin-grid">
-        ${fin.saleAmount?`<div class="fin-card highlight"><div class="fin-label">💰 విక్రయ మొత్తం (Sale Amount)</div><div class="fin-value">${fin.saleAmount}</div></div>`:''}
-        ${fin.marketValue?`<div class="fin-card"><div class="fin-label">🏠 మార్కెట్ విలువ (Market Value)</div><div class="fin-value teal">${fin.marketValue}</div></div>`:''}
-        ${fin.stampDuty?`<div class="fin-card"><div class="fin-label">📋 స్టాంప్ డ్యూటీ (Stamp Duty)</div><div class="fin-value sm">${fin.stampDuty}</div></div>`:''}
-        ${fin.registrationFee?`<div class="fin-card"><div class="fin-label">🏛️ రిజి. రుసుము (Reg Fee)</div><div class="fin-value sm">${fin.registrationFee}</div></div>`:''}
-        ${fin.totalTransactionValue && fin.totalTransactionValue !== fin.saleAmount?`<div class="fin-card"><div class="fin-label">🧾 రిజి. మొత్తం వ్యయం (Total Registration Cost)</div><div class="fin-value sm">${fin.totalTransactionValue}</div></div>`:''}
-        ${(fin.pricePerCent && isLandOnly)?`<div class="fin-card highlight full"><div class="fin-label">📐 సెంట్ కి ధర (Rate per Cent) — భూమి మాత్రమే</div><div class="fin-value">${fin.pricePerCent}</div></div>`:''}
-        ${(fin.pricePerSqyard && isLandOnly)?`<div class="fin-card full"><div class="fin-label">📏 చ.గ. కి ధర (Rate per Sq Yard) — భూమి మాత్రమే</div><div class="fin-value sm">${fin.pricePerSqyard}</div></div>`:''}
-        ${r.propertyType?`<div class="fin-card full"><div class="fin-label">🏘️ ఆస్తి రకం (Property Type)</div><div class="fin-value sm" style="color:var(--sky)">${r.propertyType}</div></div>`:''}
+        ${fv(fin.saleAmount)?`<div class="fin-card highlight"><div class="fin-label">💰 విక్రయ మొత్తం (Sale Amount)${confBadge(fc(fin.saleAmount))}</div><div class="fin-value">${fv(fin.saleAmount)}</div>${ft(fin.saleAmount)?`<div style="font-size:12px;color:var(--tx2);margin-top:3px">${ft(fin.saleAmount)}</div>`:''}</div>`:''}
+        ${fv(fin.marketValue)?`<div class="fin-card"><div class="fin-label">🏠 మార్కెట్ విలువ (Market Value)${confBadge(fc(fin.marketValue))}</div><div class="fin-value teal">${fv(fin.marketValue)}</div></div>`:''}
+        ${fv(fin.stampDuty)?`<div class="fin-card"><div class="fin-label">📋 స్టాంప్ డ్యూటీ (Stamp Duty)${confBadge(fc(fin.stampDuty))}</div><div class="fin-value sm">${fv(fin.stampDuty)}</div></div>`:''}
+        ${fv(fin.registrationFee)?`<div class="fin-card"><div class="fin-label">🏛️ రిజి. రుసుము (Reg Fee)${confBadge(fc(fin.registrationFee))}</div><div class="fin-value sm">${fv(fin.registrationFee)}</div></div>`:''}
+        ${fv(fin.totalInvestment)?`<div class="fin-card highlight full" style="border-color:rgba(58,232,200,0.4);background:rgba(58,232,200,0.07)"><div class="fin-label" style="color:var(--teal)">💎 మొత్తం పెట్టుబడి (Total Investment = Land/House + Stamp Duty + Reg Fee)</div><div class="fin-value" style="color:var(--teal)">${fv(fin.totalInvestment)}</div>${ft(fin.totalInvestment)?`<div style="font-size:13px;color:var(--tx2);margin-top:3px">${ft(fin.totalInvestment)}</div>`:''}</div>`:''}
+        ${(fv(fin.pricePerCent) && isLandOnly)?`<div class="fin-card highlight full"><div class="fin-label">📐 సెంట్ కి ధర (Rate/Cent)${confBadge(fc(fin.pricePerCent))}</div><div class="fin-value">${fv(fin.pricePerCent)}</div></div>`:''}
+        ${r.propertyType?`<div class="fin-card full"><div class="fin-label">🏘️ ఆస్తి రకం (Property Type)</div><div class="fin-value sm" style="color:var(--sky)">${r.propertyType}${r.transactionType?' · '+r.transactionType:''}</div></div>`:''}
+        ${(r.confidence && r.confidence < 80)?`<div class="fin-card full" style="border-color:rgba(232,93,122,0.3)"><div class="fin-label" style="color:var(--rose)">⚠️ AI Confidence</div><div class="fin-value sm" style="color:var(--rose)">${r.confidence}% — కొన్ని values verify చేయండి</div></div>`:''}
       </div>`;
     }
 
@@ -1473,9 +1477,24 @@ function renderDocList() {
 
     // Basic fields
     let fields='';
-    if(r.fields?.length) fields=`<div class="dr-fields">${r.fields.slice(0,10).map(f=>`<div class="drf"><span class="drf-k">${f.key}</span><span class="drf-v ${f.alert?'alrt':''}">${f.value}</span></div>`).join('')}</div>`;
+    if(r.fields?.length){
+      const fieldRows = r.fields.slice(0,12).map(f=>{
+        const conf = f.confidence||100;
+        const confStyle = conf < 70 ? 'color:var(--rose)' : conf < 85 ? 'color:var(--amb)' : '';
+        const confTxt = conf < 85 ? ` <span style="font-size:10px;opacity:0.8">(${conf}%)</span>` : '';
+        return `<div class="drf"><span class="drf-k">${f.key}</span><span class="drf-v ${f.alert?'alrt':''}" style="${confStyle}">${f.value}${confTxt}</span></div>`;
+      }).join('');
+      fields=`<div class="dr-fields">${fieldRows}</div>`;
+    }
     let alerts='';
-    if(r.alerts?.length) alerts=r.alerts.map(a=>`<div class="alert-strip"><b>⚠️ గమనించండి</b>${a}</div>`).join('');
+    if(r.alerts?.length){
+      alerts=r.alerts.map(a=>{
+        const msg = typeof a === 'object' ? a.message : a;
+        const sev = typeof a === 'object' ? a.severity : 'medium';
+        const sevColor = sev==='high'?'var(--rose)':sev==='low'?'var(--teal)':'var(--amb)';
+        return `<div class="alert-strip" style="border-color:${sevColor}40;color:${sevColor}"><b>⚠️ గమనించండి</b>${msg}</div>`;
+      }).join('');
+    }
 
     return`<div class="doc-item-wrap" data-doc-id="${doc.id}">
       <div class="sel-check" id="chk-${doc.id}" onclick="toggleDocSelect('${doc.id}')"></div>
@@ -1714,63 +1733,94 @@ function toggleVoice() {
 // ═══════════════════════════════════════════════════
 // PHOTO / DOCUMENT UPLOAD
 // ═══════════════════════════════════════════════════
-const DOC_PROMPT = `You are an expert reading Telugu and English property/legal documents from Andhra Pradesh, India.
-Analyze this document carefully. Return ONLY valid JSON (no markdown, no explanation):
+const DOC_PROMPT = `You are a specialist in reading Andhra Pradesh government property registration documents, sale agreements, and vendor bills. You read both Telugu and English text in document images.
 
+STEP 0 — EXTENT CONVERSION RULE (always apply):
+1 cent = 48.4 sq yards | 1 sq yard = 0.02066 cents
+ALWAYS show extent as: "X sq yards (X చ.గ.) = Y.YY cents (Y.YY సెంట్లు)"
+Example: 151.74 sq yards → "151.74 sq yards (151.74 చ.గ.) = 3.14 cents (3.14 సెంట్లు)"
+Example: 3 cents → "145.2 sq yards (145.2 చ.గ.) = 3.00 cents (3.00 సెంట్లు)"
+NEVER show only sq yards. NEVER show only cents. ALWAYS show BOTH.
+
+STEP 1 — IDENTIFY DOCUMENT TYPE:
+- "విక్రయ దస్తావేజు" or "Sale Deed" → Registration (Sale)
+- "గృహ విక్రయ దస్తావేజు" → Registration (House Sale)
+- "అమ్మకం ఒప్పందం" or "Agreement of Sale" → Agreement
+- Bill/Invoice with items → Bill
+
+STEP 2 — DOCUMENT DATE (CRITICAL — READ CAREFULLY):
+The document date is in the VERY FIRST paragraph/line of the document.
+Patterns to find:
+- "తేది : DD.MM.YYYY" → use that exact date
+- Telugu date in words like "పంతొమ్మిదవ తేదీ ఆగష్టు నెల రెండువేల ఇరవై అయిదవ సంవత్సరం" → 19.08.2025
+- "This deed executed on DD/MM/YYYY" → use that date
+STRICT RULE: documentDate = date THIS document was signed/registered.
+NEVER use a previous owner purchase date. NEVER use today's date.
+
+STEP 3 — FINANCIAL VALUES (AP Registration patterns):
+- Sale Amount: look for "రూ. XX,XX,XXX/- లకు" or "Rs. XX,XX,XXX/- only" near start of document
+- Market Value: "మార్కెట్ విలువ" or "Guideline value"
+- Stamp Duty: "స్టాంప్ డ్యూటీ" — this is a TAX, always much smaller than sale amount
+- Registration Fee: "రిజిస్ట్రేషన్ రుసుము" — small fee
+- totalRegistrationCost = stampDuty + registrationFee ONLY (small amount, just tax+fee)
+- totalInvestment = saleAmount + stampDuty + registrationFee (FULL amount person paid including property cost)
+  Example: Sale ₹31,50,000 + Stamp ₹2,04,400 + RegFee ₹31,500 = Total Investment ₹33,85,900
+
+STEP 4 — PROPERTY TYPE:
+"గృహ విక్రయం" or house/building mentioned → "House"
+Plot/site/నివేశన స్థలం → "Plot"
+Agricultural/వ్యవసాయ → "Agricultural"
+Only land/cents, no structure → "Land"
+pricePerCent: ONLY calculate for Land/Plot/Agricultural. Set null for House/Apartment.
+
+STEP 5 — CONFIDENCE (0-100):
+100 = exact text found | 80+ = clear context | 60-79 = calculated | <60 = uncertain
+
+Return ONLY this JSON (no markdown):
 {
   "docType": "Registration|Agreement|Bill|Other",
+  "transactionType": "Sale|Gift|Mortgage|Partition|Other",
+  "propertyType": "House|Land|Plot|Agricultural|Apartment|Commercial",
+  "documentDate": "DD.MM.YYYY from document header only",
   "language": "Telugu|English|Mixed",
-  "summary": "2-3 sentence summary",
-  "fields": [{"key": "field label", "value": "extracted value", "alert": false}],
-  "alerts": ["important warning strings"],
+  "summary": "English summary. తెలుగు సారాంశం.",
+  "confidence": 90,
+  "fields": [
+    {"key": "సర్వే నంబర్ (Survey No)", "value": "exact value", "confidence": 95, "alert": false},
+    {"key": "విస్తీర్ణం (Extent)", "value": "X sq yards (X చ.గ.) = Y.YY cents (Y.YY సెంట్లు)", "confidence": 90, "alert": false},
+    {"key": "గ్రామం (Village)", "value": "value", "confidence": 100, "alert": false},
+    {"key": "మండలం (Mandal)", "value": "value", "confidence": 100, "alert": false},
+    {"key": "జిల్లా (District)", "value": "value", "confidence": 100, "alert": false},
+    {"key": "రిజిస్ట్రేషన్ తేదీ (Reg Date)", "value": "DD.MM.YYYY", "confidence": 95, "alert": false},
+    {"key": "డాక్యుమెంట్ నంబర్ (Doc No)", "value": "XXXXX/YYYY", "confidence": 90, "alert": false}
+  ],
+  "financials": {
+    "saleAmount": {"value": "Rs. XX,XX,XXX/-", "telugu": "రూ. XX,XX,XXX/-", "confidence": 95},
+    "marketValue": {"value": "Rs. XX,XX,XXX/-", "telugu": "రూ. XX,XX,XXX/-", "confidence": 85},
+    "stampDuty": {"value": "Rs. XX,XXX/-", "telugu": "రూ. XX,XXX/-", "confidence": 95},
+    "registrationFee": {"value": "Rs. XX,XXX/-", "telugu": "రూ. XX,XXX/-", "confidence": 95},
+    "totalRegistrationCost": {"value": "Rs. XX,XXX/- (stampDuty+regFee only)", "telugu": "రూ. XX,XXX/-", "confidence": 90},
+    "totalInvestment": {"value": "Rs. XX,XX,XXX/- (saleAmount+stampDuty+regFee)", "telugu": "రూ. XX,XX,XXX/-", "confidence": 95},
+    "pricePerCent": {"value": null, "telugu": null, "confidence": 0},
+    "pricePerSqyard": {"value": null, "telugu": null, "confidence": 0}
+  },
   "ownershipChain": [
     {
       "order": 1,
-      "seller": "full name + details",
-      "buyer": "full name + details", 
-      "date": "transaction date",
-      "regNumber": "registration/doc number",
-      "amount": "sale amount if mentioned",
-      "surveyNumber": "survey no",
-      "extent": "area in cents/sqyards/acres"
+      "seller": "Full name S/o Father, Address",
+      "buyer": "Full name W/o Husband, Address",
+      "date": "DD.MM.YYYY",
+      "regNumber": "XXXXX/YYYY",
+      "amount": "Rs. XX,XX,XXX/-",
+      "surveyNumber": "XXX/X",
+      "extent": "XXX sq yards (XXX చ.గ.) = Y.YY cents (Y.YY సెంట్లు)",
+      "confidence": 95
     }
   ],
-  "financials": {
-    "saleAmount": "actual sale/consideration amount",
-    "marketValue": "market value / guideline value",
-    "stampDuty": "stamp duty paid",
-    "registrationFee": "registration fee",
-    "totalTransactionValue": "total amount",
-    "pricePerCent": "calculated price per cent if possible",
-    "pricePerSqyard": "calculated price per sq yard if possible"
-  }
-}
-
-EXTRACTION RULES:
-1. BILINGUAL: Every field value in both Telugu+English. Format: "English (తెలుగు)"
-2. Field keys bilingual: "Survey Number (సర్వే నంబర్)", "Seller (విక్రేత)", "Buyer (కొనుగోలుదారు)", "Extent (విస్తీర్ణం)", "Village (గ్రామం)", "Registration Date (రిజిస్ట్రేషన్ తేదీ)", "Sale Amount (విక్రయ మొత్తం)", "Stamp Duty (స్టాంప్ డ్యూటీ)", "Market Value (మార్కెట్ విలువ)"
-3. DATES — VERY IMPORTANT: 
-   - "documentDate" = the date THIS specific document was executed/registered (look at document header, first line, తేది:, Date of execution, రిజిస్ట్రేషన్ తేదీ)
-   - This is NOT the date of any previous transaction or previous owner's purchase
-   - Example: if doc says "తేది: 19.08.2025" at top → documentDate = "19.08.2025"
-   - ownershipChain[0].date = date of THIS current transaction (same as documentDate usually)
-   - ownershipChain[1], [2] etc = dates of PREVIOUS transactions found in the document history
-   - Do NOT use today's date. Extract exactly from document text. Format: DD.MM.YYYY
-4. PROPERTY TYPE: Determine and set "propertyType" field as one of: "Land" | "Plot" | "House" | "Apartment" | "Agricultural" | "Commercial". Look for keywords: గృహ విక్రయం=House, నివేశన స్థలం=Plot, వ్యవసాయ భూమి=Agricultural
-5. PRICE PER CENT: Only calculate if propertyType is "Land", "Plot", or "Agricultural". For House/Apartment do NOT calculate pricePerCent or pricePerSqyard — set them to null
-6. Ownership chain: ALL transactions in order, extract exact dates from document
-7. Names: if Telugu script present, include it — "Rami Reddy (రామిరెడ్డి)"
-8. Extent: "X sq yards (X చదరపు గజాలు) = Y cents (Y సెంట్లు)"
-9. Summary: English first, then Telugu
-10. Alerts in Telugu: "చెల్లింపు గడువు దగ్గర పడింది", "పెనాల్టీ క్లాజ్ ఉంది"
-11. Mark alert:true for: pending payments, deadlines, penalty clauses, encumbrances
-
-Also add these fields to the JSON:
-- "propertyType": "House|Land|Plot|Agricultural|Apartment|Commercial"  
-- "documentDate": "actual date from document DD.MM.YYYY"
-- "transactionType": "Sale|Gift|Mortgage|Partition|Other"
-
-Return ONLY the JSON object. No markdown fences.`;
+  "alerts": [
+    {"message": "Alert in Telugu", "severity": "high|medium|low"}
+  ]
+}`
 
 async function handlePhoto(e, source) {
   const file=e.target.files[0];
