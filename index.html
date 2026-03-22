@@ -935,7 +935,7 @@ body{
         </div>
         <button class="btn btn-ghost btn-full btn-sm" style="color:var(--rose);border-color:rgba(232,93,122,0.3);font-size:12px;margin-bottom:9px" onclick="clearAllData()">🗑️ Clear ALL Data (Transactions + Documents + Vendors)</button>
         <div style="height:1px;background:var(--bd);margin:8px 0 14px"></div>
-        <button class="btn btn-ghost btn-full" style="color:var(--tx3);font-size:12px" onclick="if(confirm('Are you sure? All local settings will be cleared.'))clearConfig()">
+        <button class="btn btn-ghost btn-full" style="color:var(--tx3);font-size:12px" onclick="if(confirm('Reset all settings? You will need to re-enter Sheet ID and API key.'))clearConfig()">
           🔄 Reconfigure from scratch
         </button>
       </div>
@@ -1912,31 +1912,26 @@ function clearConfig() {
 }
 
 function clearDocs() {
-  if (!confirm('Documents history అన్నీ delete చేయాలా?
-(Google Sheet లో data ఉంటుంది, local మాత్రమే clear అవుతుంది)')) return;
+  if (!confirm('Delete all scanned documents history? (Google Sheet data stays safe)')) return;
   state.documents = [];
   saveLocalData();
   renderDocList();
-  toast('✓ Documents cleared','ok');
+  toast('Documents cleared','ok');
 }
 
 function clearTransactions() {
-  if (!confirm('అన్ని transactions delete చేయాలా?
-
-JUST local data clear అవుతుంది. Google Sheet లో data safe గా ఉంటుంది.')) return;
+  if (!confirm('Delete all transactions locally? Google Sheet data stays safe.')) return;
   state.entries = [];
   state.vendors = {};
   state.priceHistory = {};
   state.chatHistory = [];
   saveLocalData();
   refreshUI();
-  toast('✓ Transactions cleared. Google Sheet లో data ఉంది.','ok');
+  toast('Transactions cleared. Sheet data is safe.','ok');
 }
 
 function clearAllData() {
-  if (!confirm('⚠️ అన్నీ delete చేయాలా? Transactions, Vendors, Documents, Prices అన్నీ!
-
-Google Sheet లో data safe గా ఉంటుంది — sync చేస్తే వెనక్కి వస్తుంది.')) return;
+  if (!confirm('Delete ALL local data? Transactions + Vendors + Documents + Prices will be cleared. Google Sheet data stays safe - sync to restore.')) return;
   state.entries = [];
   state.vendors = {};
   state.priceHistory = {};
@@ -1946,7 +1941,7 @@ Google Sheet లో data safe గా ఉంటుంది — sync చేస్
   saveLocalData();
   refreshUI();
   renderDocList();
-  toast('✓ All local data cleared. Google Sheet లో data safe గా ఉంది.','ok');
+  toast('All local data cleared. Sheet data is safe.','ok');
 }
 
 // ═══════════════════════════════════════════════════
