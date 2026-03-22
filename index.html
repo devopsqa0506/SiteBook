@@ -577,6 +577,30 @@ body{
 .fin-value.teal{color:var(--teal)}
 .fin-value.sm{font-size:15px}
 
+/* selective delete */
+.sel-bar{
+  display:none;align-items:center;gap:10px;
+  padding:10px 15px;background:var(--s2);
+  border:1px solid rgba(232,93,122,0.3);
+  border-radius:11px;margin-bottom:10px;
+}
+.sel-bar.show{display:flex}
+.sel-count{flex:1;font-size:13px;color:var(--rose);font-weight:600}
+.sel-check{
+  width:22px;height:22px;border-radius:6px;
+  border:2px solid var(--bd2);background:var(--s3);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;flex-shrink:0;transition:all 0.15s;font-size:12px;
+}
+.sel-check.checked{background:var(--rose);border-color:var(--rose);color:#fff}
+.doc-item-wrap{position:relative}
+.doc-item-wrap .sel-check{
+  position:absolute;top:12px;left:12px;z-index:10;
+  display:none;
+}
+.select-mode .doc-item-wrap .sel-check{display:flex}
+.select-mode .doc-result{margin-left:38px;transition:margin 0.2s}
+
 /* empty state */
 .empty{text-align:center;padding:42px 20px;color:var(--tx3)}
 .empty .ei{font-size:42px;margin-bottom:12px}
@@ -859,7 +883,17 @@ body{
       <div class="seg" style="margin-top:12px">
         <div class="seg-t">
           <span>Scanned Documents</span>
-          <button class="btn btn-ghost btn-sm" onclick="clearDocs()" style="font-size:12px;color:var(--rose);border-color:rgba(232,93,122,0.3)">🗑️ Clear All</button>
+          <div style="display:flex;gap:7px">
+            <button class="btn btn-ghost btn-sm" id="select-mode-btn" onclick="toggleSelectMode()" style="font-size:12px;color:var(--sky);border-color:rgba(90,175,232,0.3)">☑️ Select</button>
+            <button class="btn btn-ghost btn-sm" onclick="clearDocs()" style="font-size:12px;color:var(--rose);border-color:rgba(232,93,122,0.3)">🗑️ Clear All</button>
+          </div>
+        </div>
+        <!-- Selection action bar -->
+        <div class="sel-bar" id="sel-action-bar">
+          <span class="sel-count" id="sel-count-label">0 selected</span>
+          <button class="btn btn-ghost btn-sm" onclick="selectAllDocs()" style="font-size:12px;color:var(--sky)">Select All</button>
+          <button class="btn btn-ghost btn-sm" onclick="deleteSelectedDocs()" style="font-size:12px;color:var(--rose);border-color:rgba(232,93,122,0.3)">🗑️ Delete Selected</button>
+          <button class="btn btn-ghost btn-sm" onclick="toggleSelectMode()" style="font-size:12px">✕ Cancel</button>
         </div>
         <div id="doc-list">
           <div class="empty"><div class="ei">🏛️</div><div class="et">Documents లేవు</div><div class="es">Registration, Agreement docs scan చేయండి</div></div>
@@ -1395,7 +1429,7 @@ function renderDocList() {
   const el=document.getElementById('doc-list');
   if(!state.documents.length){el.innerHTML='<div class="empty"><div class="ei">🏛️</div><div class="et">Documents లేవు</div></div>';return;}
   const sorted=[...state.documents].reverse();
-  el.innerHTML=sorted.map(doc=>{
+  el.innerHTML=sorted.map((doc,idx)=>{
     const r=doc.result||{};
     const badge={Registration:'reg',Agreement:'agr',Bill:'bil'}[r.docType]||'reg';
     const emoji={Registration:'🏛️',Agreement:'📝',Bill:'🧾',Other:'📄'}[r.docType]||'📄';
@@ -1410,7 +1444,7 @@ function renderDocList() {
         ${fin.marketValue?`<div class="fin-card"><div class="fin-label">🏠 మార్కెట్ విలువ (Market Value)</div><div class="fin-value teal">${fin.marketValue}</div></div>`:''}
         ${fin.stampDuty?`<div class="fin-card"><div class="fin-label">📋 స్టాంప్ డ్యూటీ (Stamp Duty)</div><div class="fin-value sm">${fin.stampDuty}</div></div>`:''}
         ${fin.registrationFee?`<div class="fin-card"><div class="fin-label">🏛️ రిజి. రుసుము (Reg Fee)</div><div class="fin-value sm">${fin.registrationFee}</div></div>`:''}
-        ${fin.totalTransactionValue?`<div class="fin-card"><div class="fin-label">🧾 మొత్తం వ్యయం (Total Cost)</div><div class="fin-value sm">${fin.totalTransactionValue}</div></div>`:''}
+        ${fin.totalTransactionValue && fin.totalTransactionValue !== fin.saleAmount?`<div class="fin-card"><div class="fin-label">🧾 రిజి. మొత్తం వ్యయం (Total Registration Cost)</div><div class="fin-value sm">${fin.totalTransactionValue}</div></div>`:''}
         ${(fin.pricePerCent && isLandOnly)?`<div class="fin-card highlight full"><div class="fin-label">📐 సెంట్ కి ధర (Rate per Cent) — భూమి మాత్రమే</div><div class="fin-value">${fin.pricePerCent}</div></div>`:''}
         ${(fin.pricePerSqyard && isLandOnly)?`<div class="fin-card full"><div class="fin-label">📏 చ.గ. కి ధర (Rate per Sq Yard) — భూమి మాత్రమే</div><div class="fin-value sm">${fin.pricePerSqyard}</div></div>`:''}
         ${r.propertyType?`<div class="fin-card full"><div class="fin-label">🏘️ ఆస్తి రకం (Property Type)</div><div class="fin-value sm" style="color:var(--sky)">${r.propertyType}</div></div>`:''}
@@ -1443,15 +1477,18 @@ function renderDocList() {
     let alerts='';
     if(r.alerts?.length) alerts=r.alerts.map(a=>`<div class="alert-strip"><b>⚠️ గమనించండి</b>${a}</div>`).join('');
 
-    return`<div class="doc-result fi-anim">
-      <div class="dr-top"><div class="dr-ico">${emoji}</div>
-        <div>
-          <div class="dr-name">${r.docType||'Document'}${r.transactionType?' · '+r.transactionType:''}</div>
-          <div class="dr-date">📅 ${doc.date}${r.propertyType?' · 🏘️ '+r.propertyType:''}</div>
+    return`<div class="doc-item-wrap" data-doc-id="${doc.id}">
+      <div class="sel-check" id="chk-${doc.id}" onclick="toggleDocSelect('${doc.id}')"></div>
+      <div class="doc-result fi-anim">
+        <div class="dr-top"><div class="dr-ico">${emoji}</div>
+          <div>
+            <div class="dr-name">${r.docType||'Document'}${r.transactionType?' · '+r.transactionType:''}</div>
+            <div class="dr-date">📅 ${doc.date}${r.propertyType?' · 🏘️ '+r.propertyType:''}</div>
+          </div>
+          <span class="dr-badge ${badge}">${r.docType||'Doc'}</span>
         </div>
-        <span class="dr-badge ${badge}">${r.docType||'Doc'}</span>
+        ${finHtml}${chainHtml}${fields}${alerts}
       </div>
-      ${finHtml}${chainHtml}${fields}${alerts}
     </div>`;
   }).join('');
 }
@@ -1821,7 +1858,7 @@ function buildDocHtml(r) {
     if(fin.marketValue) html+=`<div class="crow"><span class="ck">🏠 మార్కెట్ విలువ</span><span class="cv">${fin.marketValue}</span></div>`;
     if(fin.stampDuty) html+=`<div class="crow"><span class="ck">📋 స్టాంప్ డ్యూటీ</span><span class="cv w">${fin.stampDuty}</span></div>`;
     if(fin.registrationFee) html+=`<div class="crow"><span class="ck">🏛️ రిజి. రుసుము</span><span class="cv">${fin.registrationFee}</span></div>`;
-    if(fin.totalTransactionValue) html+=`<div class="crow"><span class="ck">🧾 మొత్తం విలువ</span><span class="cv">${fin.totalTransactionValue}</span></div>`;
+    if(fin.totalTransactionValue && fin.totalTransactionValue !== fin.saleAmount) html+=`<div class="crow"><span class="ck">🧾 రిజి. వ్యయం</span><span class="cv">${fin.totalTransactionValue}</span></div>`;
     if(fin.pricePerCent) html+=`<div class="crow"><span class="ck">📐 సెంట్ కి ధర</span><span class="cv ok">${fin.pricePerCent}</span></div>`;
     if(fin.pricePerSqyard) html+=`<div class="crow"><span class="ck">📏 చ.గ. కి ధర</span><span class="cv">${fin.pricePerSqyard}</span></div>`;
     html+=`</div>`;
@@ -1909,6 +1946,72 @@ function showReconfigGuide() {
 function clearConfig() {
   localStorage.removeItem(CFG_KEY);
   location.reload();
+}
+
+// ── SELECT MODE FOR DOCS ────────────────
+let selectModeOn = false;
+let selectedDocIds = new Set();
+
+function toggleSelectMode() {
+  selectModeOn = !selectModeOn;
+  selectedDocIds.clear();
+  const docList = document.getElementById('doc-list');
+  const bar = document.getElementById('sel-action-bar');
+  const btn = document.getElementById('select-mode-btn');
+  if (selectModeOn) {
+    docList.classList.add('select-mode');
+    bar.classList.add('show');
+    btn.textContent = '✕ Cancel';
+    btn.style.color = 'var(--rose)';
+  } else {
+    docList.classList.remove('select-mode');
+    bar.classList.remove('show');
+    btn.textContent = '☑️ Select';
+    btn.style.color = 'var(--sky)';
+    // Uncheck all
+    document.querySelectorAll('.sel-check').forEach(c => { c.classList.remove('checked'); c.textContent = ''; });
+  }
+  updateSelCount();
+}
+
+function toggleDocSelect(docId) {
+  if (!selectModeOn) return;
+  const chk = document.getElementById('chk-'+docId);
+  if (selectedDocIds.has(docId)) {
+    selectedDocIds.delete(docId);
+    chk.classList.remove('checked');
+    chk.textContent = '';
+  } else {
+    selectedDocIds.add(docId);
+    chk.classList.add('checked');
+    chk.textContent = '✓';
+  }
+  updateSelCount();
+}
+
+function selectAllDocs() {
+  state.documents.forEach(doc => {
+    selectedDocIds.add(doc.id);
+    const chk = document.getElementById('chk-'+doc.id);
+    if (chk) { chk.classList.add('checked'); chk.textContent = '✓'; }
+  });
+  updateSelCount();
+}
+
+function updateSelCount() {
+  const lbl = document.getElementById('sel-count-label');
+  if (lbl) lbl.textContent = selectedDocIds.size + ' selected';
+}
+
+function deleteSelectedDocs() {
+  if (selectedDocIds.size === 0) { toast('Select at least one document','err'); return; }
+  if (!confirm('Delete ' + selectedDocIds.size + ' selected document(s)?')) return;
+  state.documents = state.documents.filter(d => !selectedDocIds.has(d.id));
+  selectedDocIds.clear();
+  saveLocalData();
+  toggleSelectMode();
+  renderDocList();
+  toast('Deleted ' + selectedDocIds.size + ' documents','ok');
 }
 
 function clearDocs() {
