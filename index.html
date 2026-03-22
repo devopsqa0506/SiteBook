@@ -928,6 +928,92 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
   </div>
 </div>
 
+<!-- EC Search Modal -->
+<div class="mover" id="ec-modal">
+  <div class="msheet">
+    <div class="mgrip"></div>
+    <div class="mt">🔍 EC Search Details</div>
+    <div style="font-size:13px;color:var(--tx2);margin-bottom:14px;line-height:1.7">
+      EC website లో ఈ details enter చేయాలి. Each field దగ్గర Copy button tap చేయండి → website లో paste చేయండి.
+    </div>
+
+    <!-- Step 1 -->
+    <div style="background:var(--s2);border:1px solid var(--bd);border-radius:11px;padding:13px;margin-bottom:10px">
+      <div style="font-size:11px;color:var(--tx3);margin-bottom:8px;font-family:JetBrains Mono;letter-spacing:0.5px">STEP 1 — ENCUMBRANCE TYPE</div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-size:13px;color:var(--tx2)">Select from dropdown:</div>
+          <div style="font-size:16px;font-weight:700;color:var(--amb);margin-top:4px">Document No</div>
+        </div>
+        <button onclick="navigator.clipboard&&navigator.clipboard.writeText('Document No').then(function(){toast('Copied!','ok')})" 
+          style="background:rgba(232,184,74,0.12);border:1px solid rgba(232,184,74,0.3);border-radius:8px;padding:7px 13px;color:var(--amb);font-size:12px;cursor:pointer">
+          📋 Copy
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div style="background:var(--s2);border:1px solid var(--bd);border-radius:11px;padding:13px;margin-bottom:10px">
+      <div style="font-size:11px;color:var(--tx3);margin-bottom:8px;font-family:JetBrains Mono;letter-spacing:0.5px">STEP 2 — DOCUMENT NUMBER</div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-size:13px;color:var(--tx2)">Enter this number:</div>
+          <div id="ec-docnum" style="font-size:22px;font-weight:700;color:var(--amb);margin-top:4px;font-family:JetBrains Mono">—</div>
+        </div>
+        <button onclick="copyEcField('ec-docnum','Doc Number')"
+          style="background:rgba(232,184,74,0.12);border:1px solid rgba(232,184,74,0.3);border-radius:8px;padding:7px 13px;color:var(--amb);font-size:12px;cursor:pointer">
+          📋 Copy
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div style="background:var(--s2);border:1px solid var(--bd);border-radius:11px;padding:13px;margin-bottom:10px">
+      <div style="font-size:11px;color:var(--tx3);margin-bottom:8px;font-family:JetBrains Mono;letter-spacing:0.5px">STEP 3 — YEAR OF REGISTRATION</div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-size:13px;color:var(--tx2)">Select year:</div>
+          <div id="ec-year" style="font-size:22px;font-weight:700;color:var(--teal);margin-top:4px;font-family:JetBrains Mono">—</div>
+        </div>
+        <button onclick="copyEcField('ec-year','Year')"
+          style="background:rgba(58,232,200,0.1);border:1px solid rgba(58,232,200,0.3);border-radius:8px;padding:7px 13px;color:var(--teal);font-size:12px;cursor:pointer">
+          📋 Copy
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 4 -->
+    <div style="background:var(--s2);border:1px solid var(--bd);border-radius:11px;padding:13px;margin-bottom:14px">
+      <div style="font-size:11px;color:var(--tx3);margin-bottom:8px;font-family:JetBrains Mono;letter-spacing:0.5px">STEP 4 — REGISTERED AT SRO</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;color:var(--tx2)">Search and select:</div>
+          <div id="ec-sro" style="font-size:14px;font-weight:700;color:var(--sky);margin-top:4px;word-break:break-word">—</div>
+        </div>
+        <button onclick="copyEcField('ec-sro','SRO Name')"
+          style="background:rgba(90,175,232,0.1);border:1px solid rgba(90,175,232,0.3);border-radius:8px;padding:7px 13px;color:var(--sky);font-size:12px;cursor:pointer;flex-shrink:0">
+          📋 Copy
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 5 -->
+    <div style="background:rgba(232,93,122,0.06);border:1px solid rgba(232,93,122,0.25);border-radius:10px;padding:11px;margin-bottom:14px;font-size:12px;color:var(--rose)">
+      <b style="display:block;margin-bottom:3px">Step 5 — CAPTCHA (manual only)</b>
+      Website లో CAPTCHA solve చేయాలి — automatic కాదు
+    </div>
+
+    <a href="https://registration.ec.ap.gov.in/ecSearch" target="_blank"
+      style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+      background:linear-gradient(135deg,var(--amb),var(--amb2));color:var(--bg);
+      border-radius:11px;padding:13px;font-size:15px;font-weight:700;
+      text-decoration:none;margin-bottom:10px">
+      🌐 Open EC Website
+    </a>
+    <button class="btn ghost full" onclick="closeModal('ec-modal')">Close</button>
+  </div>
+</div>
+
 <!-- Apps Script Code Modal -->
 <div class="mover" id="script-modal">
   <div class="msheet">
@@ -1997,47 +2083,83 @@ function buildDocResultHtml(r) {
 // ASK AI ABOUT DOCUMENT
 // ════════════════════════════════════════════════════════
 function buildEcButton(r) {
-  // Only show for Registration documents
   if (r.docType !== 'Registration') return '';
 
-  // Extract doc number and year from fields
-  var docNum = '', docYear = '';
+  // Extract doc number, year, SRO from fields
+  var docNum = '', docYear = '', sroName = '';
   (r.fields||[]).forEach(function(f){
     var k = (f.key||'').toLowerCase();
-    // Doc number field — format: "19131/2024" or "19131"
+    var v = (f.value||'').trim();
     if (k.includes('document number') || k.includes('doc no') || k.includes('డాక్యుమెంట్ నంబర్')) {
-      var val = (f.value||'').replace(/[^0-9\/]/g,'').trim();
-      var parts = val.split('/');
+      var clean = v.replace(/[^0-9\/]/g,'');
+      var parts = clean.split('/');
       docNum = parts[0] || '';
       if (parts[1] && parts[1].length === 4) docYear = parts[1];
     }
+    if (k.includes('sub-registrar') || k.includes('సబ్ రిజిస్ట్రార్')) {
+      // Extract just the office name e.g. "CUDDAPAH (R.O)" from "Cuddapah (RO) (కడప)"
+      sroName = v.split('(')[0].trim().toUpperCase() || v;
+      // Keep full value for display
+      sroName = v;
+    }
   });
-
-  // Fallback: get year from documentDate
   if (!docYear && r.documentDate) {
     var dp = r.documentDate.split('.');
     if (dp.length === 3 && dp[2].length === 4) docYear = dp[2];
   }
-
   if (!docNum) return '';
 
-  // IGRS EC page URL with prefilled params
-  var igrsUrl = 'https://registration.ap.gov.in/igrs/EClandingPage';
+  // Store for modal use
+  var safeDocNum = escH(docNum);
+  var safeYear   = escH(docYear);
+  var safeSro    = escH(sroName);
+
+    // Use data attributes to avoid quote issues
+  var btnId = 'ec-btn-'+Date.now();
+  setTimeout(function(){
+    var b = document.getElementById(btnId);
+    if (b) {
+      b.addEventListener('click', function(){
+        showEcModal(this.dataset.docnum, this.dataset.year, this.dataset.sro);
+      });
+    }
+  }, 100);
 
   return '<div style="padding:9px 13px 0">'
-    +'<a href="'+igrsUrl+'" target="_blank" '
-    +'style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;'
-    +'background:rgba(232,184,74,0.08);border:1.5px solid rgba(232,184,74,0.4);'
+    +'<button id="'+btnId+'" data-docnum="'+safeDocNum+'" data-year="'+safeYear+'" data-sro="'+safeSro+'" '
+    +'style="width:100%;background:rgba(232,184,74,0.08);border:1.5px solid rgba(232,184,74,0.4);'
     +'border-radius:9px;padding:11px 14px;color:var(--amb);font-size:13px;font-weight:600;'
-    +'text-decoration:none">'
-    +'🔍 Check EC on IGRS'
-    +'<span style="font-size:11px;background:rgba(232,184,74,0.15);padding:2px 8px;'
-    +'border-radius:5px;font-family:JetBrains Mono">Doc# '+escH(docNum)+(docYear?' / '+docYear:'')+'</span>'
-    +'</a>'
-    +'<div style="font-size:11px;color:var(--tx3);text-align:center;margin-top:4px">'
-    +'Tap చేస్తే IGRS portal open అవుతుంది — Doc# pre-noted చేసుకోండి'
-    +'</div>'
+    +'cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">'
+    +'🔍 Check EC on IGRS &nbsp;'
+    +'<span style="font-size:11px;background:rgba(232,184,74,0.15);padding:2px 8px;border-radius:5px;font-family:JetBrains Mono">'
+    +'Doc# '+safeDocNum+(docYear?'/'+safeYear:'')
+    +'</span>'
+    +'</button>'
     +'</div>';
+}
+
+function showEcModal(docNum, year, sro) {
+  var modal = document.getElementById('ec-modal');
+  if (!modal) return;
+  document.getElementById('ec-docnum').textContent  = docNum || '—';
+  document.getElementById('ec-year').textContent    = year   || '—';
+  document.getElementById('ec-sro').textContent     = sro    || '—';
+  openModal('ec-modal');
+}
+
+function copyEcField(elId, label) {
+  var el = document.getElementById(elId);
+  var text = el ? el.textContent : '';
+  if (!text || text === '—') return;
+  navigator.clipboard.writeText(text).then(function(){
+    toast(label + ' copied!', 'ok');
+  }).catch(function(){
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    toast(label + ' copied!', 'ok');
+  });
 }
 
 function askAboutDoc(fileName, docType, summary) {
