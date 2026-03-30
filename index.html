@@ -2590,16 +2590,11 @@ async function handlePhoto(e, source) {
     );
     // Auto-add buyer/seller to contacts
     autoAddContactFromDoc(result);
-    // Save to Drive — only if not already uploaded
+    // Save to Drive — always upload for new docs
+    // (duplicate check above already prevents same doc being processed twice)
     var fileSizeMB = (b64.length * 0.75) / (1024 * 1024);
     console.log('File size for Drive upload:', fileSizeMB.toFixed(2), 'MB');
-    // Check if this doc already has a Drive URL (already uploaded before)
-    var alreadyInDrive = doc.driveUrl || false;
-    if (!alreadyInDrive) {
-      await compressAndUpload(file, result.docType||'Other', result, doc);
-    } else {
-      console.log('Drive upload skipped — already uploaded:', doc.driveUrl);
-    }
+    await compressAndUpload(file, result.docType||'Other', result, doc);
 
     hideProc();
 
