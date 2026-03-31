@@ -1591,7 +1591,7 @@ function loadCfg()  { return STORE.get(CFG_KEY)  || {}; }
 function saveCfg()  { STORE.set(CFG_KEY, cfg); }
 function loadData() { return STORE.get(DATA_KEY) || freshData(); }
 function saveData() { STORE.set(DATA_KEY, state); }
-function freshData(){ return {entries:[],vendors:{},priceHistory:{},documents:[],projects:[],contacts:[],nextId:1,chatHistory:[],lastSync:null}; }
+function freshData(){ return {entries:[],vendors:{},priceHistory:{},billPriceHistory:{},documents:[],projects:[],contacts:[],nextId:1,chatHistory:[],lastSync:null}; }
 
 // ════════════════════════════════════════════════════════
 // HARDCODED CONFIG — Private repo లో safe గా ఉంటుంది
@@ -2067,14 +2067,27 @@ function renderDocList() {
     // Financials or Bill summary
     var finHtml = '';
     if (isBill) {
-      // Bill — show vendor, amount, item description
+      // Bill — show vendor, line items table, total
       finHtml = '<div class="fin-grid">';
-      if (r.vendorName)      finHtml += '<div class="fin-card full"><div class="fin-lbl">🏪 Vendor / Shop</div><div class="fin-val" style="color:var(--teal)">'+escH(r.vendorName)+'</div></div>';
-      if (r.itemDescription) finHtml += '<div class="fin-card full"><div class="fin-lbl">📦 Items / Work Done</div><div class="fin-val sm" style="white-space:pre-wrap">'+escH(r.itemDescription)+'</div></div>';
-      if (r.documentDate)    finHtml += '<div class="fin-card"><div class="fin-lbl">📅 Bill Date</div><div class="fin-val sm">'+escH(r.documentDate)+'</div></div>';
-      if (r.invoiceNumber)   finHtml += '<div class="fin-card"><div class="fin-lbl">🔢 Invoice No.</div><div class="fin-val sm" style="font-family:JetBrains Mono">'+escH(r.invoiceNumber)+'</div></div>';
-      if (r.amount)          finHtml += '<div class="fin-card invest"><div class="fin-lbl" style="color:var(--teal)">💰 Total Amount</div><div class="fin-val teal">'+escH(String(r.amount))+'</div></div>';
+      if (r.vendorName)  finHtml += '<div class="fin-card full"><div class="fin-lbl">🏪 Vendor</div><div class="fin-val" style="color:var(--teal)">'+escH(r.vendorName)+'</div></div>';
+      if (r.vendorPhone) finHtml += '<div class="fin-card"><div class="fin-lbl">📞 Phone</div><div class="fin-val sm" style="font-family:JetBrains Mono">'+escH(r.vendorPhone)+'</div></div>';
+      if (r.documentDate)finHtml += '<div class="fin-card"><div class="fin-lbl">📅 Date</div><div class="fin-val sm">'+escH(r.documentDate)+'</div></div>';
       finHtml += '</div>';
+      // Line items mini table
+      if (r.lineItems && r.lineItems.length) {
+        finHtml += '<div style="margin:8px 13px 0;background:var(--s3);border-radius:9px;overflow:hidden;border:1px solid var(--bd)">';
+        finHtml += '<div style="display:grid;grid-template-columns:1fr auto auto;font-size:11px;color:var(--tx3);padding:5px 10px;border-bottom:1px solid var(--bd)">'
+          +'<span>Item</span><span style="text-align:right;padding-right:8px">Qty/Rate</span><span style="text-align:right">Total</span></div>';
+        r.lineItems.forEach(function(li) {
+          finHtml += '<div style="display:grid;grid-template-columns:1fr auto auto;font-size:12px;padding:5px 10px;border-bottom:1px solid var(--bd)">'
+            +'<span style="color:var(--tx)">'+escH(li.itemName||'')+'</span>'
+            +'<span style="text-align:right;padding-right:8px;color:var(--tx2);font-size:11px;font-family:JetBrains Mono">'+(li.quantity!=null?(li.quantity+(li.unit?' '+li.unit:'')):'')+(li.unitRate?' @₹'+li.unitRate:'')+'</span>'
+            +'<span style="text-align:right;color:var(--amb);font-weight:700;font-family:JetBrains Mono">'+(li.lineTotal?'₹'+fmtIN(Number(li.lineTotal)):'—')+'</span>'
+            +'</div>';
+        });
+        finHtml += '</div>';
+      }
+      if (r.amount) finHtml += '<div class="fin-grid" style="margin-top:8px"><div class="fin-card invest"><div class="fin-lbl" style="color:var(--teal)">💰 Bill Total</div><div class="fin-val teal">'+escH(String(r.amount))+'</div></div></div>';
     } else {
       var hasAnyFin = fv(fin.saleAmount)||fv(fin.stampDuty)||fv(fin.totalInvestment);
       if (hasAnyFin) {
@@ -2431,26 +2444,209 @@ var DOC_PROMPT = 'You are an expert document reader for a construction site mana
   +'FIELDS: Document Number, Registration Date, Property Type, Transaction Type, Sub-Registrar Office, District, Mandal, Village, Survey Number, Land Extent, Built-up Area, Seller Name, Seller Phone, Seller Aadhaar, Buyer Name, Buyer Phone, Buyer Aadhaar, Sale Amount, Market Value, Stamp Duty, Registration Fee, Witnesses, Boundaries (E/W/N/S).\n'
   +'OWNERSHIP CHAIN: Extract ALL transactions. ownershipChain[0]=current (latest seller→buyer). ownershipChain[1]=previous. Etc.\n\n'
   +'══ IF Bill / Invoice / Receipt ══\n'
-  +'Extract these fields into the TOP-LEVEL JSON (not inside financials):\n'
-  +'  vendorName: company or shop name issuing the bill\n'
+  +'TOP-LEVEL fields:\n'
+  +'  vendorName: company or shop name on the bill\n'
+  +'  vendorPhone: phone number of vendor if printed on bill (10 digits starting 6-9), else null\n'
+  +'  vendorAddress: address of vendor if printed on bill, else null\n'
   +'  invoiceNumber: bill/invoice/receipt number\n'
   +'  documentDate: bill date as DD.MM.YYYY\n'
-  +'  amount: total payable amount as plain string e.g. "Rs. 45,000"\n'
-  +'  itemDescription: what was purchased/done — be specific, e.g. "Borewell drilling 180ft @ Rs.250/ft", "TMT Steel 10mm 500kg @ Rs.65/kg"\n'
-  +'  quantity: numeric quantity if mentioned\n'
-  +'  unit: unit of measurement (ft, kg, bags, sqft, etc.)\n'
-  +'  unitRate: rate per unit if mentioned\n'
-  +'  gstAmount: GST/tax amount if shown\n'
-  +'  summary: one-line description e.g. "Borewell bill — XYZ Drilling — Rs.45,000 for 180ft drilling"\n'
+  +'  amount: TOTAL payable amount as plain string e.g. "Rs. 50,700"\n'
+  +'  gstAmount: GST/tax amount if shown separately, else null\n'
+  +'  summary: one line e.g. "Borewell bill — XYZ Drilling — Rs.50,700"\n\n'
+  +'LINE ITEMS — THIS IS CRITICAL. Extract EVERY line item from the bill into lineItems array:\n'
+  +'  itemName: exact name as printed (e.g. "Borewell Drilling", "TMT Steel 10mm", "PVC Casing Pipe 4 inch")\n'
+  +'  itemKey: normalized lowercase key for price tracking — use simple English, no spaces, use underscore (e.g. "borewell_drilling", "tmt_steel_10mm", "pvc_casing_pipe_4inch", "cement_opc_53", "river_sand"). MUST be consistent across bills for the same item.\n'
+  +'  quantity: numeric quantity (e.g. 180, 500, 10)\n'
+  +'  unit: unit of measurement (ft, kg, bags, sqft, nos, rft, ton, load, day, etc.)\n'
+  +'  unitRate: rate per unit as number (e.g. 250, 65, 320)\n'
+  +'  lineTotal: quantity × unitRate as number\n'
+  +'  confidence: 100=exact, 80+=clear, 60-79=estimated\n'
+  +'If quantity or unitRate not shown but lineTotal is, still include lineTotal.\n'
+  +'If a bill has only 1 item, lineItems will have 1 entry.\n\n'
   +'Set ownershipChain=[] and financials all null for bills.\n\n'
   +'CONFIDENCE: 100=exact text found, 80+=clear, 60-79=inferred, <60=uncertain.\n\n'
   +'Return ONLY valid JSON, no markdown, no explanation:\n'
   +'{"docType":"Registration|Agreement|Bill|Other","transactionType":"Sale|Service|null","propertyType":"House|Plot|Land|Agricultural|null","documentDate":"DD.MM.YYYY","language":"Telugu|English|Mixed","summary":"1-line summary","confidence":90,'
-  +'"vendorName":null,"invoiceNumber":null,"amount":null,"itemDescription":null,"quantity":null,"unit":null,"unitRate":null,"gstAmount":null,'
+  +'"vendorName":null,"vendorPhone":null,"vendorAddress":null,"invoiceNumber":null,"amount":null,"gstAmount":null,'
+  +'"lineItems":[{"itemName":"Borewell Drilling","itemKey":"borewell_drilling","quantity":180,"unit":"ft","unitRate":250,"lineTotal":45000,"confidence":95}],'
   +'"fields":[{"key":"field name","value":"value","confidence":95,"alert":false}],'
   +'"financials":{"saleAmount":{"value":null,"telugu":null,"confidence":0},"marketValue":{"value":null,"telugu":null,"confidence":0},"stampDuty":{"value":null,"telugu":null,"confidence":0},"registrationFee":{"value":null,"telugu":null,"confidence":0},"totalRegistrationCost":{"value":null,"telugu":null,"confidence":0},"totalInvestment":{"value":null,"telugu":null,"confidence":0},"pricePerCent":{"value":null,"telugu":null,"confidence":0},"pricePerSqyard":{"value":null,"telugu":null,"confidence":0}},'
   +'"ownershipChain":[{"order":1,"seller":"name","buyer":"name","sellerPhone":"","buyerPhone":"","date":"DD.MM.YYYY","regNumber":"X/YYYY","amount":"Rs. X/-","surveyNumber":"X/X","extent":"X sq yards = Y cents","confidence":95}],'
   +'"alerts":[{"message":"alert text","severity":"high"}]}';
+
+// ════════════════════════════════════════════════════════
+// BILL INTELLIGENCE — Line Items, Price History, Alerts
+// ════════════════════════════════════════════════════════
+
+// Save each line item into billPriceHistory and return price change alerts
+function processBillLineItems(result, docId) {
+  var alerts = [];
+  if (!result || (result.docType !== 'Bill' && result.docType !== 'Receipt')) return alerts;
+  if (!result.lineItems || !result.lineItems.length) return alerts;
+
+  if (!state.billPriceHistory) state.billPriceHistory = {};
+
+  var vendor = (result.vendorName || 'Unknown Vendor').trim();
+  var date   = result.documentDate || today();
+
+  result.lineItems.forEach(function(item) {
+    if (!item.itemKey || !item.itemKey.trim()) return;
+    var key = item.itemKey.trim().toLowerCase().replace(/\s+/g,'_');
+    var unitRate = Number(item.unitRate) || 0;
+    var lineTotal = Number(item.lineTotal) || 0;
+    var qty = Number(item.quantity) || 0;
+
+    // Need at least a rate or a total to be useful
+    if (!unitRate && !lineTotal) return;
+
+    if (!state.billPriceHistory[key]) state.billPriceHistory[key] = [];
+
+    var history = state.billPriceHistory[key];
+
+    // Check for price change vs last entry for same item (any vendor)
+    if (unitRate > 0 && history.length > 0) {
+      // Find last record that has a unitRate
+      var lastWithRate = null;
+      for (var i = history.length - 1; i >= 0; i--) {
+        if (history[i].unitRate > 0) { lastWithRate = history[i]; break; }
+      }
+      if (lastWithRate && lastWithRate.unitRate > 0) {
+        var pctChange = ((unitRate - lastWithRate.unitRate) / lastWithRate.unitRate) * 100;
+        var absPct = Math.abs(pctChange);
+        if (absPct >= 5) {  // alert on >=5% change
+          var dir = pctChange > 0 ? 'increased ▲' : 'decreased ▼';
+          var clr = pctChange > 0 ? 'high' : 'low';
+          alerts.push({
+            type: 'price_change',
+            severity: pctChange > 0 ? 'high' : 'info',
+            itemName: item.itemName,
+            itemKey: key,
+            unit: item.unit || '',
+            oldRate: lastWithRate.unitRate,
+            newRate: unitRate,
+            pctChange: pctChange.toFixed(1),
+            oldVendor: lastWithRate.vendor,
+            oldDate: lastWithRate.date,
+            message: item.itemName + ' rate ' + dir + ' ' + absPct.toFixed(1) + '% '
+              + '(₹' + lastWithRate.unitRate + ' → ₹' + unitRate + '/' + (item.unit||'unit') + ')'
+              + ' vs ' + lastWithRate.vendor + ' on ' + lastWithRate.date
+          });
+        }
+      }
+    }
+
+    // Save to history
+    history.push({
+      date: date,
+      vendor: vendor,
+      itemName: item.itemName,
+      unitRate: unitRate,
+      lineTotal: lineTotal,
+      quantity: qty,
+      unit: item.unit || '',
+      docId: docId,
+      confidence: item.confidence || 80
+    });
+  });
+
+  // Bill total mismatch check
+  var lineItemsTotal = result.lineItems.reduce(function(s, item) {
+    return s + (Number(item.lineTotal) || 0);
+  }, 0);
+  var printedTotal = Number(String(result.amount || '0').replace(/[^0-9.]/g, '')) || 0;
+  if (lineItemsTotal > 0 && printedTotal > 0) {
+    var diff = Math.abs(printedTotal - lineItemsTotal);
+    var diffPct = (diff / printedTotal) * 100;
+    if (diffPct > 2) {  // more than 2% difference
+      alerts.push({
+        type: 'total_mismatch',
+        severity: 'high',
+        message: 'Bill total mismatch! Items sum ₹' + fmtIN(lineItemsTotal)
+          + ' but printed total ₹' + fmtIN(printedTotal)
+          + ' (difference ₹' + fmtIN(diff) + '). Check for hidden charges or calculation error.'
+      });
+    }
+  }
+
+  saveData();
+  return alerts;
+}
+
+// Auto-add vendor from bill to contacts (with phone if available)
+function autoAddBillVendorContact(result) {
+  if (!result || (result.docType !== 'Bill' && result.docType !== 'Receipt')) return;
+  var name = (result.vendorName || '').trim();
+  if (!name || name.length < 2) return;
+  if (!state.contacts) state.contacts = [];
+
+  var exists = state.contacts.find(function(c) {
+    return c.name.toLowerCase() === name.toLowerCase();
+  });
+
+  var phone = '';
+  if (result.vendorPhone) {
+    // Validate: 10 digits starting 6-9
+    var ph = String(result.vendorPhone).replace(/[^0-9]/g, '');
+    if (/^[6-9][0-9]{9}$/.test(ph)) phone = ph;
+  }
+
+  if (exists) {
+    // Update phone if we now have it and didn't before
+    if (phone && !exists.phone) {
+      exists.phone = phone;
+      saveData();
+      renderContacts();
+    }
+    return;
+  }
+
+  var newContact = {
+    id: 'con_' + Date.now() + Math.random().toString(36).slice(2,5),
+    name: name,
+    phone: phone,
+    role: 'vendor',
+    address: result.vendorAddress || '',
+    notes: 'Bill vendor — ' + (result.summary || result.documentDate || ''),
+    addedDate: today(),
+    source: 'bill'
+  };
+  state.contacts.push(newContact);
+  saveData();
+  renderContacts();
+  pushToSheet('Contacts',
+    ['id','name','phone','role','address','notes','addedDate'],
+    [newContact.id, newContact.name, newContact.phone, newContact.role, newContact.address, newContact.notes, newContact.addedDate]
+  );
+}
+
+// Build HTML alert cards for bill price changes and mismatches
+function buildBillAlertHtml(billAlerts) {
+  if (!billAlerts || !billAlerts.length) return '';
+  var html = '';
+  billAlerts.forEach(function(a) {
+    if (a.type === 'price_change') {
+      var isUp = Number(a.pctChange) > 0;
+      var bg   = isUp ? 'rgba(232,93,122,0.08)' : 'rgba(58,232,200,0.08)';
+      var bd   = isUp ? 'rgba(232,93,122,0.35)' : 'rgba(58,232,200,0.35)';
+      var col  = isUp ? 'var(--rose)' : 'var(--teal)';
+      var icon = isUp ? '📈' : '📉';
+      html += '<div style="margin-top:8px;background:'+bg+';border:1px solid '+bd+';border-radius:10px;padding:11px 13px">'
+        +'<div style="font-size:13px;font-weight:700;color:'+col+';margin-bottom:5px">'+icon+' Price '+(isUp?'Increase ⚠️':'Decrease ✅')+' — '+escH(a.itemName)+'</div>'
+        +'<div style="font-size:13px;color:var(--tx)">'
+          +'<span style="color:var(--tx3)">Previous:</span> ₹'+a.oldRate+'/'+escH(a.unit)+' ('+escH(a.oldVendor)+' · '+escH(a.oldDate)+')<br>'
+          +'<span style="color:var(--tx3)">Now:</span> <b style="color:'+col+'">₹'+a.newRate+'/'+escH(a.unit)+'</b> '
+          +'<span style="color:'+col+'">('+( Number(a.pctChange)>0?'+':'')+a.pctChange+'%)</span>'
+        +'</div>'
+      +'</div>';
+    } else if (a.type === 'total_mismatch') {
+      html += '<div style="margin-top:8px;background:rgba(232,93,122,0.08);border:1px solid rgba(232,93,122,0.35);border-radius:10px;padding:11px 13px">'
+        +'<div style="font-size:13px;font-weight:700;color:var(--rose);margin-bottom:4px">⚠️ Bill Total Mismatch!</div>'
+        +'<div style="font-size:13px;color:var(--tx)">'+escH(a.message)+'</div>'
+      +'</div>';
+    }
+  });
+  return html;
+}
 
 async function handlePhoto(e, source) {
   var file = e.target.files[0];
@@ -2636,10 +2832,21 @@ async function handlePhoto(e, source) {
       ['id','date','type','propertyType','summary','fileName'],
       [doc.id, doc.date, doc.type, doc.propertyType, (result.summary||'').substring(0,200), file.name]
     );
-    // Auto-add buyer/seller to contacts
-    autoAddContactFromDoc(result);
-    // Save to Drive — always upload for new docs
-    // (duplicate check above already prevents same doc being processed twice)
+
+    // ── BILL INTELLIGENCE ──
+    var isBillDoc = (result.docType === 'Bill' || result.docType === 'Receipt');
+    var billAlerts = [];
+    if (isBillDoc) {
+      // 1. Save line items to price history + check for price changes / total mismatch
+      billAlerts = processBillLineItems(result, doc.id);
+      // 2. Auto-add vendor to contacts (with phone if available)
+      autoAddBillVendorContact(result);
+    } else {
+      // Non-bill: auto-add buyer/seller to contacts
+      autoAddContactFromDoc(result);
+    }
+
+    // Save to Drive
     var fileSizeMB = (b64.length * 0.75) / (1024 * 1024);
     console.log('File size for Drive upload:', fileSizeMB.toFixed(2), 'MB');
     await compressAndUpload(file, result.docType||'Other', result, doc);
@@ -2649,40 +2856,70 @@ async function handlePhoto(e, source) {
     if (source==='chat') {
       showSc('chat');
       addBubble('usr','📄 Document uploaded: '+file.name);
-      addBubble('ai', buildDocResultHtml(result));
 
-      // Store result in chat history so user can ask follow-up questions
-      var resultSummary = 'I analyzed the document "'+file.name+'" and extracted: '
-        + 'DocType='+( result.docType||'Unknown')+', '
-        + 'Date='+(result.documentDate||'unknown')+', '
-        + 'PropertyType='+(result.propertyType||'unknown')+'. '
-        + 'Fields: '+( result.fields ? result.fields.map(function(f){ return f.key+': '+f.value; }).join('; ') : 'none') + '. '
-        + 'Financials: saleAmount='+(result.financials&&result.financials.saleAmount ? (typeof result.financials.saleAmount==='object'?result.financials.saleAmount.value:result.financials.saleAmount) : 'N/A')
-        + ', totalInvestment='+(result.financials&&result.financials.totalInvestment ? (typeof result.financials.totalInvestment==='object'?result.financials.totalInvestment.value:result.financials.totalInvestment) : 'N/A') + '. '
-        + 'OwnershipChain: '+(result.ownershipChain ? result.ownershipChain.map(function(s){ return '#'+s.order+' '+s.date+' '+s.seller+' → '+s.buyer+' '+s.amount; }).join(' | ') : 'none');
+      var docHtml = buildDocResultHtml(result);
+      // Append price change / mismatch alerts below the doc result
+      if (billAlerts.length) docHtml += buildBillAlertHtml(billAlerts);
+      // Append confirm-entry card for bills
+      if (isBillDoc) docHtml += buildBillConfirmCard(result, doc.id);
+      addBubble('ai', docHtml);
 
-      // Add to chat history so follow-up questions work
+      // Build chat summary — include line items for bills
+      var resultSummary = 'I analyzed the document "'+file.name+'" — DocType='+( result.docType||'Unknown')+', Date='+(result.documentDate||'unknown')+'. ';
+      if (isBillDoc) {
+        resultSummary += 'Vendor='+( result.vendorName||'unknown')+', Total='+(result.amount||'unknown')+'. ';
+        if (result.lineItems && result.lineItems.length) {
+          resultSummary += 'Line items: '+result.lineItems.map(function(li){
+            return li.itemName+(li.quantity?' '+li.quantity+' '+( li.unit||''):'')+(li.unitRate?' @₹'+li.unitRate+'/'+( li.unit||'unit'):'')+' = ₹'+(li.lineTotal||'?');
+          }).join('; ')+'. ';
+        }
+        if (billAlerts.length) resultSummary += 'Alerts: '+billAlerts.map(function(a){ return a.message; }).join('; ')+'. ';
+      } else {
+        resultSummary += 'Fields: '+(result.fields ? result.fields.map(function(f){ return f.key+': '+f.value; }).join('; ') : 'none')+'. '
+          +'Financials: saleAmount='+(result.financials&&result.financials.saleAmount ? (typeof result.financials.saleAmount==='object'?result.financials.saleAmount.value:result.financials.saleAmount) : 'N/A')
+          +', totalInvestment='+(result.financials&&result.financials.totalInvestment ? (typeof result.financials.totalInvestment==='object'?result.financials.totalInvestment.value:result.financials.totalInvestment) : 'N/A')+'. '
+          +'OwnershipChain: '+(result.ownershipChain ? result.ownershipChain.map(function(s){ return '#'+s.order+' '+s.date+' '+s.seller+' → '+s.buyer+' '+s.amount; }).join(' | ') : 'none');
+      }
       state.chatHistory.push({role:'user', parts:[{text:'[I uploaded document: '+file.name+']'}]});
       state.chatHistory.push({role:'model', parts:[{text: resultSummary}]});
       if (state.chatHistory.length>16) state.chatHistory = state.chatHistory.slice(-16);
 
-      // Show follow-up hint
+      var hintText = isBillDoc
+        ? '💬 Ask: "last time borewell cost emi?" or "XYZ Drilling bills anni chupinchu"'
+        : '💬 ఏదైనా wrong అనిపిస్తే type చేయండి — "survey number wrong recheck" or "amount confirm చేయి"';
       var hint = document.createElement('div');
       hint.style.cssText = 'margin:4px 0 4px 38px;font-size:12px;color:var(--tx3);font-style:italic';
-      hint.textContent = '💬 ఏదైనా wrong అనిపిస్తే type చేయండి — "survey number wrong recheck" or "amount confirm చేయి"';
+      hint.textContent = hintText;
       document.getElementById('chat-msgs').appendChild(hint);
       document.getElementById('chat-msgs').scrollTop = document.getElementById('chat-msgs').scrollHeight;
 
       saveData();
     } else {
-      // From docs screen — also add to chat history and show "Ask AI" button
+      // From docs screen
       showSc('docs');
       var fc2 = result.fields ? result.fields.length : 0;
-      toast('Document analyzed! '+fc2+' fields extracted. AI Chat లో questions అడగవచ్చు.', 'ok');
+      if (isBillDoc) {
+        var liCount = (result.lineItems||[]).length;
+        toast('Bill analyzed! '+liCount+' line item'+(liCount!==1?'s':'')+' extracted.'+(billAlerts.length?' '+billAlerts.length+' alert(s)!':''), billAlerts.length?'info':'ok');
+        // Show bill alerts as toasts (one at a time — most important first)
+        if (billAlerts.length) {
+          setTimeout(function() {
+            var msg = billAlerts[0].message;
+            toast('⚠️ ' + msg, 'info');
+          }, 1500);
+        }
+      } else {
+        toast('Document analyzed! '+fc2+' fields extracted. AI Chat లో questions అడగవచ్చు.', 'ok');
+      }
 
-      // Store in chat history for follow-up
-      var resultSummary2 = 'Document "'+file.name+'" analyzed. DocType='+(result.docType||'Unknown')+'. '
-        + (result.fields ? result.fields.map(function(f){ return f.key+': '+f.value; }).join('; ') : '');
+      // Store in chat history
+      var resultSummary2 = 'Document "'+file.name+'" analyzed. DocType='+(result.docType||'Unknown')+'. ';
+      if (isBillDoc && result.lineItems && result.lineItems.length) {
+        resultSummary2 += 'Vendor='+( result.vendorName||'')+'. Items: '
+          +result.lineItems.map(function(li){ return li.itemName+' ₹'+(li.unitRate||li.lineTotal||'?'); }).join(', ')+'.';
+      } else {
+        resultSummary2 += (result.fields ? result.fields.map(function(f){ return f.key+': '+f.value; }).join('; ') : '');
+      }
       state.chatHistory.push({role:'user', parts:[{text:'[Document analyzed: '+file.name+']'}]});
       state.chatHistory.push({role:'model', parts:[{text: resultSummary2}]});
       if (state.chatHistory.length>16) state.chatHistory = state.chatHistory.slice(-16);
@@ -2720,15 +2957,46 @@ function buildDocResultHtml(r) {
   // ── BILL LAYOUT ──
   if (isBill) {
     html += '<div class="ccard" style="margin-top:10px"><div class="ccard-t">🧾 Bill Details (బిల్లు వివరాలు)</div>';
-    if (r.vendorName)      html += '<div class="crow"><span class="ck">🏪 Vendor / Shop</span><span class="cv ok" style="font-weight:700">'+escH(r.vendorName)+'</span></div>';
-    if (r.invoiceNumber)   html += '<div class="crow"><span class="ck">🔢 Invoice / Bill No.</span><span class="cv" style="font-family:JetBrains Mono">'+escH(r.invoiceNumber)+'</span></div>';
-    if (r.documentDate)    html += '<div class="crow"><span class="ck">📅 Bill Date</span><span class="cv">'+escH(r.documentDate)+'</span></div>';
-    if (r.itemDescription) html += '<div class="crow"><span class="ck">📦 Items / Work Done</span><span class="cv" style="white-space:pre-wrap;line-height:1.5">'+escH(r.itemDescription)+'</span></div>';
-    if (r.quantity && r.unit) html += '<div class="crow"><span class="ck">📏 Quantity</span><span class="cv">'+escH(String(r.quantity))+' '+escH(r.unit)+'</span></div>';
-    if (r.unitRate)        html += '<div class="crow"><span class="ck">💲 Rate per unit</span><span class="cv">'+escH(String(r.unitRate))+'</span></div>';
-    if (r.gstAmount)       html += '<div class="crow"><span class="ck">🏷️ GST / Tax</span><span class="cv">'+escH(String(r.gstAmount))+'</span></div>';
-    if (r.amount)          html += '<div class="crow" style="border-top:1px solid var(--bd);padding-top:10px;margin-top:4px"><span class="ck" style="color:var(--teal);font-weight:700">💰 Total Amount</span><span class="cv" style="color:var(--teal);font-size:16px;font-weight:700">'+escH(String(r.amount))+'</span></div>';
+    if (r.vendorName)    html += '<div class="crow"><span class="ck">🏪 Vendor / Shop</span><span class="cv ok" style="font-weight:700">'+escH(r.vendorName)+'</span></div>';
+    if (r.vendorPhone)   html += '<div class="crow"><span class="ck">📞 Vendor Phone</span><span class="cv" style="font-family:JetBrains Mono">'+escH(r.vendorPhone)+'</span></div>';
+    if (r.invoiceNumber) html += '<div class="crow"><span class="ck">🔢 Invoice / Bill No.</span><span class="cv" style="font-family:JetBrains Mono">'+escH(r.invoiceNumber)+'</span></div>';
+    if (r.documentDate)  html += '<div class="crow"><span class="ck">📅 Bill Date</span><span class="cv">'+escH(r.documentDate)+'</span></div>';
+    if (r.gstAmount)     html += '<div class="crow"><span class="ck">🏷️ GST / Tax</span><span class="cv">'+escH(String(r.gstAmount))+'</span></div>';
     html += '</div>';
+
+    // Line items table
+    if (r.lineItems && r.lineItems.length) {
+      html += '<div class="ccard" style="margin-top:10px"><div class="ccard-t">📦 Line Items ('+r.lineItems.length+' items)</div>';
+      html += '<div style="display:grid;grid-template-columns:1fr auto auto auto;font-size:11px;color:var(--tx3);padding:5px 8px;border-bottom:1px solid var(--bd)">'
+        +'<span>Item</span><span style="text-align:right">Qty</span><span style="text-align:right;padding:0 8px">Rate</span><span style="text-align:right">Total</span></div>';
+      var computedTotal = 0;
+      r.lineItems.forEach(function(li) {
+        computedTotal += Number(li.lineTotal) || 0;
+        var conf = li.confidence || 80;
+        var cs = conf < 70 ? 'color:var(--rose)' : '';
+        html += '<div style="display:grid;grid-template-columns:1fr auto auto auto;font-size:12px;padding:6px 8px;border-bottom:1px solid var(--bd);'+cs+'">'
+          +'<span style="padding-right:6px;line-height:1.4">'+escH(li.itemName||'')+'<br><span style="font-size:10px;color:var(--tx3)">'+escH(li.itemKey||'')+'</span></span>'
+          +'<span style="text-align:right;color:var(--tx2);font-family:JetBrains Mono;font-size:11px;white-space:nowrap">'+(li.quantity!=null?(li.quantity+' '+(li.unit||'')):'—')+'</span>'
+          +'<span style="text-align:right;padding:0 8px;color:var(--tx2);font-family:JetBrains Mono;font-size:11px">'+(li.unitRate?'₹'+li.unitRate:'—')+'</span>'
+          +'<span style="text-align:right;color:var(--amb);font-family:JetBrains Mono;font-weight:700;font-size:12px">'+(li.lineTotal?'₹'+fmtIN(Number(li.lineTotal)):'—')+'</span>'
+          +'</div>';
+      });
+      // Computed total row
+      if (computedTotal > 0) {
+        html += '<div style="display:grid;grid-template-columns:1fr auto;font-size:13px;padding:8px 8px;font-weight:700">'
+          +'<span style="color:var(--tx2)">Items Total</span>'
+          +'<span style="color:var(--teal);font-family:JetBrains Mono">₹'+fmtIN(computedTotal)+'</span></div>';
+      }
+      html += '</div>';
+    }
+
+    // Grand total
+    if (r.amount) {
+      html += '<div class="ccard" style="margin-top:8px;background:rgba(58,232,200,0.05);border-color:rgba(58,232,200,0.3)">'
+        +'<div class="crow"><span class="ck" style="color:var(--teal);font-weight:700;font-size:14px">💰 Bill Total</span>'
+        +'<span class="cv" style="color:var(--teal);font-size:18px;font-weight:700">'+escH(String(r.amount))+'</span></div>'
+        +'</div>';
+    }
 
     if (r.fields && r.fields.length) {
       html += '<div class="ccard" style="margin-top:10px"><div class="ccard-t">📋 All Fields</div>';
@@ -2816,6 +3084,68 @@ function buildDocResultHtml(r) {
   }
 
   return html;
+}
+
+// ════════════════════════════════════════════════════════
+// BILL CONFIRM ENTRY CARD + LINE ITEMS DISPLAY
+// ════════════════════════════════════════════════════════
+
+// Build the "Add to Ledger?" confirm card shown after bill scan
+function buildBillConfirmCard(result, docId) {
+  if (!result || (result.docType !== 'Bill' && result.docType !== 'Receipt')) return '';
+  var vendor = result.vendorName || '';
+  var amtRaw = String(result.amount || '0').replace(/[^0-9]/g, '');
+  var amt = Number(amtRaw) || 0;
+  if (!vendor || !amt) return '';
+
+  // Build line items summary
+  var liHtml = '';
+  if (result.lineItems && result.lineItems.length) {
+    liHtml = '<div style="margin:8px 0 4px;background:var(--s3);border-radius:8px;overflow:hidden">'
+      +'<div style="display:grid;grid-template-columns:1fr auto auto auto;gap:0;font-size:11px;color:var(--tx3);padding:6px 10px;border-bottom:1px solid var(--bd);">'
+      +'<span>Item</span><span style="text-align:right">Qty</span><span style="text-align:right;padding:0 8px">Rate</span><span style="text-align:right">Total</span></div>';
+    result.lineItems.forEach(function(li) {
+      liHtml += '<div style="display:grid;grid-template-columns:1fr auto auto auto;gap:0;font-size:12px;padding:5px 10px;border-bottom:1px solid var(--bd);color:var(--tx)">'
+        +'<span style="padding-right:6px">'+escH(li.itemName||'')+'</span>'
+        +'<span style="text-align:right;color:var(--tx2);font-family:JetBrains Mono">'+(li.quantity?(li.quantity+' '+(li.unit||'')):'—')+'</span>'
+        +'<span style="text-align:right;padding:0 8px;color:var(--tx2);font-family:JetBrains Mono">'+(li.unitRate?'₹'+li.unitRate:'—')+'</span>'
+        +'<span style="text-align:right;color:var(--amb);font-family:JetBrains Mono;font-weight:700">'+(li.lineTotal?'₹'+fmtIN(li.lineTotal):'—')+'</span>'
+        +'</div>';
+    });
+    liHtml += '</div>';
+  }
+
+  var entryJson = JSON.stringify({
+    type: 'order',
+    vendor: vendor,
+    category: 'Other',
+    amount: amt,
+    date: result.documentDate || today(),
+    description: result.summary || ('Bill from ' + vendor),
+    notes: 'Bill scan — ' + (result.invoiceNumber ? 'Invoice #' + result.invoiceNumber : result.summary || 'scanned bill')
+  }).replace(/'/g,"&#39;");
+
+  return '<div class="ccard" style="margin-top:10px;border-color:rgba(58,232,200,0.35)">'
+    +'<div class="ccard-t" style="color:var(--teal)">📒 Ledger లో Add చేయాలా?</div>'
+    +'<div class="crow"><span class="ck">🏪 Vendor</span><span class="cv ok">'+escH(vendor)+'</span></div>'
+    +'<div class="crow"><span class="ck">💰 Amount</span><span class="cv" style="color:var(--amb);font-weight:700">₹'+fmtIN(amt)+'</span></div>'
+    +'<div class="crow"><span class="ck">📅 Date</span><span class="cv">'+escH(result.documentDate||today())+'</span></div>'
+    + liHtml
+    +'<div class="cacts" style="margin-top:10px">'
+      +'<button class="btn amb sm" style="flex:1" onclick="confirmBillEntry(\''+entryJson+'\',this)">✓ Add to Ledger</button>'
+      +'<button class="btn ghost sm" onclick="this.closest(\'.ccard\').remove()">✗ Skip</button>'
+    +'</div>'
+  +'</div>';
+}
+
+function confirmBillEntry(entryJsonStr, btn) {
+  try {
+    var entry = JSON.parse(entryJsonStr);
+    addEntry(entry);
+    btn.closest('.cacts').innerHTML = '<span class="ok">✓ Ledger లో Saved! Vendor balance updated.</span>';
+  } catch(e) {
+    toast('Save failed: ' + e.message, 'err');
+  }
 }
 
 // ════════════════════════════════════════════════════════
@@ -4065,13 +4395,39 @@ function buildDataSummary() {
     };
   });
 
-  // Price history per material
+  // Price history per material (from manual entries)
   var priceInsights = {};
   Object.keys(state.priceHistory || {}).forEach(function(key){
     var history = state.priceHistory[key];
     if (history && history.length > 0) {
-      priceInsights[key] = history.slice(-5); // last 5 prices
+      priceInsights[key] = history.slice(-5);
     }
+  });
+
+  // Bill item price history — last 5 records per item key, across all vendors
+  var billPriceInsights = {};
+  Object.keys(state.billPriceHistory || {}).forEach(function(key) {
+    var history = state.billPriceHistory[key];
+    if (history && history.length > 0) {
+      // Get last 5 entries, include vendor + rate + date
+      billPriceInsights[key] = history.slice(-5).map(function(h) {
+        return {date: h.date, vendor: h.vendor, rate: h.unitRate, unit: h.unit, total: h.lineTotal, qty: h.quantity};
+      });
+    }
+  });
+
+  // Bills summary from documents
+  var bills = (state.documents || []).filter(function(d) {
+    return d.result && (d.result.docType === 'Bill' || d.result.docType === 'Receipt');
+  }).slice(-20).map(function(d) {
+    var r = d.result;
+    return {
+      date: d.date,
+      vendor: r.vendorName || '',
+      amount: r.amount || '',
+      summary: r.summary || '',
+      itemCount: (r.lineItems || []).length
+    };
   });
 
   // Totals
@@ -4084,12 +4440,15 @@ function buildDataSummary() {
       totalOrdered: totalOrdered,
       totalPaid: totalPaid,
       totalPending: totalOrdered - totalPaid,
-      vendorCount: vendors.length
+      vendorCount: vendors.length,
+      billCount: bills.length
     },
-    expenses: expenses.slice(-50), // last 50 expenses
-    payments: payments.slice(-30), // last 30 payments
+    expenses: expenses.slice(-50),
+    payments: payments.slice(-30),
     vendors: vendorSummary,
-    priceHistory: priceInsights
+    priceHistory: priceInsights,
+    billPriceHistory: billPriceInsights,
+    recentBills: bills
   };
 }
 
@@ -4112,11 +4471,13 @@ async function runAIInsights() {
     + '\n2. PENDING PAYMENTS - Vendors with pending balances, how long pending'
     + '\n3. MISTAKES / ANOMALIES - Duplicate entries, suspicious high prices, wrong totals'
     + '\n4. VENDOR ANALYSIS - Cheapest vendor, inconsistent vendors, recommendations'
-    + '\n5. CASH FLOW SUMMARY - Total spent, total paid, total pending'
-    + '\n6. ACTIONABLE SUGGESTIONS - What to do immediately, where to save money, risks'
+    + '\n5. BILL PRICE TRENDS - From billPriceHistory: which items got expensive, which got cheaper, cross-vendor price comparison'
+    + '\n6. CASH FLOW SUMMARY - Total spent, total paid, total pending, total from bills'
+    + '\n7. ACTIONABLE SUGGESTIONS - What to do immediately, where to save money, risks'
     + '\n\nIMPORTANT: Be practical. Use simple language like talking to a builder.'
     + ' Use Telugu words where natural. Do not hallucinate numbers.'
     + ' If data is insufficient say "Not enough data".'
+    + ' For billPriceHistory, show item name, date range, min price, max price, which vendor was cheapest.'
     + '\n\nDATA:\n' + JSON.stringify(data);
 
   try {
