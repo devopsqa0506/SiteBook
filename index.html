@@ -753,7 +753,6 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
     <!-- CHAT -->
     <div class="sc" id="sc-chat">
       <div class="chat-wrap">
-        <div style="display:flex;justify-content:flex-end;padding:6px 12px 0"><button onclick="clearChat()" style="background:none;border:none;color:var(--tx3);font-size:11px;cursor:pointer;padding:2px 6px">🗑️ Clear Chat</button></div>
         <div class="chat-msgs" id="chat-msgs"></div>
         <div class="cin-area">
           <div class="chips" id="chat-chips">
@@ -767,6 +766,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
             <div class="chip" onclick="doSend('అందరికీ ఎంత బకాయి చెప్పు')">📊 Summary</div>
             <div class="chip" style="border-color:rgba(90,175,232,0.4);color:var(--sky)" onclick="doSend('uploaded document లో survey number correct గా ఉందా? recheck చేయి')">🔍 Recheck Doc</div>
             <div class="chip" style="border-color:rgba(90,175,232,0.4);color:var(--sky)" onclick="doSend('document లో financial amounts అన్నీ correct గా ఉన్నాయా? verify చేయి')">💰 Verify Amounts</div>
+            <div class="chip" style="border-color:rgba(232,93,122,0.5);color:var(--rose);background:rgba(232,93,122,0.12)" onclick="clearChat()">🗑️ Clear Chat</div>
           </div>
           <div class="cin-row">
             <div class="cin-acts">
@@ -2526,7 +2526,9 @@ async function callGemini(imageData, imageMime, docPromptOverride) {
     +'- Price lookup: contacts[].lastPrice + lastPriceDate + lastPriceUnit per vendor\n'
     +'- Category filter: contacts[].category = Sand/Steel/Cement/Electrical/Labour/Hardware\n'
     +'- billPriceHistory has full item-level price history across ALL bills ever scanned\n'
-    +'- For "who sells sand cheapest" → check contacts where category=Sand, compare lastPrice\n'
+    +'- For price queries (cheapest/costliest vendor): filter contacts by category, list ALL vendors with name+phone+lastPrice+lastPriceUnit+lastPriceDate. NEVER give partial answer.\n'
+    +'- If lastPrice missing for a contact, still list them and note price not recorded yet.\n'
+    +'- ALWAYS complete your answer fully. Never truncate mid-sentence.\n'
     +'- Never say "not in data" without checking vendors[], contacts[], and billPriceHistory\n\n'
     +'ANDHRA MARKET RATES (Kadapa):\n'
     +'- Sand: Rs.1800-3500/tractor\n- TMT Steel: Rs.58-75/kg\n- Cement: Rs.340-430/bag\n- Electrical rough: Rs.85-140/sqft\n- Labour: Rs.450-700/day\n\n'
@@ -4781,13 +4783,17 @@ function buildDataSummary() {
     };
   });
 
-  // Contacts list — full, for AI to answer phone/address queries
+  // Contacts list — full with price intel for cheapest-vendor queries
   var contactsList = (state.contacts || []).map(function(c) {
     return {
       name: c.name,
       phone: c.phone || '',
-      role: c.role || '',
+      category: c.category || c.role || '',
       address: c.address || '',
+      lastPrice: c.lastPrice || '',
+      lastPriceUnit: c.lastPriceUnit || '',
+      lastPriceDate: c.lastPriceDate || '',
+      totalBusiness: c.totalBusiness || 0,
       notes: (c.notes || '').substring(0, 80)
     };
   });
