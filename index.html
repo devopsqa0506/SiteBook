@@ -2362,10 +2362,6 @@ function renderDocList() {
           +'</div>'
           +'<span class="dc-badge '+badge+'">'+(r.docType||'Doc')+'</span>'
         +'</div>'
-          +'<div><div class="dc-name">'+escH(r.docType||'Document')+(r.transactionType?' · '+r.transactionType:'')+'</div>'
-          +'<div class="dc-date">📅 '+doc.date+(r.propertyType?' · 🏘️ '+r.propertyType:'')+'</div></div>'
-          +'<span class="dc-badge '+badge+'">'+(r.docType||'Doc')+'</span>'
-        +'</div>'
         +finHtml+chainHtml+fieldsHtml+alertsHtml+confWarn
         +buildEcButton(r)
         +'<div style="padding:9px 13px;border-top:1px solid var(--bd)">'
@@ -4356,8 +4352,15 @@ function saveToDrive(b64, mimeType, fileName, docType, result, docRef) {
 
   } else if (docType === 'Bill' || docType === 'Other') {
     fileType = 'Bill';
-    var d = new Date();
-    monthFolder = d.getFullYear() + '-' + ('0'+(d.getMonth()+1)).slice(-2);
+    // Use transaction date from document (DD.MM.YYYY) for folder, not upload date
+    var txnDate = (r.documentDate || '').trim();
+    var txnParts = txnDate.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+    if (txnParts) {
+      monthFolder = txnParts[3] + '-' + txnParts[2]; // YYYY-MM from document date
+    } else {
+      var d = new Date();
+      monthFolder = d.getFullYear() + '-' + ('0'+(d.getMonth()+1)).slice(-2);
+    }
 
   } else {
     fileType = 'Other';
