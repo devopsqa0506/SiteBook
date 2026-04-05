@@ -2010,23 +2010,27 @@ function addEntry(entry) {
   } else if (entry.type === 'payment') {
     state.vendors[entry.vendor].totalPaid = (state.vendors[entry.vendor].totalPaid||0) + Number(entry.amount||0);
   }
-  // Always upsert contact — even without phone, price+category+date is valuable intelligence
-  if (entry.vendor) {
-    upsertContact({
-      name: entry.vendor,
-      phone: entry.phone || '',
-      category: entry.category || '',
-      lastPrice: entry.type === 'order' ? Number(entry.amount||0) : 0,
-      lastPriceUnit: entry.priceUnit || entry.unit || '',
-      lastPriceDate: entry.date,
-      source: 'entry'
-    });
-  }
+
+  // Save entry + refresh UI first
   saveData(); refreshUI();
   pushToSheet('Entries',
     ['id','date','type','vendor','category','amount','description','unitPrice','priceKey'],
     [entry.id,entry.date,entry.type,entry.vendor,entry.category,entry.amount,entry.description||'',entry.unitPrice||'',entry.priceKey||'']
   );
+
+  // Update contact intelligence silently with UNIT PRICE (not total)
+  // e.g. 100 bags at Rs.600 => stores Rs.600/bag, not Rs.60,000
+  if (entry.vendor) {
+    upsertContactSilent(
+      entry.vendor,
+      entry.phone || '',
+      entry.category || '',
+      null,
+      entry.type === 'order' ? Number(entry.unitPrice || 0) : 0,
+      entry.priceUnit || entry.unit || '',
+      entry.date
+    );
+  }
 }
 
 // ════════════════════════════════════════════════════════
@@ -2116,34 +2120,43 @@ function autoAddVendorContact(name, phone, category, notes, date) {
   upsertContact({name:name, phone:phone, category:category, notes:notes, source:'entry'});
 }
 
-// Silent variant — upserts contact data WITHOUT calling renderContacts()
-// Use this from save flows where renderContacts may throw or is not needed immediately
-function upsertContactSilent(name, phone, category, notes) {
+// Silent variant — upserts contact data WITHOUT calling renderContacts() or showing toasts
+// unitPrice = per-unit rate (e.g. 600/bag), NOT the total bill amount
+function upsertContactSilent(name, phone, category, notes, unitPrice, priceUnit, priceDate) {
   try {
+    if (!name || name.trim().length < 2) return;
     if (!state.contacts) state.contacts = [];
     var ph = phone ? String(phone).replace(/[^0-9]/g,'') : '';
     if (ph && !/^[6-9][0-9]{9}$/.test(ph)) ph = '';
+    var uPrice = Number(unitPrice) || 0;
     var exists = state.contacts.find(function(c){
       return c.name.toLowerCase() === name.toLowerCase() || (ph && c.phone === ph);
     });
     if (exists) {
-      if (ph && !exists.phone) exists.phone = ph;
-      if (category && !exists.category) exists.category = category;
-      saveData();
+      var updated = false;
+      if (ph && !exists.phone)       { exists.phone = ph; updated = true; }
+      if (category && !exists.category) { exists.category = category; updated = true; }
+      if (uPrice > 0) {
+        exists.lastPrice     = uPrice;
+        exists.lastPriceUnit = priceUnit || exists.lastPriceUnit || '';
+        exists.lastPriceDate = priceDate || exists.lastPriceDate || '';
+        updated = true;
+      }
+      if (updated) saveData();
     } else {
       state.contacts.push({
         id: 'con_' + Date.now() + Math.random().toString(36).slice(2,5),
         name: name.trim().substring(0,80),
         phone: ph,
         category: category || '',
-        lastPrice: '',
-        lastPriceUnit: '',
-        lastPriceDate: '',
+        lastPrice: uPrice || '',
+        lastPriceUnit: priceUnit || '',
+        lastPriceDate: priceDate || '',
         totalBusiness: 0,
         address: '',
         notes: notes || '',
         addedDate: today(),
-        source: 'manual'
+        source: 'entry'
       });
       saveData();
     }
