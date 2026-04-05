@@ -1556,9 +1556,15 @@ function freshData(){ return {entries:[],vendors:{},priceHistory:{},billPriceHis
 // HARDCODED CONFIG — Private repo లో safe గా ఉంటుంది
 // New phone లో automatically loaded అవుతుంది
 // ════════════════════════════════════════════════════════
-// No hardcoded config — keys stored in localStorage only (secure)
-// Use QR code to transfer keys between phones
-function mergeHardcodedConfig(c) { return c; }
+// Hardcoded config — survives Ctrl+F5 / localStorage clear
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwwQ2HN6OI3hbyu4mfKBY_o6QUgEGsQTKfk_CZwK9WCOpgOmF7kg6aV8NgbhUToMMPx/exec';
+var SHEET_ID   = '13Nk9DKYCcL4PND9wZnBlLB_O2eo2pNa6lG914oU2HAU';
+function mergeHardcodedConfig(c) {
+  c.scriptUrl = SCRIPT_URL;
+  c.sheetId   = SHEET_ID;
+  c.setupDone = true;
+  return c;
+}
 
 var cfg   = mergeHardcodedConfig(loadCfg());
 var state = loadData();
@@ -1746,14 +1752,20 @@ function setSyncStatus(s) {
 }
 
 function pushToSheet(sheetName, headers, row) {
-  if (!cfg.scriptUrl || !cfg.sheetId) return;
+  var url = cfg.scriptUrl || SCRIPT_URL;
+  var sid = cfg.sheetId || '';
+  if (!url) { console.warn('SiteBook: no scriptUrl'); return; }
+  if (!sid) { console.warn('SiteBook: no sheetId — open Settings and enter your Google Sheet ID'); toast('⚠️ Sheet ID not set — Settings లో Sheet ID enter చేయండి', 'err'); return; }
   setSyncStatus('syncing');
-  fetch(cfg.scriptUrl, {
+  var payload = JSON.stringify({action:'append',sheetId:sid,sheetName:sheetName,headers:headers,row:row});
+  console.log('SiteBook pushToSheet:', sheetName, payload);
+  fetch(url, {
     method:'POST', mode:'no-cors',
-    body: JSON.stringify({action:'append',sheetId:cfg.sheetId,sheetName:sheetName,headers:headers,row:row})
+    body: payload
   }).then(function(){ setSyncStatus('ok'); state.lastSync = new Date().toISOString(); saveData();
     document.getElementById('last-sync').textContent = 'Synced '+nowt();
-  }).catch(function(){ setSyncStatus('err'); });
+    console.log('SiteBook pushToSheet ok:', sheetName);
+  }).catch(function(e){ setSyncStatus('err'); console.error('SiteBook pushToSheet err:', e); });
 }
 
 function syncFromSheet() {
@@ -2471,8 +2483,8 @@ function confirmEntry(eid, btn) {
 
   addEntry(entry);
   _peDel(eid);
-  btn.closest('.cacts').innerHTML = '<span class="ok">✓ Entries &amp; Contacts Sheet లో Saved!</span>';
-  toast('✓ Saved to Entries &amp; Contacts!', 'ok');
+  btn.closest('.cacts').innerHTML = '<span class="ok">✓ Entries & Contacts Sheet లో Saved!</span>';
+  toast('✓ Saved to Entries & Contacts!', 'ok');
 }
 
 function confirmEntryForce(eid, btn) {
