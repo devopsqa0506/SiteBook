@@ -2116,6 +2116,42 @@ function autoAddVendorContact(name, phone, category, notes, date) {
   upsertContact({name:name, phone:phone, category:category, notes:notes, source:'entry'});
 }
 
+// Silent variant — upserts contact data WITHOUT calling renderContacts()
+// Use this from save flows where renderContacts may throw or is not needed immediately
+function upsertContactSilent(name, phone, category, notes) {
+  try {
+    if (!state.contacts) state.contacts = [];
+    var ph = phone ? String(phone).replace(/[^0-9]/g,'') : '';
+    if (ph && !/^[6-9][0-9]{9}$/.test(ph)) ph = '';
+    var exists = state.contacts.find(function(c){
+      return c.name.toLowerCase() === name.toLowerCase() || (ph && c.phone === ph);
+    });
+    if (exists) {
+      if (ph && !exists.phone) exists.phone = ph;
+      if (category && !exists.category) exists.category = category;
+      saveData();
+    } else {
+      state.contacts.push({
+        id: 'con_' + Date.now() + Math.random().toString(36).slice(2,5),
+        name: name.trim().substring(0,80),
+        phone: ph,
+        category: category || '',
+        lastPrice: '',
+        lastPriceUnit: '',
+        lastPriceDate: '',
+        totalBusiness: 0,
+        address: '',
+        notes: notes || '',
+        addedDate: today(),
+        source: 'manual'
+      });
+      saveData();
+    }
+  } catch(e) {
+    console.warn('upsertContactSilent error:', e);
+  }
+}
+
 // ════════════════════════════════════════════════════════
 // REFRESH UI
 // ════════════════════════════════════════════════════════
@@ -2513,12 +2549,57 @@ function sendMsg() {
   callGemini(null, null, null).finally(function(){ sbtn.disabled=false; });
 }
 
+// ── DUPLICATE ORDER DETECTION ──────────────────────────────
+// Returns matching entry if same vendor + same amount + same date already exists
+function findDuplicateOrder(entry) {
+  if (entry.type !== 'order') return null;
+  var d = entry.date || today();
+  var amt = Number(entry.amount || 0);
+  var vendor = (entry.vendor || '').toLowerCase().trim();
+  return state.entries.find(function(e) {
+    return e.type === 'order'
+      && e.date === d
+      && Number(e.amount || 0) === amt
+      && (e.vendor || '').toLowerCase().trim() === vendor;
+  }) || null;
+}
+
 function confirmEntry(eid, btn) {
   var entry = _pendingEntries[eid];
-  if (!entry) { btn.closest('.cacts').innerHTML = '<span class="bad">⚠️ Already saved or expired</span>'; return; }
+  if (!entry) { btn.closest('.cacts').innerHTML = '<span class="bad">&#9888; Already saved or expired</span>'; return; }
+
+  // Duplicate check for orders only
+  var dup = findDuplicateOrder(entry);
+  if (dup) {
+    var acts = btn.closest('.cacts');
+    acts.innerHTML =
+      '<div style="width:100%;background:rgba(232,184,74,0.12);border:1px solid rgba(232,184,74,0.35);border-radius:10px;padding:10px;margin-bottom:6px">'
+      + '<div style="font-size:13px;color:var(--amb);font-weight:600;margin-bottom:6px">&#9888; Duplicate Order?</div>'
+      + '<div style="font-size:12px;color:var(--tx2);margin-bottom:10px">'
+        + escH(entry.vendor) + ' నుండి <strong style="color:var(--tx1)">' + rup(entry.amount) + '</strong> order '
+        + 'today already ఉంది'
+        + (dup.description ? ' (' + escH(dup.description) + ')' : '')
+        + '. మళ్ళీ same order వచ్చిందా?'
+      + '</div>'
+      + '<div style="display:flex;gap:8px">'
+        + '<button class="btn amb sm" style="flex:1;font-size:12px" onclick="confirmEntryForce(\'' + eid + '\',this)">&#10003; అవును, Save చేయి</button>'
+        + '<button class="btn ghost sm" style="flex:1;font-size:12px" onclick="this.closest(\'.ccard\').remove()">&#10007; Cancel</button>'
+      + '</div>'
+      + '</div>';
+    return;
+  }
+
   addEntry(entry);
   delete _pendingEntries[eid];
-  btn.closest('.cacts').innerHTML = '<span class="ok">✓ Google Sheet లో Saved!</span>';
+  btn.closest('.cacts').innerHTML = '<span class="ok">&#10003; Google Sheet లో Saved!</span>';
+}
+
+function confirmEntryForce(eid, btn) {
+  var entry = _pendingEntries[eid];
+  if (!entry) { btn.closest('.cacts').innerHTML = '<span class="bad">&#9888; Already saved or expired</span>'; return; }
+  addEntry(entry);
+  delete _pendingEntries[eid];
+  btn.closest('.cacts').innerHTML = '<span class="ok">&#10003; Saved! (duplicate confirmed)</span>';
 }
 
 async function callGemini(imageData, imageMime, docPromptOverride) {
@@ -3391,8 +3472,39 @@ function buildBillConfirmCard(result, docId) {
 function confirmBillEntry(entryJsonStr, btn) {
   try {
     var entry = JSON.parse(entryJsonStr);
+
+    // Duplicate check
+    var dup = findDuplicateOrder(entry);
+    if (dup) {
+      var acts = btn.closest('.cacts');
+      acts.innerHTML =
+        '<div style="width:100%;background:rgba(232,184,74,0.12);border:1px solid rgba(232,184,74,0.35);border-radius:10px;padding:10px;margin-bottom:6px">'
+        + '<div style="font-size:13px;color:var(--amb);font-weight:600;margin-bottom:6px">&#9888; Duplicate Bill?</div>'
+        + '<div style="font-size:12px;color:var(--tx2);margin-bottom:10px">'
+          + escH(entry.vendor) + ' నుండి <strong style="color:var(--tx1)">' + rup(entry.amount) + '</strong> today already saved ఉంది'
+          + (dup.description ? ' (' + escH(dup.description) + ')' : '')
+          + '. Same bill మళ్ళీ scan చేశారా?'
+        + '</div>'
+        + '<div style="display:flex;gap:8px">'
+          + '<button class="btn amb sm" style="flex:1;font-size:12px" onclick="confirmBillEntryForce(\'' + escH(entryJsonStr.replace(/'/g,"\\'")) + '\',this)">&#10003; అవును, Save చేయి</button>'
+          + '<button class="btn ghost sm" style="flex:1;font-size:12px" onclick="this.closest(\'.cacts\').innerHTML=\'<span>Cancelled</span>\'">&#10007; Cancel</button>'
+        + '</div>'
+        + '</div>';
+      return;
+    }
+
     addEntry(entry);
-    btn.closest('.cacts').innerHTML = '<span class="ok">✓ Ledger లో Saved! Vendor balance updated.</span>';
+    btn.closest('.cacts').innerHTML = '<span class="ok">&#10003; Ledger లో Saved! Vendor balance updated.</span>';
+  } catch(e) {
+    toast('Save failed: ' + e.message, 'err');
+  }
+}
+
+function confirmBillEntryForce(entryJsonStr, btn) {
+  try {
+    var entry = JSON.parse(entryJsonStr);
+    addEntry(entry);
+    btn.closest('.cacts').innerHTML = '<span class="ok">&#10003; Saved! (duplicate confirmed)</span>';
   } catch(e) {
     toast('Save failed: ' + e.message, 'err');
   }
@@ -3676,20 +3788,32 @@ function toggleVoice() {
 function saveVendor() {
   var name = document.getElementById('v-name').value.trim();
   if (!name) { toast('Vendor పేరు ఇవ్వండి','err'); return; }
-  ensureVendor(name, document.getElementById('v-cat').value, document.getElementById('v-phone').value||null);
-  var loc = document.getElementById('v-loc').value.trim();
-  if (loc) state.vendors[name].location = loc;
-  // Auto-add to contacts if phone present
+  var cat   = document.getElementById('v-cat').value;
   var vphone = document.getElementById('v-phone').value.trim();
-  if (vphone) {
-    autoAddVendorContact(name, vphone, document.getElementById('v-cat').value, 'Manually added vendor', today());
+  var loc   = document.getElementById('v-loc').value.trim();
+
+  // Core save — always runs first
+  ensureVendor(name, cat, vphone || null);
+  if (loc) state.vendors[name].location = loc;
+  saveData();
+  renderVendors();
+  closeModal('add-vendor');
+
+  // Clear form
+  document.getElementById('v-name').value  = '';
+  document.getElementById('v-phone').value = '';
+  document.getElementById('v-loc').value   = '';
+  toast('Vendor saved ✓', 'ok');
+
+  // Side-effects — wrapped so they never block the save above
+  try {
+    if (vphone) {
+      upsertContactSilent(name, vphone, cat, 'Manually added vendor');
+    }
+    pushToSheet('Vendors', ['name','category','phone','location'], [name, cat, vphone, loc]);
+  } catch(e) {
+    console.warn('saveVendor side-effect error:', e);
   }
-  saveData(); renderVendors(); closeModal('add-vendor');
-  pushToSheet('Vendors',['name','category','phone','location'],[name,document.getElementById('v-cat').value,vphone,loc]);
-  document.getElementById('v-name').value='';
-  document.getElementById('v-phone').value='';
-  document.getElementById('v-loc').value='';
-  toast('Vendor saved','ok');
 }
 
 // ════════════════════════════════════════════════════════
