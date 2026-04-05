@@ -2010,26 +2010,27 @@ function addEntry(entry) {
   } else if (entry.type === 'payment') {
     state.vendors[entry.vendor].totalPaid = (state.vendors[entry.vendor].totalPaid||0) + Number(entry.amount||0);
   }
-
-  // Save entry + refresh UI first
+  // Save entry to localStorage + Sheet first — this is the primary action
   saveData(); refreshUI();
   pushToSheet('Entries',
     ['id','date','type','vendor','category','amount','description','unitPrice','priceKey'],
     [entry.id,entry.date,entry.type,entry.vendor,entry.category,entry.amount,entry.description||'',entry.unitPrice||'',entry.priceKey||'']
   );
 
-  // Update contact intelligence silently with UNIT PRICE (not total)
-  // e.g. 100 bags at Rs.600 => stores Rs.600/bag, not Rs.60,000
+  // Update contact intelligence silently (no toast, no renderContacts call)
+  // Use unitPrice (per-unit rate) NOT amount (total bill) — e.g. 600/bag not 60000
   if (entry.vendor) {
-    upsertContactSilent(
-      entry.vendor,
-      entry.phone || '',
-      entry.category || '',
-      null,
-      entry.type === 'order' ? Number(entry.unitPrice || 0) : 0,
-      entry.priceUnit || entry.unit || '',
-      entry.date
-    );
+    var unitPriceForContact = entry.type === 'order' ? Number(entry.unitPrice || 0) : 0;
+    upsertContact({
+      name: entry.vendor,
+      phone: entry.phone || '',
+      category: entry.category || '',
+      lastPrice: unitPriceForContact,
+      lastPriceUnit: entry.priceUnit || entry.unit || '',
+      lastPriceDate: entry.date,
+      source: 'entry',
+      silent: true
+    });
   }
 }
 
@@ -2112,57 +2113,12 @@ function upsertContact(opts) {
      newContact.lastPrice, newContact.lastPriceUnit, newContact.lastPriceDate,
      newContact.totalBusiness, newContact.address, newContact.notes, newContact.addedDate]
   );
-  toast(name + ' Contacts లో add అయ్యారు' + (phone ? ' 📞' : '') + ' ✓', 'ok');
+  if (!opts.silent) toast(name + ' Contacts లో add అయ్యారు' + (phone ? ' 📞' : '') + ' ✓', 'ok');
 }
 
 // Legacy shim — keep old call sites working
 function autoAddVendorContact(name, phone, category, notes, date) {
   upsertContact({name:name, phone:phone, category:category, notes:notes, source:'entry'});
-}
-
-// Silent variant — upserts contact data WITHOUT calling renderContacts() or showing toasts
-// unitPrice = per-unit rate (e.g. 600/bag), NOT the total bill amount
-function upsertContactSilent(name, phone, category, notes, unitPrice, priceUnit, priceDate) {
-  try {
-    if (!name || name.trim().length < 2) return;
-    if (!state.contacts) state.contacts = [];
-    var ph = phone ? String(phone).replace(/[^0-9]/g,'') : '';
-    if (ph && !/^[6-9][0-9]{9}$/.test(ph)) ph = '';
-    var uPrice = Number(unitPrice) || 0;
-    var exists = state.contacts.find(function(c){
-      return c.name.toLowerCase() === name.toLowerCase() || (ph && c.phone === ph);
-    });
-    if (exists) {
-      var updated = false;
-      if (ph && !exists.phone)       { exists.phone = ph; updated = true; }
-      if (category && !exists.category) { exists.category = category; updated = true; }
-      if (uPrice > 0) {
-        exists.lastPrice     = uPrice;
-        exists.lastPriceUnit = priceUnit || exists.lastPriceUnit || '';
-        exists.lastPriceDate = priceDate || exists.lastPriceDate || '';
-        updated = true;
-      }
-      if (updated) saveData();
-    } else {
-      state.contacts.push({
-        id: 'con_' + Date.now() + Math.random().toString(36).slice(2,5),
-        name: name.trim().substring(0,80),
-        phone: ph,
-        category: category || '',
-        lastPrice: uPrice || '',
-        lastPriceUnit: priceUnit || '',
-        lastPriceDate: priceDate || '',
-        totalBusiness: 0,
-        address: '',
-        notes: notes || '',
-        addedDate: today(),
-        source: 'entry'
-      });
-      saveData();
-    }
-  } catch(e) {
-    console.warn('upsertContactSilent error:', e);
-  }
 }
 
 // ════════════════════════════════════════════════════════
@@ -2562,57 +2518,52 @@ function sendMsg() {
   callGemini(null, null, null).finally(function(){ sbtn.disabled=false; });
 }
 
-// ── DUPLICATE ORDER DETECTION ──────────────────────────────
-// Returns matching entry if same vendor + same amount + same date already exists
+// Returns a matching entry if same vendor+amount+date already saved today (orders only)
 function findDuplicateOrder(entry) {
   if (entry.type !== 'order') return null;
   var d = entry.date || today();
   var amt = Number(entry.amount || 0);
-  var vendor = (entry.vendor || '').toLowerCase().trim();
+  var vnd = (entry.vendor || '').toLowerCase().trim();
   return state.entries.find(function(e) {
     return e.type === 'order'
       && e.date === d
       && Number(e.amount || 0) === amt
-      && (e.vendor || '').toLowerCase().trim() === vendor;
+      && (e.vendor || '').toLowerCase().trim() === vnd;
   }) || null;
 }
 
 function confirmEntry(eid, btn) {
   var entry = _pendingEntries[eid];
-  if (!entry) { btn.closest('.cacts').innerHTML = '<span class="bad">&#9888; Already saved or expired</span>'; return; }
+  if (!entry) { btn.closest('.cacts').innerHTML = '<span class="bad">⚠️ Already saved or expired</span>'; return; }
 
   // Duplicate check for orders only
   var dup = findDuplicateOrder(entry);
   if (dup) {
-    var acts = btn.closest('.cacts');
-    acts.innerHTML =
-      '<div style="width:100%;background:rgba(232,184,74,0.12);border:1px solid rgba(232,184,74,0.35);border-radius:10px;padding:10px;margin-bottom:6px">'
-      + '<div style="font-size:13px;color:var(--amb);font-weight:600;margin-bottom:6px">&#9888; Duplicate Order?</div>'
-      + '<div style="font-size:12px;color:var(--tx2);margin-bottom:10px">'
-        + escH(entry.vendor) + ' నుండి <strong style="color:var(--tx1)">' + rup(entry.amount) + '</strong> order '
-        + 'today already ఉంది'
-        + (dup.description ? ' (' + escH(dup.description) + ')' : '')
-        + '. మళ్ళీ same order వచ్చిందా?'
-      + '</div>'
-      + '<div style="display:flex;gap:8px">'
-        + '<button class="btn amb sm" style="flex:1;font-size:12px" onclick="confirmEntryForce(\'' + eid + '\',this)">&#10003; అవును, Save చేయి</button>'
-        + '<button class="btn ghost sm" style="flex:1;font-size:12px" onclick="this.closest(\'.ccard\').remove()">&#10007; Cancel</button>'
-      + '</div>'
-      + '</div>';
+    btn.closest('.cacts').innerHTML =
+      '<div style="background:rgba(232,184,74,0.12);border:1px solid rgba(232,184,74,0.4);border-radius:10px;padding:10px;width:100%">'
+      +'<div style="font-size:13px;font-weight:700;color:var(--amb);margin-bottom:5px">⚠️ Duplicate Order?</div>'
+      +'<div style="font-size:12px;color:var(--tx2);margin-bottom:9px">'
+        +escH(entry.vendor)+' నుండి <b>'+rup(entry.amount)+'</b> order today already ఉంది'
+        +(dup.description?' ('+escH(dup.description)+')':'')+'. మళ్ళీ same order వచ్చిందా?'
+      +'</div>'
+      +'<div style="display:flex;gap:8px">'
+        +'<button class="btn amb sm" style="flex:1;font-size:12px" onclick="confirmEntryForce(''+eid+'',this)">✓ అవును, Save చేయి</button>'
+        +'<button class="btn ghost sm" style="flex:1;font-size:12px" onclick="this.closest('.ccard').remove()">✗ Cancel</button>'
+      +'</div></div>';
     return;
   }
 
   addEntry(entry);
   delete _pendingEntries[eid];
-  btn.closest('.cacts').innerHTML = '<span class="ok">&#10003; Google Sheet లో Saved!</span>';
+  btn.closest('.cacts').innerHTML = '<span class="ok">✓ Entries Sheet లో Saved!</span>';
 }
 
 function confirmEntryForce(eid, btn) {
   var entry = _pendingEntries[eid];
-  if (!entry) { btn.closest('.cacts').innerHTML = '<span class="bad">&#9888; Already saved or expired</span>'; return; }
+  if (!entry) { btn.closest('.cacts').innerHTML = '<span class="bad">⚠️ Already saved or expired</span>'; return; }
   addEntry(entry);
   delete _pendingEntries[eid];
-  btn.closest('.cacts').innerHTML = '<span class="ok">&#10003; Saved! (duplicate confirmed)</span>';
+  btn.closest('.cacts').innerHTML = '<span class="ok">✓ Saved! (duplicate confirmed)</span>';
 }
 
 async function callGemini(imageData, imageMime, docPromptOverride) {
@@ -3485,39 +3436,8 @@ function buildBillConfirmCard(result, docId) {
 function confirmBillEntry(entryJsonStr, btn) {
   try {
     var entry = JSON.parse(entryJsonStr);
-
-    // Duplicate check
-    var dup = findDuplicateOrder(entry);
-    if (dup) {
-      var acts = btn.closest('.cacts');
-      acts.innerHTML =
-        '<div style="width:100%;background:rgba(232,184,74,0.12);border:1px solid rgba(232,184,74,0.35);border-radius:10px;padding:10px;margin-bottom:6px">'
-        + '<div style="font-size:13px;color:var(--amb);font-weight:600;margin-bottom:6px">&#9888; Duplicate Bill?</div>'
-        + '<div style="font-size:12px;color:var(--tx2);margin-bottom:10px">'
-          + escH(entry.vendor) + ' నుండి <strong style="color:var(--tx1)">' + rup(entry.amount) + '</strong> today already saved ఉంది'
-          + (dup.description ? ' (' + escH(dup.description) + ')' : '')
-          + '. Same bill మళ్ళీ scan చేశారా?'
-        + '</div>'
-        + '<div style="display:flex;gap:8px">'
-          + '<button class="btn amb sm" style="flex:1;font-size:12px" onclick="confirmBillEntryForce(\'' + escH(entryJsonStr.replace(/'/g,"\\'")) + '\',this)">&#10003; అవును, Save చేయి</button>'
-          + '<button class="btn ghost sm" style="flex:1;font-size:12px" onclick="this.closest(\'.cacts\').innerHTML=\'<span>Cancelled</span>\'">&#10007; Cancel</button>'
-        + '</div>'
-        + '</div>';
-      return;
-    }
-
     addEntry(entry);
-    btn.closest('.cacts').innerHTML = '<span class="ok">&#10003; Ledger లో Saved! Vendor balance updated.</span>';
-  } catch(e) {
-    toast('Save failed: ' + e.message, 'err');
-  }
-}
-
-function confirmBillEntryForce(entryJsonStr, btn) {
-  try {
-    var entry = JSON.parse(entryJsonStr);
-    addEntry(entry);
-    btn.closest('.cacts').innerHTML = '<span class="ok">&#10003; Saved! (duplicate confirmed)</span>';
+    btn.closest('.cacts').innerHTML = '<span class="ok">✓ Ledger లో Saved! Vendor balance updated.</span>';
   } catch(e) {
     toast('Save failed: ' + e.message, 'err');
   }
@@ -3805,28 +3725,22 @@ function saveVendor() {
   var vphone = document.getElementById('v-phone').value.trim();
   var loc   = document.getElementById('v-loc').value.trim();
 
-  // Core save — always runs first
+  // 1. Core save — always runs, no dependencies
   ensureVendor(name, cat, vphone || null);
   if (loc) state.vendors[name].location = loc;
   saveData();
   renderVendors();
   closeModal('add-vendor');
-
-  // Clear form
   document.getElementById('v-name').value  = '';
   document.getElementById('v-phone').value = '';
   document.getElementById('v-loc').value   = '';
   toast('Vendor saved ✓', 'ok');
 
-  // Side-effects — wrapped so they never block the save above
+  // 2. Side-effects in try/catch — never block the save above
   try {
-    if (vphone) {
-      upsertContactSilent(name, vphone, cat, 'Manually added vendor');
-    }
+    if (vphone) autoAddVendorContact(name, vphone, cat, 'Manually added vendor', today());
     pushToSheet('Vendors', ['name','category','phone','location'], [name, cat, vphone, loc]);
-  } catch(e) {
-    console.warn('saveVendor side-effect error:', e);
-  }
+  } catch(e) { console.warn('saveVendor side-effect:', e); }
 }
 
 // ════════════════════════════════════════════════════════
