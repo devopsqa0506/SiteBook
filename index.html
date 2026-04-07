@@ -78,7 +78,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
   display:grid;place-items:center;font-size:11px;font-family:'JetBrains Mono';color:var(--amb)}
 .steps-list li strong{color:var(--tx)}
 .steps-list li a{color:var(--teal)}
-.fl{font-size:11px;color:var(--tx2);margin-bottom:6px;display:block;font-family:'JetBrains Mono'}
+.fl{font-size:13px;color:var(--tx1);margin-bottom:7px;display:block;font-weight:600;letter-spacing:0.1px}
 .fi{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:10px;
   padding:12px 14px;color:var(--tx);font-family:'Noto Sans Telugu',sans-serif;
   font-size:14px;outline:none;transition:border-color 0.2s;margin-bottom:12px}
@@ -140,7 +140,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
 .sc-card .v.rose{color:var(--rose)}.sc-card .v.sky{color:var(--sky)}
 .sc-card .s{font-size:11px;color:var(--tx3);margin-top:3px}
 .seg{padding:13px 15px 0}
-.seg-t{font-size:11px;letter-spacing:0.7px;text-transform:uppercase;color:var(--tx3);
+.seg-t{font-size:12px;letter-spacing:0.7px;text-transform:uppercase;color:var(--tx2);
   margin-bottom:10px;font-family:'JetBrains Mono';display:flex;align-items:center;justify-content:space-between}
 
 /* TRANSACTION ITEM */
@@ -425,14 +425,14 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
 .loan-hdr{padding:13px 14px;display:flex;align-items:center;gap:10px;cursor:pointer}
 .loan-ico{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;background:linear-gradient(135deg,rgba(232,93,122,0.15),rgba(232,93,122,0.05));border:1px solid rgba(232,93,122,0.25)}
 .loan-name{font-size:14px;font-weight:700;color:var(--tx1)}
-.loan-meta{font-size:11px;color:var(--tx3);margin-top:2px}
+.loan-meta{font-size:12px;color:var(--tx2);margin-top:2px}
 .loan-status-pill{font-size:11px;padding:3px 9px;border-radius:7px;font-weight:600;font-family:'JetBrains Mono';flex-shrink:0}
 .loan-status-pill.active{background:rgba(232,93,122,0.12);color:var(--rose)}
 .loan-status-pill.closed{background:rgba(122,200,90,0.12);color:var(--sage)}
 .loan-body{border-top:1px solid var(--bd);padding:12px 14px}
 .loan-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
 .ls-box{background:var(--s3);border:1px solid var(--bd2);border-radius:9px;padding:9px 10px;text-align:center}
-.ls-lbl{font-size:10px;color:var(--tx3);margin-bottom:3px;font-family:'JetBrains Mono'}
+.ls-lbl{font-size:11px;color:var(--tx2);margin-bottom:3px;font-family:'JetBrains Mono'}
 .ls-val{font-size:13px;font-weight:700;font-family:'JetBrains Mono'}
 
 /* Payment rows inside loan */
@@ -457,13 +457,24 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
 .pl-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bd);font-size:13px}
 .pl-row:last-child{border-bottom:none}
 .pl-row.total{font-weight:700;font-size:14px;padding-top:8px}
-.pl-lbl{color:var(--tx2)}
+.pl-lbl{color:var(--tx1)}
 .pl-val{font-family:'JetBrains Mono';font-weight:600}
 
 /* Finance summary strip */
 .fin-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
 .fsum-box{background:var(--s2);border:1px solid var(--bd);border-radius:11px;padding:11px 13px}
-.fsum-lbl{font-size:11px;color:var(--tx3);margin-bottom:4px}
+
+/* Expense rows */
+.exp-row{display:flex;align-items:flex-start;gap:9px;padding:8px 0;border-bottom:1px solid var(--bd);font-size:13px}
+.exp-row:last-child{border-bottom:none}
+.exp-cat-badge{font-size:10px;padding:2px 7px;border-radius:5px;background:rgba(232,93,122,0.1);color:var(--rose);font-weight:600;flex-shrink:0;margin-top:2px}
+.exp-cat-badge.builder{background:rgba(232,184,74,0.12);color:var(--amb)}
+.exp-cat-badge.reg{background:rgba(90,175,232,0.12);color:var(--sky)}
+.exp-cat-badge.borewell{background:rgba(58,232,200,0.1);color:var(--teal)}
+.exp-cat-badge.brokerage{background:rgba(122,200,90,0.12);color:var(--sage)}
+.exp-cat-badge.advance{background:rgba(232,184,74,0.12);color:var(--amb)}
+.exp-cat-badge.misc{background:rgba(150,150,150,0.12);color:var(--tx2)}
+.fsum-lbl{font-size:12px;color:var(--tx2);margin-bottom:4px;font-weight:500}
 .fsum-val{font-size:16px;font-weight:700;font-family:'JetBrains Mono'}
 
 /* AI BRAIN MODULE */
@@ -526,7 +537,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
 .proj-body{padding:12px 14px}
 .proj-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--bd);font-size:13px}
 .proj-row:last-child{border-bottom:none}
-.proj-label{color:var(--tx2)}
+.proj-label{color:var(--tx1)}
 .proj-val{font-weight:600;font-family:'JetBrains Mono'}
 .proj-val.amb{color:var(--amb)}.proj-val.teal{color:var(--teal)}.proj-val.rose{color:var(--rose)}.proj-val.sage{color:var(--sage)}
 .profit-bar-wrap{margin:10px 14px;background:var(--s3);border-radius:8px;overflow:hidden;height:8px}
@@ -547,7 +558,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
 /* PROFITABILITY */
 .profit-summary{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:12px 14px}
 .ps-box{background:var(--s3);border:1px solid var(--bd2);border-radius:10px;padding:10px;text-align:center}
-.ps-box .pl{font-size:10px;color:var(--tx3);margin-bottom:4px;font-family:'JetBrains Mono'}
+.ps-box .pl{font-size:11px;color:var(--tx2);margin-bottom:4px;font-family:'JetBrains Mono'}
 .ps-box .pv{font-size:14px;font-weight:700;font-family:'JetBrains Mono'}
 
 /* AGREEMENT ALERTS */
@@ -970,7 +981,10 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
 
         <!-- ── PANEL 2: PROJECT EXPENDITURE ── -->
         <div class="fin-panel" id="fpanel-expenditure">
-          <button class="btn amb full" style="margin-bottom:12px" onclick="openModal('add-proj-income')">+ Add Sale / Income Entry</button>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+            <button class="btn rose full" onclick="openModal('add-proj-expense')">+ Add Expense</button>
+            <button class="btn teal full" onclick="openModal('add-proj-income')">+ Add Income</button>
+          </div>
           <div id="proj-exp-list">
             <div class="empty"><div class="ei">📊</div><div class="et">Projects add అయిన తర్వాత expenditure కనపడుతుంది</div></div>
           </div>
@@ -1548,6 +1562,41 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
   </div>
 </div>
 
+<!-- ══ ADD PROJECT EXPENSE MODAL ══ -->
+<div class="mover" id="add-proj-expense">
+  <div class="msheet">
+    <div class="mgrip"></div>
+    <div class="mt">📤 Add Project Expense</div>
+
+    <label class="fl">Project *</label>
+    <select class="fi" id="pexp-project"></select>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div><label class="fl">Date *</label><input class="fi" id="pexp-date" type="date"></div>
+      <div><label class="fl">Amount (₹) *</label><input class="fi fi-mono" id="pexp-amount" type="number" placeholder="50000"></div>
+    </div>
+
+    <label class="fl">Category *</label>
+    <select class="fi" id="pexp-category">
+      <option value="builder">👷 Builder Payment</option>
+      <option value="advance">🤝 Land Advance / Token</option>
+      <option value="registration">📋 Registration Charges</option>
+      <option value="borewell">💧 Borewell</option>
+      <option value="brokerage">🤝 Brokerage</option>
+      <option value="ec_legal">⚖️ EC / Legal Fees</option>
+      <option value="misc">📦 Miscellaneous</option>
+    </select>
+
+    <label class="fl">Description</label>
+    <input class="fi" id="pexp-desc" placeholder="ఉదా: Foundation complete — 1st installment, Token for survey 620/1">
+
+    <div style="display:flex;gap:9px;margin-top:4px">
+      <button class="btn ghost full" onclick="closeModal('add-proj-expense')">Cancel</button>
+      <button class="btn rose full" onclick="saveProjExpense()">✓ Save Expense</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══ ADD PROJECT INCOME MODAL ══ -->
 <div class="mover" id="add-proj-income">
   <div class="msheet">
@@ -1668,7 +1717,7 @@ var APPS_SCRIPT_CODE = [
   '    // ── READ ALL SHEETS ──',
   '    if (action === "readAll") {',
   '      var result = {};',
-  '      var sheetNames = data.sheets || ["Entries","Vendors","Prices","Documents","Contacts","Projects","BillHeaders","BillItems","Loans","LoanPayments","ProjectIncome"];',
+  '      var sheetNames = data.sheets || ["Entries","Vendors","Prices","Documents","Contacts","Projects","BillHeaders","BillItems","Loans","LoanPayments","ProjectIncome","ProjectExpenses"];',
   '      sheetNames.forEach(function(name) {',
   '        var sh = ss.getSheetByName(name);',
   '        result[name] = (sh && sh.getLastRow() > 1) ? sh.getDataRange().getValues() : [];',
@@ -1790,7 +1839,7 @@ function saveData() {
   toSave.documents = [];
   STORE.set(DATA_KEY, toSave);
 }
-function freshData(){ return {entries:[],vendors:{},priceHistory:{},billPriceHistory:{},documents:[],projects:[],contacts:[],nextId:1,chatHistory:[],lastSync:null,loans:[],loanPayments:[],projIncome:[]}; }
+function freshData(){ return {entries:[],vendors:{},priceHistory:{},billPriceHistory:{},documents:[],projects:[],contacts:[],nextId:1,chatHistory:[],lastSync:null,loans:[],loanPayments:[],projIncome:[],projExpenses:[]}; }
 
 // ════════════════════════════════════════════════════════
 // HARDCODED CONFIG — Private repo లో safe గా ఉంటుంది
@@ -2014,7 +2063,7 @@ function syncFromSheet() {
   setSyncStatus('syncing');
   fetch(cfg.scriptUrl, {
     method:'POST',
-    body: JSON.stringify({action:'readAll',sheetId:cfg.sheetId,sheets:["Entries","Vendors","Prices","Documents","Contacts","Projects","BillHeaders","BillItems","Loans","LoanPayments","ProjectIncome"]})
+    body: JSON.stringify({action:'readAll',sheetId:cfg.sheetId,sheets:["Entries","Vendors","Prices","Documents","Contacts","Projects","BillHeaders","BillItems","Loans","LoanPayments","ProjectIncome","ProjectExpenses"]})
   }).then(function(r){ return r.json(); }).then(function(data){
     if (data.ok && data.data) {
       mergeSheetData(data.data);
@@ -2135,6 +2184,15 @@ function mergeSheetData(sheetData) {
     var piIds = new Set(state.projIncome.map(function(i){ return i.id; }));
     piRows.forEach(function(r){ var o={}; piHdrs.forEach(function(h,i){ o[h]=r[i]; });
       if (o.id && !piIds.has(o.id)) { o.amount=Number(o.amount)||0; state.projIncome.push(o); }
+    });
+  }
+  // ── Merge ProjectExpenses ──
+  if (sheetData.ProjectExpenses && sheetData.ProjectExpenses.length > 1) {
+    var peHdrs = sheetData.ProjectExpenses[0]; var peRows = sheetData.ProjectExpenses.slice(1);
+    if (!state.projExpenses) state.projExpenses=[];
+    var peIds = new Set(state.projExpenses.map(function(e){ return e.id; }));
+    peRows.forEach(function(r){ var o={}; peHdrs.forEach(function(h,i){ o[h]=r[i]; });
+      if (o.id && !peIds.has(o.id)) { o.amount=Number(o.amount)||0; state.projExpenses.push(o); }
     });
   }
 }
@@ -5009,8 +5067,10 @@ function showSc(name) {
 }
 
 function openModal(id) {
-  if (id==='add-proj-income') populateIncomeProjectSelector();
-  if (id==='add-loan') { var d=document.getElementById('ln-date'); if(d&&!d.value) d.value=new Date().toISOString().slice(0,10); }
+  if (id==='add-proj-income' || id==='add-proj-expense') populateIncomeProjectSelector();
+  if (id==='add-proj-expense') { var d=document.getElementById('pexp-date'); if(d&&!d.value) d.value=new Date().toISOString().slice(0,10); }
+  if (id==='add-proj-income')  { var d2=document.getElementById('inc-date'); if(d2&&!d2.value) d2.value=new Date().toISOString().slice(0,10); }
+  if (id==='add-loan') { var d3=document.getElementById('ln-date'); if(d3&&!d3.value) d3.value=new Date().toISOString().slice(0,10); }
   document.getElementById(id).classList.add('on');
 }
 function closeModal(id) { document.getElementById(id).classList.remove('on'); }
@@ -5704,6 +5764,7 @@ window.onerror = function(msg, src, line, col, err) {
 if (!state.loans)        state.loans        = [];
 if (!state.loanPayments) state.loanPayments = [];
 if (!state.projIncome)   state.projIncome   = [];
+if (!state.projExpenses) state.projExpenses = [];
 
 // ── Tab switcher ──
 function switchFinTab(tab) {
@@ -6019,60 +6080,106 @@ function renderProjExp() {
     return;
   }
 
+  var catLabel = {
+    builder:'👷 Builder Payment', advance:'🤝 Land Advance/Token',
+    registration:'📋 Registration', borewell:'💧 Borewell',
+    brokerage:'🤝 Brokerage', ec_legal:'⚖️ EC/Legal', misc:'📦 Misc'
+  };
+  var catBadge = {
+    builder:'builder', advance:'advance', registration:'reg',
+    borewell:'borewell', brokerage:'brokerage', ec_legal:'reg', misc:'misc'
+  };
+  var incLabel = {house_sale:'🏠 House Sale',land_sale:'🌾 Land Sale',advance:'💰 Advance',token:'🪙 Token',other:'📦 Other'};
+
   var html='';
   projects.forEach(function(proj, pidx) {
     var bodyId='pebody_'+pidx;
-    // Existing entries tagged to this project (future — for now show project costs from project data itself)
-    var landCost = Number(proj.landCost||0)||(Number(proj.totalCents||0)*Number(proj.pricePerCent||0));
-    var constructionCost = (proj.houses||[]).reduce(function(s,h){ return s+Number(h.constructionCost||0); },0);
-    var totalSpend = landCost + constructionCost;
 
-    // Income for this project
+    // Land cost from project modal fields
+    var landCost = Number(proj.landCost||0)||(Number(proj.totalCents||0)*Number(proj.pricePerCent||0));
+    // Construction cost from house phases
+    var constructionCost = (proj.houses||[]).reduce(function(s,h){ return s+Number(h.constructionCost||0); },0);
+    // Manual expenses from ProjectExpenses sheet
+    var manualExps = (state.projExpenses||[]).filter(function(e){ return e.projId===proj.id; });
+    var manualExpTotal = manualExps.reduce(function(s,e){ return s+Number(e.amount||0); },0);
+
+    var totalSpend = landCost + constructionCost + manualExpTotal;
     var incomes = (state.projIncome||[]).filter(function(i){ return i.projId===proj.id; });
     var totalIncome = incomes.reduce(function(s,i){ return s+Number(i.amount||0); },0);
     var grossProfit = totalIncome - totalSpend;
     var profitColor = grossProfit>0?'var(--sage)':grossProfit<0?'var(--rose)':'var(--amb)';
-    var typeMap = {house_sale:'🏠 House Sale',land_sale:'🌾 Land Sale',advance:'💰 Advance',token:'🪙 Token',other:'📦 Other'};
 
     html += '<div class="proj-exp-card fu">'
       +'<div class="pe-hdr" onclick="document.getElementById(\''+bodyId+'\').style.display=document.getElementById(\''+bodyId+'\').style.display===\'none\'?\'block\':\'none\'">'
         +'<div style="font-size:22px;flex-shrink:0">'+(proj.type==='land'?'🌾':'🏗️')+'</div>'
         +'<div style="flex:1;min-width:0">'
-          +'<div style="font-size:14px;font-weight:700">'+escH(proj.name)+'</div>'
-          +'<div style="font-size:11px;color:var(--tx3);margin-top:2px">Spend: '+rup(totalSpend)+' · Income: '+rup(totalIncome)+'</div>'
+          +'<div style="font-size:14px;font-weight:700;color:var(--tx1)">'+escH(proj.name)+'</div>'
+          +'<div style="font-size:12px;color:var(--tx2);margin-top:2px">Spend: '+rup(totalSpend)+' · Income: '+rup(totalIncome)+'</div>'
         +'</div>'
         +'<div style="font-weight:700;font-family:JetBrains Mono;color:'+profitColor+';font-size:13px">'+(grossProfit>=0?'+':'')+rup(grossProfit)+'</div>'
       +'</div>'
-      +'<div class="pe-body" id="'+bodyId+'">'
-        // Expenditure breakdown
-        +'<div style="font-size:12px;font-weight:700;color:var(--tx2);margin-bottom:8px">📤 Expenditure</div>'
-        +'<div style="background:var(--s3);border-radius:9px;padding:10px 12px;margin-bottom:10px">'
-          +(landCost?'<div class="pl-row"><span class="pl-lbl">🌾 Land Cost</span><span class="pl-val" style="color:var(--amb)">'+rup(landCost)+'</span></div>':'')
-          +(constructionCost?'<div class="pl-row"><span class="pl-lbl">🏗️ Construction</span><span class="pl-val" style="color:var(--sky)">'+rup(constructionCost)+'</span></div>':'')
-          +'<div class="pl-row total"><span class="pl-lbl">Total Spend</span><span class="pl-val" style="color:var(--rose)">'+rup(totalSpend)+'</span></div>'
-        +'</div>'
-        // Income entries
-        +'<div style="font-size:12px;font-weight:700;color:var(--tx2);margin-bottom:8px">📥 Income / Sales</div>';
+      +'<div class="pe-body" id="'+bodyId+'">';
+
+    // ── EXPENDITURE SECTION ──
+    html += '<div style="font-size:13px;font-weight:700;color:var(--rose);margin-bottom:8px">📤 Expenditure</div>';
+
+    // Base costs from project setup
+    if (landCost || constructionCost) {
+      html += '<div style="background:var(--s3);border-radius:9px;padding:10px 12px;margin-bottom:10px">'
+        +'<div style="font-size:11px;font-weight:700;color:var(--tx3);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">From Project Setup</div>'
+        +(landCost?'<div class="pl-row"><span class="pl-lbl">🌾 Land Cost</span><span class="pl-val" style="color:var(--amb)">'+rup(landCost)+'</span></div>':'')
+        +(constructionCost?'<div class="pl-row"><span class="pl-lbl">🏗️ Construction (phases)</span><span class="pl-val" style="color:var(--sky)">'+rup(constructionCost)+'</span></div>':'')
+      +'</div>';
+    }
+
+    // Manual expense entries
+    if (manualExps.length) {
+      var sortedExps = manualExps.slice().sort(function(a,b){ return a.date.localeCompare(b.date); });
+      html += '<div style="font-size:11px;font-weight:700;color:var(--tx3);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">Manual Entries</div>'
+        +'<div style="background:var(--s3);border-radius:9px;padding:8px 12px;margin-bottom:10px">';
+      sortedExps.forEach(function(exp) {
+        html += '<div class="exp-row">'
+          +'<span style="font-size:12px;color:var(--tx2);width:72px;flex-shrink:0;font-family:JetBrains Mono">'+exp.date+'</span>'
+          +'<span class="exp-cat-badge '+(catBadge[exp.category]||'misc')+'">'+(catLabel[exp.category]||exp.category)+'</span>'
+          +'<span style="flex:1;font-size:12px;color:var(--tx2);margin-left:6px">'+(exp.desc?escH(exp.desc):'')+'</span>'
+          +'<span style="font-family:JetBrains Mono;font-weight:700;color:var(--rose);margin-left:6px">−'+rup(exp.amount)+'</span>'
+          +'<button onclick="deleteProjExpense(\''+exp.id+'\')" style="background:none;border:none;color:var(--tx3);cursor:pointer;font-size:14px;margin-left:4px">🗑️</button>'
+        +'</div>';
+      });
+      html += '</div>';
+    } else {
+      html += '<div style="font-size:13px;color:var(--tx3);padding:6px 0 10px">No manual expenses yet — use "+ Add Expense" above</div>';
+    }
+
+    // Total spend
+    html += '<div style="background:rgba(232,93,122,0.07);border:1px solid rgba(232,93,122,0.2);border-radius:9px;padding:9px 12px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">'
+      +'<span style="font-size:13px;font-weight:700;color:var(--tx1)">Total Spend</span>'
+      +'<span style="font-family:JetBrains Mono;font-size:14px;font-weight:700;color:var(--rose)">'+rup(totalSpend)+'</span>'
+    +'</div>';
+
+    // ── INCOME SECTION ──
+    html += '<div style="font-size:13px;font-weight:700;color:var(--teal);margin-bottom:8px">📥 Income / Sales</div>';
 
     if (incomes.length) {
-      html += '<div style="background:var(--s3);border-radius:9px;padding:10px 12px;margin-bottom:10px">';
       var sortedInc = incomes.slice().sort(function(a,b){ return a.date.localeCompare(b.date); });
+      html += '<div style="background:var(--s3);border-radius:9px;padding:8px 12px;margin-bottom:10px">';
       sortedInc.forEach(function(inc) {
         html += '<div class="income-row">'
-          +'<span style="font-size:12px;color:var(--tx3);width:72px;flex-shrink:0;font-family:JetBrains Mono">'+inc.date+'</span>'
-          +'<span style="flex:1;font-size:13px;color:var(--tx2)">'+(typeMap[inc.type]||inc.type)+(inc.desc?' — '+escH(inc.desc):'')+'</span>'
+          +'<span style="font-size:12px;color:var(--tx2);width:72px;flex-shrink:0;font-family:JetBrains Mono">'+inc.date+'</span>'
+          +'<span style="flex:1;font-size:13px;color:var(--tx1)">'+(incLabel[inc.type]||inc.type)+(inc.desc?' — '+escH(inc.desc):'')+'</span>'
           +'<span style="font-family:JetBrains Mono;font-weight:700;color:var(--sage)">+'+rup(inc.amount)+'</span>'
           +'<button onclick="deleteProjIncome(\''+inc.id+'\')" style="background:none;border:none;color:var(--tx3);cursor:pointer;font-size:14px;margin-left:6px">🗑️</button>'
         +'</div>';
       });
-      html += '<div class="pl-row total"><span class="pl-lbl">Total Income</span><span class="pl-val" style="color:var(--sage)">'+rup(totalIncome)+'</span></div>'
+      html += '<div class="pl-row total" style="margin-top:4px"><span class="pl-lbl">Total Income</span><span class="pl-val" style="color:var(--sage)">'+rup(totalIncome)+'</span></div>'
            +'</div>';
     } else {
-      html += '<div style="font-size:13px;color:var(--tx3);padding:8px 0;margin-bottom:10px">No income entries yet — Add sale proceeds above</div>';
+      html += '<div style="font-size:13px;color:var(--tx3);padding:6px 0 10px">No income entries yet</div>';
     }
 
-    html += '<div style="background:var(--s3);border-radius:9px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">'
-      +'<span style="font-size:13px;font-weight:700">Gross Profit</span>'
+    // Gross profit
+    html += '<div style="background:var(--s3);border-radius:9px;padding:9px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">'
+      +'<span style="font-size:13px;font-weight:700;color:var(--tx1)">Gross Profit</span>'
       +'<span style="font-family:JetBrains Mono;font-size:15px;font-weight:700;color:'+profitColor+'">'+(grossProfit>=0?'+':'')+rup(grossProfit)+'</span>'
     +'</div>'
     +'</div>' // pe-body
@@ -6120,7 +6227,6 @@ function renderPL() {
     return;
   }
 
-  // ── Total interest paid across ALL loans ──
   var totalIntPaidAll = (state.loanPayments||[]).reduce(function(s,p){ return s+Number(p.interestPart||0); },0);
   var totalBorrowed   = loans.reduce(function(s,l){ return s+Number(l.principal||0); },0);
   var totalOutstanding= loans.reduce(function(s,l){
@@ -6129,8 +6235,6 @@ function renderPL() {
     return s+Math.max(l.principal-paid,0);
   },0);
 
-  // ── Per-project P&L: allocate interest proportionally ──
-  // Method: total interest paid ÷ number of active projects
   var activeCount = projects.filter(function(p){ return p.status!=='done'; }).length || projects.length;
 
   var html=''; var overallGross=0; var overallNet=0; var overallSpend=0; var overallIncome=0;
@@ -6138,18 +6242,17 @@ function renderPL() {
   projects.forEach(function(proj) {
     var landCost         = Number(proj.landCost||0)||(Number(proj.totalCents||0)*Number(proj.pricePerCent||0));
     var constructionCost = (proj.houses||[]).reduce(function(s,h){ return s+Number(h.constructionCost||0); },0);
-    var totalSpend       = landCost + constructionCost;
+    var manualExpTotal   = (state.projExpenses||[]).filter(function(e){ return e.projId===proj.id; })
+                            .reduce(function(s,e){ return s+Number(e.amount||0); },0);
+    var totalSpend       = landCost + constructionCost + manualExpTotal;
     var incomes          = (state.projIncome||[]).filter(function(i){ return i.projId===proj.id; });
     var totalIncome      = incomes.reduce(function(s,i){ return s+Number(i.amount||0); },0);
     var grossProfit      = totalIncome - totalSpend;
-
-    // Allocate interest
-    var allocatedInt = activeCount > 0 ? Math.round(totalIntPaidAll / activeCount) : 0;
-    var netProfit    = grossProfit - allocatedInt;
-
-    var gpColor  = grossProfit>=0?'var(--sage)':'var(--rose)';
-    var npColor  = netProfit>=0?'var(--sage)':'var(--rose)';
-    var roi      = totalSpend>0 ? (netProfit/totalSpend*100).toFixed(1)+'%' : '—';
+    var allocatedInt     = activeCount > 0 ? Math.round(totalIntPaidAll / activeCount) : 0;
+    var netProfit        = grossProfit - allocatedInt;
+    var gpColor          = grossProfit>=0?'var(--sage)':'var(--rose)';
+    var npColor          = netProfit>=0?'var(--sage)':'var(--rose)';
+    var roi              = totalSpend>0 ? (netProfit/totalSpend*100).toFixed(1)+'%' : '—';
 
     overallGross  += grossProfit;
     overallNet    += netProfit;
@@ -6160,42 +6263,91 @@ function renderPL() {
       +'<div class="pl-proj-name">'+(proj.type==='land'?'🌾':'🏗️')+' '+escH(proj.name)
         +'<span style="margin-left:auto;font-size:11px;padding:3px 8px;border-radius:6px;background:rgba(122,200,90,0.1);color:var(--sage);font-family:JetBrains Mono">ROI '+roi+'</span>'
       +'</div>'
-      +'<div class="pl-row"><span class="pl-lbl">🌾 Land Cost</span><span class="pl-val" style="color:var(--amb)">'+rup(landCost)+'</span></div>'
-      +(constructionCost?'<div class="pl-row"><span class="pl-lbl">🏗️ Construction</span><span class="pl-val" style="color:var(--sky)">'+rup(constructionCost)+'</span></div>':'')
-      +'<div class="pl-row"><span class="pl-lbl">📤 Total Spend</span><span class="pl-val" style="color:var(--rose)">'+rup(totalSpend)+'</span></div>'
+      +(landCost?'<div class="pl-row"><span class="pl-lbl">🌾 Land Cost</span><span class="pl-val" style="color:var(--amb)">'+rup(landCost)+'</span></div>':'')
+      +(constructionCost?'<div class="pl-row"><span class="pl-lbl">🏗️ Construction (phases)</span><span class="pl-val" style="color:var(--sky)">'+rup(constructionCost)+'</span></div>':'')
+      +(manualExpTotal?'<div class="pl-row"><span class="pl-lbl">📤 Other Expenses</span><span class="pl-val" style="color:var(--rose)">'+rup(manualExpTotal)+'</span></div>':'')
+      +'<div class="pl-row"><span class="pl-lbl" style="font-weight:700">Total Spend</span><span class="pl-val" style="color:var(--rose)">'+rup(totalSpend)+'</span></div>'
       +'<div class="pl-row"><span class="pl-lbl">📥 Total Income</span><span class="pl-val" style="color:var(--teal)">'+rup(totalIncome)+'</span></div>'
       +'<div class="pl-row total" style="border-top:1px solid var(--bd);padding-top:8px"><span class="pl-lbl">Gross Profit</span><span class="pl-val" style="color:'+gpColor+'">'+(grossProfit>=0?'+':'')+rup(grossProfit)+'</span></div>'
-      +(allocatedInt?'<div class="pl-row"><span class="pl-lbl" style="color:var(--tx3)">− Interest (allocated)</span><span class="pl-val" style="color:var(--rose)">−'+rup(allocatedInt)+'</span></div>':'')
+      +(allocatedInt?'<div class="pl-row"><span class="pl-lbl" style="color:var(--tx2)">− Interest (allocated)</span><span class="pl-val" style="color:var(--rose)">−'+rup(allocatedInt)+'</span></div>':'')
       +'<div class="pl-row total" style="background:var(--s3);border-radius:8px;padding:8px 10px;margin-top:4px"><span class="pl-lbl" style="font-size:14px">Net Profit</span><span class="pl-val" style="font-size:16px;color:'+npColor+'">'+(netProfit>=0?'+':'')+rup(netProfit)+'</span></div>'
     +'</div>';
   });
 
   elList.innerHTML=html;
 
-  // Overall summary
   if (elOverall) {
     var ocColor = overallNet>=0?'var(--sage)':'var(--rose)';
     elOverall.innerHTML='<div style="background:linear-gradient(135deg,rgba(232,184,74,0.08),rgba(58,232,200,0.05));border:1px solid rgba(232,184,74,0.3);border-radius:13px;padding:14px;margin-bottom:4px">'
       +'<div style="font-size:13px;font-weight:700;color:var(--amb);margin-bottom:10px">📊 Overall P&amp;L — All Projects</div>'
       +'<div class="fin-summary">'
-        +'<div class="fsum-box"><div class="fsum-lbl">Total Invested</div><div class="fsum-val rose">'+rup(overallSpend)+'</div></div>'
-        +'<div class="fsum-box"><div class="fsum-lbl">Total Income</div><div class="fsum-val teal">'+rup(overallIncome)+'</div></div>'
-        +'<div class="fsum-box"><div class="fsum-lbl">Gross Profit</div><div class="fsum-val sage">'+(overallGross>=0?'+':'')+rup(overallGross)+'</div></div>'
-        +'<div class="fsum-box"><div class="fsum-lbl">Total Borrowings</div><div class="fsum-val amb">'+rup(totalBorrowed)+'</div></div>'
-        +'<div class="fsum-box"><div class="fsum-lbl">Interest Paid</div><div class="fsum-val sky">'+rup(totalIntPaidAll)+'</div></div>'
-        +'<div class="fsum-box" style="border-color:'+ocColor.replace('var(','').replace(')','')+'"><div class="fsum-lbl" style="font-weight:700">Net Profit</div><div class="fsum-val" style="color:'+ocColor+';font-size:18px">'+(overallNet>=0?'+':'')+rup(overallNet)+'</div></div>'
+        +'<div class="fsum-box"><div class="fsum-lbl">Total Invested</div><div class="fsum-val" style="color:var(--rose)">'+rup(overallSpend)+'</div></div>'
+        +'<div class="fsum-box"><div class="fsum-lbl">Total Income</div><div class="fsum-val" style="color:var(--teal)">'+rup(overallIncome)+'</div></div>'
+        +'<div class="fsum-box"><div class="fsum-lbl">Gross Profit</div><div class="fsum-val" style="color:var(--sage)">'+(overallGross>=0?'+':'')+rup(overallGross)+'</div></div>'
+        +'<div class="fsum-box"><div class="fsum-lbl">Total Borrowings</div><div class="fsum-val" style="color:var(--amb)">'+rup(totalBorrowed)+'</div></div>'
+        +'<div class="fsum-box"><div class="fsum-lbl">Interest Paid</div><div class="fsum-val" style="color:var(--sky)">'+rup(totalIntPaidAll)+'</div></div>'
+        +'<div class="fsum-box"><div class="fsum-lbl" style="font-weight:700">Net Profit</div><div class="fsum-val" style="color:'+ocColor+';font-size:18px">'+(overallNet>=0?'+':'')+rup(overallNet)+'</div></div>'
       +'</div>'
     +'</div>';
   }
 }
 
-// ── Populate project selector in income modal ──
+// ── Save Project Expense ──
+function saveProjExpense() {
+  var projId   = document.getElementById('pexp-project').value;
+  var date     = document.getElementById('pexp-date').value;
+  var amount   = Number(document.getElementById('pexp-amount').value)||0;
+  var category = document.getElementById('pexp-category').value;
+  var desc     = document.getElementById('pexp-desc').value.trim();
+
+  if (!projId)   { toast('Project select చేయండి','err'); return; }
+  if (!date)     { toast('Date select చేయండి','err'); return; }
+  if (!amount)   { toast('Amount enter చేయండి','err'); return; }
+
+  var exp = {
+    id:       'pex_'+Date.now(),
+    projId:   projId,
+    date:     date,
+    amount:   amount,
+    category: category,
+    desc:     desc
+  };
+
+  if (!state.projExpenses) state.projExpenses=[];
+  state.projExpenses.push(exp);
+  saveData();
+  pushToSheet('ProjectExpenses',
+    ['id','projId','date','amount','category','desc'],
+    [exp.id, exp.projId, exp.date, exp.amount, exp.category, exp.desc]
+  );
+  closeModal('add-proj-expense');
+  // clear fields
+  document.getElementById('pexp-amount').value='';
+  document.getElementById('pexp-desc').value='';
+  toast('Expense saved ✓','ok');
+  renderProjExp();
+  renderPL();
+}
+
+function deleteProjExpense(expId) {
+  if (!confirm('Delete this expense?')) return;
+  state.projExpenses = (state.projExpenses||[]).filter(function(e){ return e.id!==expId; });
+  saveData();
+  renderProjExp();
+  renderPL();
+  toast('Expense deleted','ok');
+}
+
+// ── Populate project selectors (both expense + income modals) ──
 function populateIncomeProjectSelector() {
-  var sel = document.getElementById('inc-project');
-  if (!sel) return;
   var projs = state.projects||[];
-  if (!projs.length) { sel.innerHTML='<option value="">No projects yet</option>'; return; }
-  sel.innerHTML = projs.map(function(p){ return '<option value="'+p.id+'">'+escH(p.name)+'</option>'; }).join('');
+  var opts = projs.length
+    ? projs.map(function(p){ return '<option value="'+p.id+'">'+escH(p.name)+'</option>'; }).join('')
+    : '<option value="">No projects yet</option>';
+  var s1 = document.getElementById('inc-project');
+  var s2 = document.getElementById('pexp-project');
+  if (s1) s1.innerHTML = opts;
+  if (s2) s2.innerHTML = opts;
 }
 
 // ── Update readAll to include Finance sheets ──
