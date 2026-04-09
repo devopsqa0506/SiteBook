@@ -4417,12 +4417,20 @@ function renderProjects() {
         +'</div>'
         +(plots.length
           ? '<div style="padding:0 14px 6px;font-size:12px;color:var(--tx2)">Tap a plot to update sale details / phases</div>'
-            +'<div class="house-grid">'+plotTiles+'</div>'
-          : '<div style="padding:10px 14px;font-size:12px;color:var(--tx3)">No plots yet — tap ✏️ Edit to add plots</div>'
+            +'<div class="house-grid">'+plotTiles
+              +'<div class="house-tile" style="border-style:dashed;border-color:rgba(58,232,200,0.4);background:rgba(58,232,200,0.03);display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:90px" onclick="addPlotInline('+pidx+')">'
+                +'<div class="ht-ico">➕</div>'
+                +'<div class="ht-name" style="color:var(--teal);font-size:11px">Add Plot</div>'
+              +'</div>'
+            +'</div>'
+          : '<div class="house-grid"><div class="house-tile" style="border-style:dashed;border-color:rgba(58,232,200,0.4);background:rgba(58,232,200,0.03);display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:90px" onclick="addPlotInline('+pidx+')">'
+              +'<div class="ht-ico">➕</div>'
+              +'<div class="ht-name" style="color:var(--teal);font-size:11px">Add Plot</div>'
+            +'</div></div>'
         )
         +'<div style="display:flex;gap:8px;padding:0 14px 12px">'
-          +"<button class='btn ghost sm' style='flex:1;font-size:12px' onclick=\"openEditProject('"+proj.id+"')\">✏️ Edit</button>"
-          +'<button class="btn ghost sm" style="flex:1;font-size:12px;color:var(--rose)" data-proj="'+pidx+'" onclick="deleteProjByIndex(this)">🗑️ Delete</button>'
+          +"<button class='btn ghost sm' style='flex:1;font-size:12px' onclick=\"openEditProject('"+proj.id+"')\">✏️ Edit Venture</button>"
+          +'<button class="btn ghost sm" style="flex:1;font-size:12px;color:var(--rose)" data-proj="'+pidx+'" onclick="deleteProjByIndex(this)">🗑️ Delete Venture</button>'
         +'</div>'
       +'</div>'
     +'</div>';
@@ -4437,6 +4445,21 @@ function toggleProjDetail(el) {
   var idx = el.dataset.proj;
   var body = document.getElementById('pd'+idx);
   if (body) body.style.display = body.style.display==='none' ? 'block' : 'none';
+}
+
+function addPlotInline(pidx) {
+  var proj = state.projects[pidx];
+  if (!proj) return;
+  if (!proj.plots) proj.plots = [];
+  var newPlot = { id:'plt_'+Date.now(), plotNo:String(proj.plots.length+1), type:'plot', status:'planned',
+    sizeInCents:0, salePrice:0, buyer:'', advanceReceived:0, partialPayments:[], constructionCost:0, phases:{} };
+  proj.plots.push(newPlot);
+  var pli = proj.plots.length - 1;
+  saveData();
+  renderProjects();
+  var body = document.getElementById('pd'+pidx);
+  if (body) body.style.display = 'block';
+  openPlotByIndex({ dataset:{ proj:String(pidx), plot:String(pli) } });
 }
 
 function deleteProjByIndex(el) {
@@ -4464,6 +4487,8 @@ function openPlotByIndex(el) {
   if (!plt) return;
 
   var isHouse = plt.type === 'house';
+  var isSold = plt.status === 'sold';
+  var typeLocked = !!(plt.salePrice || plt.constructionCost > 0 || (plt.partialPayments||[]).length > 0 || plt.buyer || plt.status !== 'planned');
   document.getElementById('house-modal-title').textContent = proj.name + ' — Plot ' + escH(plt.plotNo||String(pli+1));
   var phases = ['foundation','structure','roof','electrical','plumbing','finishing'];
   var phaseNames = {foundation:'Foundation 🏗️',structure:'Structure 🧱',roof:'Roof 🏠',electrical:'Electrical ⚡',plumbing:'Plumbing 🔧',finishing:'Finishing 🎨'};
@@ -4478,11 +4503,18 @@ function openPlotByIndex(el) {
       +'<div><label class="fl">Size (Cents)</label>'
         +'<input type="number" class="fi fi-mono" value="'+(plt.sizeInCents||'')+'" placeholder="3" data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'sizeInCents\',\'num\')"></div>'
     +'</div>'
-    +'<label class="fl">Type</label>'
-    +'<select class="fi" data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'type\',\'text\');openPlotByIndex(this.closest(\'.mover\').querySelector(\'[data-pi]\'))">'
+    +'<label class="fl">Type</label>';
+  if (typeLocked) {
+    body += '<div class="fi" style="opacity:0.7;pointer-events:none;display:flex;align-items:center;gap:8px">'
+      +(isHouse?'🏗️ House (build &amp; sell)':'📋 Plot (sell as-is)')
+      +'<span style="margin-left:auto;font-size:10px;color:var(--tx3);background:var(--s3);padding:2px 7px;border-radius:5px">locked</span>'
+    +'</div>';
+  } else {
+    body += '<select class="fi" data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'type\',\'text\');openPlotByIndex(this.closest(\'.mover\').querySelector(\'[data-pi]\'))">'
       +'<option value="plot" '+(plt.type==='plot'?'selected':'')+'>📋 Plot (sell as-is)</option>'
       +'<option value="house" '+(plt.type==='house'?'selected':'')+'>🏗️ House (build &amp; sell)</option>'
     +'</select>';
+  }
 
   // Construction phases (house only)
   if (isHouse) {
@@ -4507,52 +4539,58 @@ function openPlotByIndex(el) {
   // Sale details
   body += '<div class="seg-t">Sale / Status</div>'
     +'<label class="fl">Status</label>'
-    +'<select class="fi" data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'status\',\'text\')">'
+    +'<select class="fi" data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'status\',\'text\');openPlotByIndex(this.closest(\'.mover\').querySelector(\'[data-pi]\'))">'
       +'<option value="planned" '+(plt.status==='planned'?'selected':'')+'>📋 Planned</option>'
       +(isHouse?'<option value="building" '+(plt.status==='building'?'selected':'')+'>🏗️ Building</option>':'')
       +'<option value="sold" '+(plt.status==='sold'?'selected':'')+'>✅ Sold</option>'
-    +'</select>'
-    +'<label class="fl" style="margin-top:9px">Sale Price (₹)</label>'
-    +'<input type="number" class="fi fi-mono" value="'+(plt.salePrice||'')+'" placeholder="Expected / actual sale price" '
-    +'data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'salePrice\',\'num\')">'
-    +'<label class="fl" style="margin-top:9px">Advance Received (₹)</label>'
-    +'<input type="number" class="fi fi-mono" value="'+(plt.advanceReceived||'')+'" placeholder="Token / advance amount" '
-    +'data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'advanceReceived\',\'num\')">'
-    +'<label class="fl" style="margin-top:9px">Buyer Name</label>'
-    +'<input type="text" class="fi" value="'+escH(plt.buyer||'')+'" placeholder="Buyer పేరు" '
-    +'data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'buyer\',\'text\')">';
+    +'</select>';
 
-  // Partial Payments section
-  var pps = plt.partialPayments || [];
-  body += '<div class="seg-t" style="margin-top:14px">💳 Partial Payments</div>';
-  if (pps.length) {
-    pps.forEach(function(pp, ppIdx) {
-      body += '<div style="display:grid;grid-template-columns:1fr 1fr auto auto;gap:6px;align-items:center;margin-bottom:6px">'
-        +'<input type="text" class="fi" value="'+escH(pp.desc||'')+'" placeholder="Description" '
-          +'data-pi="'+pi+'" data-pli="'+pli+'" data-ppidx="'+ppIdx+'" '
-          +'onchange="updatePartialPayment(this,'+pi+','+pli+','+ppIdx+',\'desc\',\'text\')" style="font-size:12px">'
-        +'<input type="number" class="fi fi-mono" value="'+(pp.amount||'')+'" placeholder="Amount" '
-          +'data-pi="'+pi+'" data-pli="'+pli+'" data-ppidx="'+ppIdx+'" '
-          +'onchange="updatePartialPayment(this,'+pi+','+pli+','+ppIdx+',\'amount\',\'num\')" style="font-size:12px">'
-        +'<input type="date" class="fi" value="'+(pp.date||'')+'" '
-          +'data-pi="'+pi+'" data-pli="'+pli+'" data-ppidx="'+ppIdx+'" '
-          +'onchange="updatePartialPayment(this,'+pi+','+pli+','+ppIdx+',\'date\',\'text\')" style="font-size:12px">'
-        +'<button onclick="deletePartialPayment('+pi+','+pli+','+ppIdx+')" '
-          +'style="background:none;border:none;color:var(--rose);cursor:pointer;font-size:16px;padding:4px">🗑️</button>'
-      +'</div>';
-    });
-    var ppTotal = pps.reduce(function(s,pp){ return s+Number(pp.amount||0); },0);
-    body += '<div style="font-size:12px;color:var(--tx2);text-align:right;margin-bottom:4px">Partial Payments Total: <b style="font-family:JetBrains Mono;color:var(--sage)">'+rup(ppTotal)+'</b></div>';
+  // Sale Price, Buyer, Payments — only when SOLD
+  if (isSold) {
+    body += '<label class="fl" style="margin-top:9px">Sale Price (₹)</label>'
+      +'<input type="number" class="fi fi-mono" value="'+(plt.salePrice||'')+'" placeholder="Actual sale price" '
+      +'data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'salePrice\',\'num\')">'
+      +'<label class="fl" style="margin-top:9px">Advance Received (₹)</label>'
+      +'<input type="number" class="fi fi-mono" value="'+(plt.advanceReceived||'')+'" placeholder="Token / advance amount" '
+      +'data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'advanceReceived\',\'num\')">'
+      +'<label class="fl" style="margin-top:9px">Buyer Name</label>'
+      +'<input type="text" class="fi" value="'+escH(plt.buyer||'')+'" placeholder="Buyer పేరు" '
+      +'data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'buyer\',\'text\')">';
+
+    // Partial Payments section
+    var pps = plt.partialPayments || [];
+    body += '<div class="seg-t" style="margin-top:14px">💳 Partial Payments</div>';
+    if (pps.length) {
+      pps.forEach(function(pp, ppIdx) {
+        body += '<div style="display:grid;grid-template-columns:1fr 1fr auto auto;gap:6px;align-items:center;margin-bottom:6px">'
+          +'<input type="text" class="fi" value="'+escH(pp.desc||'')+'" placeholder="Description" '
+            +'data-pi="'+pi+'" data-pli="'+pli+'" data-ppidx="'+ppIdx+'" '
+            +'onchange="updatePartialPayment(this,'+pi+','+pli+','+ppIdx+',\'desc\',\'text\')" style="font-size:12px">'
+          +'<input type="number" class="fi fi-mono" value="'+(pp.amount||'')+'" placeholder="Amount" '
+            +'data-pi="'+pi+'" data-pli="'+pli+'" data-ppidx="'+ppIdx+'" '
+            +'onchange="updatePartialPayment(this,'+pi+','+pli+','+ppIdx+',\'amount\',\'num\')" style="font-size:12px">'
+          +'<input type="date" class="fi" value="'+(pp.date||'')+'" '
+            +'data-pi="'+pi+'" data-pli="'+pli+'" data-ppidx="'+ppIdx+'" '
+            +'onchange="updatePartialPayment(this,'+pi+','+pli+','+ppIdx+',\'date\',\'text\')" style="font-size:12px">'
+          +'<button onclick="deletePartialPayment('+pi+','+pli+','+ppIdx+')" '
+            +'style="background:none;border:none;color:var(--rose);cursor:pointer;font-size:16px;padding:4px">🗑️</button>'
+        +'</div>';
+      });
+      var ppTotal = pps.reduce(function(s,pp){ return s+Number(pp.amount||0); },0);
+      body += '<div style="font-size:12px;color:var(--tx2);text-align:right;margin-bottom:4px">Partial Payments Total: <b style="font-family:JetBrains Mono;color:var(--sage)">'+rup(ppTotal)+'</b></div>';
+    } else {
+      body += '<div style="font-size:12px;color:var(--tx3);margin-bottom:6px">No partial payments yet</div>';
+    }
+    body += '<button class="btn ghost sm" style="width:100%;margin-bottom:4px" onclick="addPartialPayment('+pi+','+pli+')">+ Add Partial Payment</button>';
+
+    var advTotal = Number(plt.advanceReceived||0) + (plt.partialPayments||[]).reduce(function(s,pp){ return s+Number(pp.amount||0); },0);
+    body += '<div style="background:rgba(122,200,90,0.08);border:1px solid rgba(122,200,90,0.25);border-radius:9px;padding:8px 12px;margin-top:4px;display:flex;justify-content:space-between;align-items:center">'
+      +'<span style="font-size:12px;font-weight:700;color:var(--tx1)">Total Amount Received</span>'
+      +'<span style="font-family:JetBrains Mono;font-size:13px;font-weight:700;color:var(--sage)">'+rup(advTotal)+'</span>'
+    +'</div>';
   } else {
-    body += '<div style="font-size:12px;color:var(--tx3);margin-bottom:6px">No partial payments yet</div>';
+    body += '<div style="font-size:12px;color:var(--tx3);margin-top:10px;padding:8px 10px;background:var(--s3);border-radius:8px">Sale Price &amp; Payments visible after marking as ✅ Sold</div>';
   }
-  body += '<button class="btn ghost sm" style="width:100%;margin-bottom:4px" onclick="addPartialPayment('+pi+','+pli+')">+ Add Partial Payment</button>';
-
-  var advTotal = Number(plt.advanceReceived||0) + (plt.partialPayments||[]).reduce(function(s,pp){ return s+Number(pp.amount||0); },0);
-  body += '<div style="background:rgba(122,200,90,0.08);border:1px solid rgba(122,200,90,0.25);border-radius:9px;padding:8px 12px;margin-top:4px;display:flex;justify-content:space-between;align-items:center">'
-    +'<span style="font-size:12px;font-weight:700;color:var(--tx1)">Total Amount Received</span>'
-    +'<span style="font-family:JetBrains Mono;font-size:13px;font-weight:700;color:var(--sage)">'+rup(advTotal)+'</span>'
-  +'</div>';
 
   body += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">'
     +'<button class="btn ghost full" onclick="closeModal(\'house-modal\')">✕ Cancel</button>'
@@ -6393,7 +6431,7 @@ function renderProjExp() {
       +'<div class="pe-body" id="'+bodyId+'">';
 
     // ── EXPENDITURE SECTION ──
-    html += '<div style="font-size:13px;font-weight:700;color:var(--rose);margin-bottom:8px">📤 Expenditure</div>';
+    html += '<div class="seg-t" style="color:var(--rose)">📤 Expenditure</div>';
 
     // Land payment schedule
     if (totalLandCost) {
@@ -6447,7 +6485,7 @@ function renderProjExp() {
     // Manual expense entries
     if (manualExps.length) {
       var sortedExps = manualExps.slice().sort(function(a,b){ return a.date.localeCompare(b.date); });
-      html += '<div style="font-size:11px;font-weight:700;color:var(--tx3);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">Manual Entries</div>'
+      html += '<div class="seg-t">Manual Entries</div>'
         +'<div style="background:var(--s3);border-radius:9px;padding:8px 12px;margin-bottom:10px">';
       sortedExps.forEach(function(exp) {
         html += '<div class="exp-row">'
@@ -6470,7 +6508,7 @@ function renderProjExp() {
     +'</div>';
 
     // ── INCOME SECTION ──
-    html += '<div style="font-size:13px;font-weight:700;color:var(--teal);margin-bottom:8px">📥 Income / Sales</div>';
+    html += '<div class="seg-t" style="color:var(--teal)">📥 Income / Sales</div>';
 
     if (incomes.length) {
       var sortedInc = incomes.slice().sort(function(a,b){ return a.date.localeCompare(b.date); });
