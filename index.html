@@ -2152,6 +2152,39 @@ var CAT_CLS = {Sand:'s',Steel:'m',Electrical:'e',Hardware:'h',Cement:'c',Labour:
 
 function rup(n) { return '₹' + fmtIN(Math.abs(n||0)); }
 
+// Short label: 10K, 5.2L, 1.8C
+function shortAmt(n) {
+  n = Math.abs(Number(n)||0);
+  if (n >= 10000000) return (n/10000000).toFixed(1).replace('.0','') + 'C';
+  if (n >= 100000) return (n/100000).toFixed(1).replace('.0','') + 'L';
+  if (n >= 1000) return (n/1000).toFixed(1).replace('.0','') + 'K';
+  return n.toString();
+}
+
+// Amount in words (Telugu style)
+function amtWords(n) {
+  n = Math.abs(Number(n)||0);
+  if (n >= 10000000) {
+    var cr = (n/10000000).toFixed(2);
+    return cr + ' కోట్లు';
+  }
+  if (n >= 100000) {
+    var lk = (n/100000).toFixed(2);
+    return lk + ' లక్షలు';
+  }
+  if (n >= 1000) {
+    var th = (n/1000).toFixed(2);
+    return th + ' వేలు';
+  }
+  return n + ' రూపాయలు';
+}
+
+// Update amount label live
+function showAmtLabel(val, elId) {
+  var el = document.getElementById(elId);
+  if (el) el.textContent = val ? amtWords(val) : '';
+}
+
 // Proper Indian number formatting: 1,00,000 / 12,73,000 / 1,27,30,000
 function fmtIN(n) {
   n = Math.abs(Number(n)||0);
@@ -4892,19 +4925,21 @@ function openPlotByIndex(el) {
   body += '<div class="seg-t" style="margin-top:12px">🏗️ Construction Expenses</div>';
   (plt.constructionExpenses||[]).forEach(function(ce, ceIdx) {
     var isFirst = ceIdx === 0;
-    body += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:center;margin-bottom:6px">'
+    body += '<div style="margin-bottom:6px">'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:center">'
       +(isFirst
         ? '<div class="fi" style="opacity:0.7;font-size:12px">Advance Construction</div>'
         : '<input type="text" class="fi" value="'+escH(ce.desc||'')+'" placeholder="Description" '
             +'onchange="updateConstructionExpense('+pi+','+pli+','+ceIdx+',\'desc\',\'text\',this)" style="font-size:12px">')
-      +'<input type="number" class="fi fi-mono" value="'+(ce.amount||'')+'" placeholder="Amount" '
-        +'onchange="updateConstructionExpense('+pi+','+pli+','+ceIdx+',\'amount\',\'num\',this)" style="font-size:12px">'
+      +'<div><input type="number" class="fi fi-mono" value="'+(ce.amount||'')+'" placeholder="Amount" '
+        +'onchange="updateConstructionExpense('+pi+','+pli+','+ceIdx+',\'amount\',\'num\',this)" oninput="showAmtLabel(this.value,\'ce-w-'+ceIdx+'\')" style="font-size:12px">'
+        +'<div id="ce-w-'+ceIdx+'" style="font-size:10px;color:var(--tx3);margin-top:1px;min-height:12px">'+(ce.amount?amtWords(ce.amount):'')+'</div></div>'
       +'<input type="date" class="fi" value="'+(ce.date||'')+'" '
         +'onchange="updateConstructionExpense('+pi+','+pli+','+ceIdx+',\'date\',\'text\',this)" style="font-size:12px">'
       +(isFirst
         ? '<div style="width:28px"></div>'
         : '<button onclick="deleteConstructionExpense('+pi+','+pli+','+ceIdx+')" style="background:none;border:none;color:var(--rose);cursor:pointer;font-size:16px;padding:4px">🗑️</button>')
-    +'</div>';
+    +'</div></div>';
   });
   body += '<button class="btn ghost sm" style="width:100%;margin-bottom:4px" onclick="addConstructionExpense('+pi+','+pli+')">+ Add Construction Expense</button>';
   } // end house-only construction
@@ -4919,31 +4954,35 @@ function openPlotByIndex(el) {
   ];
   body += '<div class="seg-t" style="margin-top:12px">📋 Misc Expenses</div>';
   (plt.miscExpenses||[]).forEach(function(me, meIdx) {
-    body += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:center;margin-bottom:6px">'
+    body += '<div style="margin-bottom:6px">'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:center">'
       +'<select class="fi" onchange="updateMiscExpense('+pi+','+pli+','+meIdx+',\'type\',\'text\',this)" style="font-size:12px">'
       +miscTypes.map(function(t){ return '<option value="'+t.v+'" '+(me.type===t.v?'selected':'')+'>'+t.l+'</option>'; }).join('')
       +'</select>'
-      +'<input type="number" class="fi fi-mono" value="'+(me.amount||'')+'" placeholder="Amount" '
-        +'onchange="updateMiscExpense('+pi+','+pli+','+meIdx+',\'amount\',\'num\',this)" style="font-size:12px">'
+      +'<div><input type="number" class="fi fi-mono" value="'+(me.amount||'')+'" placeholder="Amount" '
+        +'onchange="updateMiscExpense('+pi+','+pli+','+meIdx+',\'amount\',\'num\',this)" oninput="showAmtLabel(this.value,\'me-w-'+meIdx+'\')" style="font-size:12px">'
+        +'<div id="me-w-'+meIdx+'" style="font-size:10px;color:var(--tx3);margin-top:1px;min-height:12px">'+(me.amount?amtWords(me.amount):'')+'</div></div>'
       +'<input type="date" class="fi" value="'+(me.date||'')+'" '
         +'onchange="updateMiscExpense('+pi+','+pli+','+meIdx+',\'date\',\'text\',this)" style="font-size:12px">'
       +'<button onclick="deleteMiscExpense('+pi+','+pli+','+meIdx+')" style="background:none;border:none;color:var(--rose);cursor:pointer;font-size:16px;padding:4px">🗑️</button>'
-    +'</div>';
+    +'</div></div>';
   });
   body += '<button class="btn ghost sm" style="width:100%;margin-bottom:4px" onclick="addMiscExpense('+pi+','+pli+')">+ Add Misc Expense</button>';
 
   // Other Expenses section
   body += '<div class="seg-t" style="margin-top:12px">📦 Other Expenses</div>';
   (plt.otherExpenses||[]).forEach(function(oe, oeIdx) {
-    body += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:center;margin-bottom:6px">'
+    body += '<div style="margin-bottom:6px">'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:center">'
       +'<input type="text" class="fi" value="'+escH(oe.desc||'')+'" placeholder="Description" '
         +'onchange="updateOtherExpense('+pi+','+pli+','+oeIdx+',\'desc\',\'text\',this)" style="font-size:12px">'
-      +'<input type="number" class="fi fi-mono" value="'+(oe.amount||'')+'" placeholder="Amount" '
-        +'onchange="updateOtherExpense('+pi+','+pli+','+oeIdx+',\'amount\',\'num\',this)" style="font-size:12px">'
+      +'<div><input type="number" class="fi fi-mono" value="'+(oe.amount||'')+'" placeholder="Amount" '
+        +'onchange="updateOtherExpense('+pi+','+pli+','+oeIdx+',\'amount\',\'num\',this)" oninput="showAmtLabel(this.value,\'oe-w-'+oeIdx+'\')" style="font-size:12px">'
+        +'<div id="oe-w-'+oeIdx+'" style="font-size:10px;color:var(--tx3);margin-top:1px;min-height:12px">'+(oe.amount?amtWords(oe.amount):'')+'</div></div>'
       +'<input type="date" class="fi" value="'+(oe.date||'')+'" '
         +'onchange="updateOtherExpense('+pi+','+pli+','+oeIdx+',\'date\',\'text\',this)" style="font-size:12px">'
       +'<button onclick="deleteOtherExpense('+pi+','+pli+','+oeIdx+')" style="background:none;border:none;color:var(--rose);cursor:pointer;font-size:16px;padding:4px">🗑️</button>'
-    +'</div>';
+    +'</div></div>';
   });
   body += '<button class="btn ghost sm" style="width:100%;margin-bottom:4px" onclick="addOtherExpense('+pi+','+pli+')">+ Add Other Expense</button>';
 
@@ -4974,11 +5013,13 @@ function openPlotByIndex(el) {
   // Sale Price, Buyer, Payments — only when SOLD
   if (isSold) {
     body += '<label class="fl" style="margin-top:9px">Sale Price (₹)</label>'
-      +'<input type="number" class="fi fi-mono" value="'+(plt.salePrice||'')+'" placeholder="Actual sale price" '
-      +'data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'salePrice\',\'num\')">'
+      +'<input type="number" class="fi fi-mono" id="hm-sale-price" value="'+(plt.salePrice||'')+'" placeholder="Actual sale price" '
+      +'data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'salePrice\',\'num\')" oninput="showAmtLabel(this.value,\'sp-words\')">'
+      +'<div id="sp-words" style="font-size:11px;color:var(--tx3);margin-top:2px;min-height:14px">'+(plt.salePrice?amtWords(plt.salePrice):'')+'</div>'
       +'<label class="fl" style="margin-top:9px">Advance Received (₹)</label>'
-      +'<input type="number" class="fi fi-mono" value="'+(plt.advanceReceived||'')+'" placeholder="Token / advance amount" '
-      +'data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'advanceReceived\',\'num\')" oninput="recalcPaymentTotal('+pi+','+pli+',this.value)">'
+      +'<input type="number" class="fi fi-mono" id="hm-adv-rcvd" value="'+(plt.advanceReceived||'')+'" placeholder="Token / advance amount" '
+      +'data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'advanceReceived\',\'num\')" oninput="recalcPaymentTotal('+pi+','+pli+',this.value); showAmtLabel(this.value,\'adv-words\')">'
+      +'<div id="adv-words" style="font-size:11px;color:var(--tx3);margin-top:2px;min-height:14px">'+(plt.advanceReceived?amtWords(plt.advanceReceived):'')+'</div>'
       +'<label class="fl" style="margin-top:9px">Buyer Name</label>'
       +'<input type="text" class="fi" value="'+escH(plt.buyer||'')+'" placeholder="Buyer పేరు" '
       +'data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'buyer\',\'text\')">';
@@ -4988,19 +5029,21 @@ function openPlotByIndex(el) {
     body += '<div class="seg-t" style="margin-top:14px">💳 Partial Payments</div>';
     if (pps.length) {
       pps.forEach(function(pp, ppIdx) {
-        body += '<div style="display:grid;grid-template-columns:1fr 1fr auto auto;gap:6px;align-items:center;margin-bottom:6px">'
+        body += '<div style="margin-bottom:6px">'
+          +'<div style="display:grid;grid-template-columns:1fr 1fr auto auto;gap:6px;align-items:center">'
           +'<input type="text" class="fi" value="'+escH(pp.desc||'')+'" placeholder="Description" '
             +'data-pi="'+pi+'" data-pli="'+pli+'" data-ppidx="'+ppIdx+'" '
             +'onchange="updatePartialPayment(this,'+pi+','+pli+','+ppIdx+',\'desc\',\'text\')" style="font-size:12px">'
-          +'<input type="number" class="fi fi-mono" value="'+(pp.amount||'')+'" placeholder="Amount" '
+          +'<div><input type="number" class="fi fi-mono" value="'+(pp.amount||'')+'" placeholder="Amount" '
             +'data-pi="'+pi+'" data-pli="'+pli+'" data-ppidx="'+ppIdx+'" '
-            +'onchange="updatePartialPayment(this,'+pi+','+pli+','+ppIdx+',\'amount\',\'num\')" oninput="recalcPaymentTotal('+pi+','+pli+',null)" style="font-size:12px">'
+            +'onchange="updatePartialPayment(this,'+pi+','+pli+','+ppIdx+',\'amount\',\'num\')" oninput="recalcPaymentTotal('+pi+','+pli+',null); showAmtLabel(this.value,\'pp-w-'+ppIdx+'\')" style="font-size:12px">'
+            +'<div id="pp-w-'+ppIdx+'" style="font-size:10px;color:var(--tx3);margin-top:1px;min-height:12px">'+(pp.amount?amtWords(pp.amount):'')+'</div></div>'
           +'<input type="date" class="fi" value="'+(pp.date||'')+'" '
             +'data-pi="'+pi+'" data-pli="'+pli+'" data-ppidx="'+ppIdx+'" '
             +'onchange="updatePartialPayment(this,'+pi+','+pli+','+ppIdx+',\'date\',\'text\')" style="font-size:12px">'
           +'<button onclick="deletePartialPayment('+pi+','+pli+','+ppIdx+')" '
             +'style="background:none;border:none;color:var(--rose);cursor:pointer;font-size:16px;padding:4px">🗑️</button>'
-        +'</div>';
+        +'</div></div>';
       });
     } else {
       body += '<div style="font-size:12px;color:var(--tx3);margin-bottom:6px">No partial payments yet</div>';
@@ -5032,7 +5075,7 @@ function openPlotByIndex(el) {
     var profitLabel = plt.type === 'plot' ? '📊 Profit (Sale − Land − Misc)' : '📊 Profit (Sale − Land − Build)';
     body += '<div style="background:rgba(122,200,90,0.05);border:1px solid rgba(122,200,90,0.2);border-radius:9px;padding:8px 12px;margin-top:8px;display:flex;justify-content:space-between;align-items:center">'
       +'<span style="font-size:12px;font-weight:700;color:var(--tx2)">'+profitLabel+'</span>'
-      +'<span style="font-family:JetBrains Mono;font-size:13px;font-weight:700;color:'+profitColor+'">'+rup(plotProfit)+'</span>'
+      +'<span id="hm-plot-profit" style="font-family:JetBrains Mono;font-size:13px;font-weight:700;color:'+profitColor+'">'+rup(plotProfit)+'</span>'
     +'</div>';
   } else {
     body += '<div style="font-size:12px;color:var(--tx3);margin-top:10px;padding:8px 10px;background:var(--s3);border-radius:8px">Sale Price &amp; Payments visible after marking as ✅ Sold</div>';
@@ -5076,6 +5119,26 @@ function recalcHouseTotals(pi, pli) {
   var totalInv   = totalConst + landAdv;
   var t = document.getElementById('hm-total');  if (t) t.textContent = rup(totalConst);
   var i = document.getElementById('hm-invest'); if (i) i.textContent = rup(totalInv);
+  
+  // Update plot profit display if SOLD
+  if (plt.status === 'sold') {
+    var _dealCentRate = proj.totalCents > 0 ? (Number(proj.landCost||0) / proj.totalCents) : 0;
+    var _landCostForPlt = _dealCentRate * Number(plt.sizeInCents||0);
+    var _miscForPlt = (plt.miscExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
+    var _otherForPlt = (plt.otherExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
+    var _costBasis = plt.type === 'plot'
+      ? _landCostForPlt + _miscForPlt + _otherForPlt
+      : _landCostForPlt + constTotal + _miscForPlt + _otherForPlt;
+    var salePrice = Number(plt.salePrice||0);
+    var plotProfit = salePrice - _costBasis;
+    var profitColor = plotProfit >= 0 ? 'var(--sage)' : 'var(--rose)';
+    var profitEl = document.getElementById('hm-plot-profit');
+    if (profitEl) {
+      profitEl.textContent = rup(plotProfit);
+      profitEl.style.color = profitColor;
+    }
+  }
+  
   // Update summary boxes instantly
   updateAdvancesReceivedTotal();
   // Realtime profit update if SOLD
@@ -5387,19 +5450,19 @@ function renderExpenditureScreen() {
   var totalInvested = totalLandPaid + totalConstruction + totalMisc;
 
   summaryEl.innerHTML = '<div class="profit-summary">'
-    + '<div class="ps-box"><div class="pl">Total Invested</div><div class="pv" data-id="total-invested" style="color:var(--rose)">'+rup(totalInvested)+'</div></div>'
-    + '<div class="ps-box"><div class="pl">Construction</div><div class="pv" data-id="total-construction" style="color:var(--sky)">'+rup(totalConstruction)+'</div></div>'
-    + '<div class="ps-box"><div class="pl">Misc</div><div class="pv" data-id="total-misc" style="color:var(--teal)">'+rup(totalMisc)+'</div></div>'
+    + '<div class="ps-box"><div class="pl">Total Invested</div><div class="pv" data-id="total-invested" style="color:var(--rose)">'+rup(totalInvested)+' <span style="font-size:11px;color:var(--tx3)">('+shortAmt(totalInvested)+')</span></div></div>'
+    + '<div class="ps-box"><div class="pl">Construction</div><div class="pv" data-id="total-construction" style="color:var(--sky)">'+rup(totalConstruction)+' <span style="font-size:11px;color:var(--tx3)">('+shortAmt(totalConstruction)+')</span></div></div>'
+    + '<div class="ps-box"><div class="pl">Misc</div><div class="pv" data-id="total-misc" style="color:var(--teal)">'+rup(totalMisc)+' <span style="font-size:11px;color:var(--tx3)">('+shortAmt(totalMisc)+')</span></div></div>'
     + '</div>'
     + '<div class="profit-summary">'
-    + '<div class="ps-box"><div class="pl">Paid For Land</div><div class="pv" style="color:var(--amb)">'+rup(totalLandPaid)+'</div></div>'
-    + '<div class="ps-box"><div class="pl">Land Balance</div><div class="pv" style="color:var(--rose)">'+rup(totalLandCostRemaining)+'</div></div>'
-    + '<div class="ps-box"><div class="pl">Plot Info</div><div class="pv" style="color:var(--sage)">'+totalSold+'/'+totalPlotsCnt+'</div></div>'
+    + '<div class="ps-box"><div class="pl">Paid For Land</div><div class="pv" style="color:var(--amb)">'+rup(totalLandPaid)+' <span style="font-size:11px;color:var(--tx3)">('+shortAmt(totalLandPaid)+')</span></div></div>'
+    + '<div class="ps-box"><div class="pl">Land Balance</div><div class="pv" style="color:var(--rose)">'+rup(totalLandCostRemaining)+' <span style="font-size:11px;color:var(--tx3)">('+shortAmt(totalLandCostRemaining)+')</span></div></div>'
+    + '<div class="ps-box"><div class="pl">Plot Info</div><div class="pv" data-id="plot-info-count" style="color:var(--sage)">'+totalSold+'/'+totalPlotsCnt+'</div></div>'
     + '</div>'
     + '<div class="profit-summary">'
-     + '<div class="ps-box"><div class="pl">Advances Received</div><div class="pv" data-id="adv-total" style="color:var(--teal)">'+rup(totalAdvancesReceived)+'</div></div>'
-    + '<div class="ps-box"><div class="pl">Expected Receivable</div><div class="pv" data-id="exp-recv" style="color:var(--amb)">'+rup(totalExpectedReceivable)+'</div></div>'
-    + '<div class="ps-box"><div class="pl">Total Profit</div><div class="pv" data-id="tot-profit" style="color:'+(totalProfit>0?'var(--sage)':'var(--rose)')+'">'+rup(totalProfit)+'</div></div>'
+     + '<div class="ps-box"><div class="pl">Advances Received</div><div class="pv" data-id="adv-total" style="color:var(--teal)">'+rup(totalAdvancesReceived)+' <span style="font-size:11px;color:var(--tx3)">('+shortAmt(totalAdvancesReceived)+')</span></div></div>'
+    + '<div class="ps-box"><div class="pl">Expected Receivable</div><div class="pv" data-id="exp-recv" style="color:var(--amb)">'+rup(totalExpectedReceivable)+' <span style="font-size:11px;color:var(--tx3)">('+shortAmt(totalExpectedReceivable)+')</span></div></div>'
+    + '<div class="ps-box"><div class="pl">Total Profit</div><div class="pv" data-id="tot-profit" style="color:'+(totalProfit>0?'var(--sage)':'var(--rose)')+'">'+rup(totalProfit)+' <span style="font-size:11px;color:var(--tx3)">('+shortAmt(totalProfit)+')</span></div></div>'
     + '</div>';
 
   var html = '';
@@ -5447,6 +5510,7 @@ function updateAdvancesReceivedTotal() {
   var projects = state.projects||[];
   var totalAdvanced = 0, totalExpRecv = 0, totalProft = 0;
   var totalConst = 0, totalMisc = 0, totalInv = 0;
+  var totalSoldCount = 0, totalPlotCount = 0;
   
   projects.forEach(function(proj) {
     var landPaid = (state.landPayments||[]).filter(function(p){ return p.projId===proj.id; })
@@ -5454,6 +5518,7 @@ function updateAdvancesReceivedTotal() {
     var _dealCentRate = proj.totalCents > 0 ? (Number(proj.landCost||0) / proj.totalCents) : 0;
     
     (proj.plots||[]).forEach(function(plt) {
+      totalPlotCount++;
       // Construction & Misc for ALL plots
       var constExp = (plt.constructionExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
       var miscExp = (plt.miscExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
@@ -5462,6 +5527,7 @@ function updateAdvancesReceivedTotal() {
       totalMisc += miscExp + otherExp;
       
       if (plt.status === 'sold') {
+        totalSoldCount++;
         var received = Number(plt.advanceReceived||0) + (plt.partialPayments||[]).reduce(function(s,pp){ return s+Number(pp.amount||0); },0);
         totalAdvanced += received;
         var salePrice = Number(plt.salePrice||0);
@@ -5482,26 +5548,26 @@ function updateAdvancesReceivedTotal() {
   
   // Update advances
   var el1 = document.querySelector('[data-id="adv-total"]');
-  if (el1) el1.textContent = rup(totalAdvanced);
+  if (el1) el1.innerHTML = rup(totalAdvanced)+' <span style="font-size:11px;color:var(--tx3)">('+shortAmt(totalAdvanced)+')</span>';
   
   // Update expected receivable
   var el2 = document.querySelector('[data-id="exp-recv"]');
-  if (el2) el2.textContent = rup(totalExpRecv);
+  if (el2) el2.innerHTML = rup(totalExpRecv)+' <span style="font-size:11px;color:var(--tx3)">('+shortAmt(totalExpRecv)+')</span>';
   
   // Update total profit
   var el3 = document.querySelector('[data-id="tot-profit"]');
   if (el3) {
-    el3.textContent = rup(totalProft);
+    el3.innerHTML = rup(totalProft)+' <span style="font-size:11px;color:var(--tx3)">('+shortAmt(totalProft)+')</span>';
     el3.style.color = totalProft >= 0 ? 'var(--sage)' : 'var(--rose)';
   }
   
   // Update Construction
   var el4 = document.querySelector('[data-id="total-construction"]');
-  if (el4) el4.textContent = rup(totalConst);
+  if (el4) el4.innerHTML = rup(totalConst)+' <span style="font-size:11px;color:var(--tx3)">('+shortAmt(totalConst)+')</span>';
   
   // Update Misc
   var el5 = document.querySelector('[data-id="total-misc"]');
-  if (el5) el5.textContent = rup(totalMisc);
+  if (el5) el5.innerHTML = rup(totalMisc)+' <span style="font-size:11px;color:var(--tx3)">('+shortAmt(totalMisc)+')</span>';
   
   // Update Total Invested
   var landTotal = 0;
@@ -5512,7 +5578,11 @@ function updateAdvancesReceivedTotal() {
   });
   totalInv = landTotal + totalConst + totalMisc;
   var el6 = document.querySelector('[data-id="total-invested"]');
-  if (el6) el6.textContent = rup(totalInv);
+  if (el6) el6.innerHTML = rup(totalInv)+' <span style="font-size:11px;color:var(--tx3)">('+shortAmt(totalInv)+')</span>';
+  
+  // Update Plot Info count
+  var el7 = document.querySelector('[data-id="plot-info-count"]');
+  if (el7) el7.textContent = totalSoldCount + '/' + totalPlotCount;
 }
 
 // ── Real-time profit calc for plot (SOLD status only) ──
