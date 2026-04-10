@@ -4994,7 +4994,7 @@ function openPlotByIndex(el) {
             +'onchange="updatePartialPayment(this,'+pi+','+pli+','+ppIdx+',\'desc\',\'text\')" style="font-size:12px">'
           +'<input type="number" class="fi fi-mono" value="'+(pp.amount||'')+'" placeholder="Amount" '
             +'data-pi="'+pi+'" data-pli="'+pli+'" data-ppidx="'+ppIdx+'" '
-            +'onchange="updatePartialPayment(this,'+pi+','+pli+','+ppIdx+',\'amount\',\'num\')" style="font-size:12px">'
+            +'onchange="updatePartialPayment(this,'+pi+','+pli+','+ppIdx+',\'amount\',\'num\')" oninput="recalcPaymentTotal('+pi+','+pli+',null)" style="font-size:12px">'
           +'<input type="date" class="fi" value="'+(pp.date||'')+'" '
             +'data-pi="'+pi+'" data-pli="'+pli+'" data-ppidx="'+ppIdx+'" '
             +'onchange="updatePartialPayment(this,'+pi+','+pli+','+ppIdx+',\'date\',\'text\')" style="font-size:12px">'
@@ -5008,16 +5008,26 @@ function openPlotByIndex(el) {
     body += '<button class="btn ghost sm" style="width:100%;margin-bottom:4px" onclick="addPartialPayment('+pi+','+pli+')">+ Add Partial Payment</button>';
 
     var advTotal = Number(plt.advanceReceived||0) + (plt.partialPayments||[]).reduce(function(s,pp){ return s+Number(pp.amount||0); },0);
+    var salePrice = Number(plt.salePrice||0);
+    var balance = salePrice - advTotal;
     body += '<div style="background:rgba(122,200,90,0.08);border:1px solid rgba(122,200,90,0.25);border-radius:9px;padding:8px 12px;margin-top:4px;display:flex;justify-content:space-between;align-items:center">'
       +'<span style="font-size:12px;font-weight:700;color:var(--tx1)">Total Amount Received</span>'
       +'<span id="pp-adv-total" style="font-family:JetBrains Mono;font-size:13px;font-weight:700;color:var(--sage)">'+rup(advTotal)+'</span>'
+    +'</div>'
+    +'<div style="background:rgba(232,93,122,0.08);border:1px solid rgba(232,93,122,0.25);border-radius:9px;padding:8px 12px;margin-top:4px;display:flex;justify-content:space-between;align-items:center">'
+      +'<span style="font-size:12px;font-weight:700;color:var(--tx1)">💰 Balance from Buyer</span>'
+      +'<span id="pp-balance" style="font-family:JetBrains Mono;font-size:13px;font-weight:700;color:'+(balance>0?'var(--rose)':'var(--sage)')+'">'+rup(Math.max(balance,0))+'</span>'
     +'</div>';
 
-    // Plot Profit
-    // Plot type: SoldPrice - (PlotSize × DealCentRate). House type: SoldPrice - (LandCost + Construction)
+    // Plot Profit with correct cost basis
     var _dealCentRate = proj.totalCents > 0 ? (Number(proj.landCost||0) / proj.totalCents) : 0;
     var _landCostForPlt = _dealCentRate * Number(plt.sizeInCents||0);
-    var plotProfit = Number(plt.salePrice||0) - (_landCostForPlt + totalConstruction);
+    var _miscForPlt = (plt.miscExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
+    var _otherForPlt = (plt.otherExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
+    var _costBasis = plt.type === 'plot'
+      ? _landCostForPlt + _miscForPlt + _otherForPlt
+      : _landCostForPlt + totalConstruction + _miscForPlt + _otherForPlt;
+    var plotProfit = salePrice - _costBasis;
     var profitColor = plotProfit >= 0 ? 'var(--sage)' : 'var(--rose)';
     var profitLabel = plt.type === 'plot' ? '📊 Profit (Sale − Land − Misc)' : '📊 Profit (Sale − Land − Build)';
     body += '<div style="background:rgba(122,200,90,0.05);border:1px solid rgba(122,200,90,0.2);border-radius:9px;padding:8px 12px;margin-top:8px;display:flex;justify-content:space-between;align-items:center">'
@@ -5065,15 +5075,19 @@ function recalcHouseTotals(pi, pli) {
   var totalInv   = totalConst + landAdv;
   var t = document.getElementById('hm-total');  if (t) t.textContent = rup(totalConst);
   var i = document.getElementById('hm-invest'); if (i) i.textContent = rup(totalInv);
+  // Realtime profit update if SOLD
+  if (plt.status === 'sold') updatePlotProfitDisplay();
 }
 
 function updatePlotField(el, field, type) {
   var pi = Number(el.dataset.pi), pli = Number(el.dataset.pli);
   state.projects[pi].plots[pli][field] = type==='num' ? (Number(el.value)||0) : el.value;
   saveData();
-  // Realtime profit calc if SOLD plot + expense/sale changed
+  // Realtime profit calc + expenditure refresh if SOLD plot + key field changed
   if (state.projects[pi].plots[pli].status === 'sold' && (field === 'salePrice' || field === 'advanceReceived')) {
     updatePlotProfitDisplay();
+    var expSc = document.getElementById('sc-expenditure');
+    if (expSc && expSc.classList.contains('on')) renderExpenditureScreen();
   }
 }
 
@@ -5087,6 +5101,8 @@ function updatePlotPhase(el) {
   var tot = document.getElementById('hm-total');
   if (tot) tot.textContent = rup(total);
   saveData();
+  // Realtime profit update if SOLD
+  if (state.projects[pi].plots[pli].status === 'sold') updatePlotProfitDisplay();
 }
 
 function addPartialPayment(pi, pli) {
@@ -5105,14 +5121,26 @@ function updatePartialPayment(el, pi, pli, ppIdx, field, type) {
   plt.partialPayments[ppIdx][field] = type==='num' ? (Number(el.value)||0) : el.value;
   saveData();
   if (field === 'amount') recalcPaymentTotal(pi, pli, null);
+  // Realtime profit update if SOLD and payment changed
+  if (plt.status === 'sold' && field === 'amount') updatePlotProfitDisplay();
 }
 
 function recalcPaymentTotal(pi, pli, advOverride) {
   var plt = state.projects[pi].plots[pli];
   var adv = advOverride !== null && advOverride !== undefined ? (Number(advOverride)||0) : Number(plt.advanceReceived||0);
   var ppTotal = (plt.partialPayments||[]).reduce(function(s,pp){ return s+Number(pp.amount||0); },0);
+  var totalReceived = adv + ppTotal;
+  var salePrice = Number(plt.salePrice||0);
+  var balance = salePrice - totalReceived;
+  
   var el = document.getElementById('pp-adv-total');
-  if (el) el.textContent = rup(adv + ppTotal);
+  if (el) el.textContent = rup(totalReceived);
+  
+  var balEl = document.getElementById('pp-balance');
+  if (balEl) {
+    balEl.textContent = rup(Math.max(balance, 0));
+    balEl.style.color = balance > 0 ? 'var(--rose)' : 'var(--sage)';
+  }
 }
 
 function deletePartialPayment(pi, pli, ppIdx) {
@@ -5120,6 +5148,9 @@ function deletePartialPayment(pi, pli, ppIdx) {
   if (!plt.partialPayments) return;
   plt.partialPayments.splice(ppIdx, 1);
   saveData();
+  recalcPaymentTotal(pi, pli, null);
+  var expSc = document.getElementById('sc-expenditure');
+  if (expSc && expSc.classList.contains('on')) renderExpenditureScreen();
   openPlotByIndex({dataset:{proj:String(pi),plot:String(pli)}});
 }
 
@@ -5319,12 +5350,16 @@ function renderExpenditureScreen() {
         var salePrice = Number(plt.salePrice||0);
         var pending = salePrice - received;
         totalExpectedReceivable += Math.max(pending, 0);
+        
         var centRateForProj = proj.totalCents > 0 ? (landPaid / proj.totalCents) : 0;
         var landCostForPlot = centRateForProj * Number(plt.sizeInCents||0);
-        // PLOT: Profit = Sale - (Land + Misc). HOUSE: + Construction
-        var plotProfit = plt.type === 'plot'
-          ? salePrice - (landCostForPlot + miscTotal + otherTotal)
-          : salePrice - (landCostForPlot + constTotal + miscTotal + otherTotal);
+        var miscForPlot = (plt.miscExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
+        var otherForPlot = (plt.otherExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
+        var costBasis = plt.type === 'plot'
+          ? landCostForPlot + miscForPlot + otherForPlot
+          : landCostForPlot + (plt.constructionExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0) + miscForPlot + otherForPlot;
+        
+        var plotProfit = salePrice - costBasis;
         totalProfit += plotProfit;
       }
     });
