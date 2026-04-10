@@ -4910,6 +4910,11 @@ function deleteProjByIndex(el) {
     
     fetch(cfg.scriptUrl, {
       method:'POST',
+      body: JSON.stringify({action:'deleteRow', sheetId:cfg.sheetId, sheetName:'ProjectIncome', matchCol:'projId', matchVal:projId})
+    }).catch(function(){});
+    
+    fetch(cfg.scriptUrl, {
+      method:'POST',
       body: JSON.stringify({action:'deleteRow', sheetId:cfg.sheetId, sheetName:'LandPayments', matchCol:'projId', matchVal:projId})
     }).catch(function(){});
   }
@@ -5345,6 +5350,10 @@ function updatePlotField(el, field, type) {
     updatePlotProfitDisplay();
     updateAdvancesReceivedTotal();
   }
+  // Refresh Expenditure screen to update plot status box and profit
+  if (field === 'status') {
+    renderExpenditureScreen();
+  }
 }
 
 function updatePlotPhase(el) {
@@ -5719,7 +5728,7 @@ function updateAdvancesReceivedTotal() {
   projects.forEach(function(proj) {
     var landPaid = (state.landPayments||[]).filter(function(p){ return p.projId===proj.id; })
                    .reduce(function(s,p){ return s+Number(p.amount||0); },0);
-    var _dealCentRate = proj.totalCents > 0 ? (Number(proj.landCost||0) / proj.totalCents) : 0;
+    var centRate = proj.totalCents > 0 ? (landPaid / proj.totalCents) : 0;
     
     (proj.plots||[]).forEach(function(plt) {
       totalPlotCount++;
@@ -5737,14 +5746,11 @@ function updateAdvancesReceivedTotal() {
         var salePrice = Number(plt.salePrice||0);
         totalExpRecv += Math.max(salePrice - received, 0);
         
-        // SAME LOGIC AS PLOT PROFIT DISPLAY (lines 5022-5030)
-        var _landCostForPlt = _dealCentRate * Number(plt.sizeInCents||0);
-        var _miscForPlt = (plt.miscExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
-        var _otherForPlt = (plt.otherExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
-        var _costBasis = plt.type === 'plot'
-          ? _landCostForPlt + _miscForPlt + _otherForPlt
-          : _landCostForPlt + constExp + _miscForPlt + _otherForPlt;
-        var plotProfit = salePrice - _costBasis;
+        var landCostForPlot = centRate * Number(plt.sizeInCents||0);
+        var costBasis = plt.type === 'plot'
+          ? landCostForPlot + miscExp + otherExp
+          : landCostForPlot + constExp + miscExp + otherExp;
+        var plotProfit = salePrice - costBasis;
         totalProft += plotProfit;
       }
     });
