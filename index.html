@@ -2932,7 +2932,7 @@ async function callGemini(imageData, imageMime, docPromptOverride) {
   }
 
   try {
-    var res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.0-pro:generateContent?key='+activeKey, {
+    var res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+activeKey, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({contents:contents, generationConfig:{maxOutputTokens:1000,temperature:0.3}})
@@ -3233,39 +3233,72 @@ async function handlePhoto(e, source) {
       { inlineData: { mimeType: file.type, data: b64 } },
       { text: DOC_PROMPT }
     ];
-    var controller = new AbortController();
-    var timeout = setTimeout(() => controller.abort(), 360000);
-    var res = await fetch(
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + activePhotoKey,
-      { method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ contents: [{ role:'user', parts:parts }], generationConfig:{maxOutputTokens:2000,temperature:0.1} }),
-        signal: controller.signal }
-    );
-    clearTimeout(timeout);
-    if (!res.ok) {
-      hideProc();
-      var statusMsg = 'Server error ' + res.status;
-      if ((res.status === 503 || res.status === 429) && cfg.apiKeys && cfg.apiKeys.length > 1) {
-        toast('⚡ API busy — retrying with next key...', 'wrn');
-        showProc('Retrying document analysis...');
-        setTimeout(function() { handlePhoto(e, source); }, 2000);
-      } else {
-        if (source==='chat') addBubble('ai','<span class="bad">AI Error: '+statusMsg+'</span>');
-        else toast('AI Error: '+statusMsg, 'err');
+    
+    var fallbackModels = ['gemini-2.5-flash', 'gemini-3.0-pro', 'gemini-3.1-pro-preview'];
+    var modelIdx = 0;
+    var lastError = null;
+    var data = null;
+    var success = false;
+
+    while (modelIdx < fallbackModels.length && !success) {
+      var currentModel = fallbackModels[modelIdx];
+      
+      try {
+        if (modelIdx > 0) {
+          showProc('Model overloaded. Trying ' + currentModel + '...');
+        }
+        
+        var controller = new AbortController();
+        var timeout = setTimeout(() => controller.abort(), 360000); // 6 min timeout
+        
+        var res = await fetch(
+          'https://generativelanguage.googleapis.com/v1beta/models/' + currentModel + ':generateContent?key=' + activePhotoKey,
+          { method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({ contents: [{ role:'user', parts:parts }], generationConfig:{maxOutputTokens:2000,temperature:0.1} }),
+            signal: controller.signal }
+        );
+        clearTimeout(timeout);
+
+        if (!res.ok) {
+          if (res.status === 503 || res.status === 429) {
+            lastError = 'Model overloaded (HTTP ' + res.status + ')';
+            modelIdx++;
+            continue;
+          }
+          throw new Error('API error ' + res.status);
+        }
+
+        showProc('Processing results...\nExtracting fields...');
+        data = await res.json();
+
+        if (data.error) {
+          var errMsg = data.error.message || 'Unknown error';
+          if (errMsg.includes('503') || errMsg.includes('overloaded') || errMsg.includes('429')) {
+            lastError = errMsg;
+            modelIdx++;
+            continue;
+          }
+          throw new Error(errMsg);
+        }
+
+        success = true;
+        break;
+
+      } catch(attemptErr) {
+        lastError = attemptErr.message || String(attemptErr);
+        modelIdx++;
+        if (modelIdx < fallbackModels.length) {
+          // Will retry with next model
+        }
       }
-      return;
     }
 
-    showProc('Processing results...\nExtracting fields...');
-    var data = await res.json();
-
-    if (data.error) {
+    if (!success) {
       hideProc();
-      var msg = data.error.message || 'Unknown error';
-      if (source==='chat') addBubble('ai','<span class="bad">AI Error: '+msg+'</span>');
-      else toast('AI Error: '+msg, 'err');
+      toast('All models overloaded. Try again in 5-10 mins.', 'err');
       return;
     }
+
     var rawText = (data.candidates&&data.candidates[0]&&data.candidates[0].content&&data.candidates[0].content.parts&&data.candidates[0].content.parts[0]&&data.candidates[0].content.parts[0].text)||'{}';
 
     var result;
