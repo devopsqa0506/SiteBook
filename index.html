@@ -5045,7 +5045,10 @@ function savePlotClose() {
   closeModal('house-modal');
   renderProjects();
   var expSc = document.getElementById('sc-expenditure');
-  if (expSc && expSc.classList.contains('on')) renderExpenditureScreen();
+  if (expSc && expSc.classList.contains('on')) {
+    renderExpenditureScreen();
+    updatePlotProfitDisplay();
+  }
 }
 
 function recalcHouseTotals(pi, pli) {
@@ -5068,6 +5071,10 @@ function updatePlotField(el, field, type) {
   var pi = Number(el.dataset.pi), pli = Number(el.dataset.pli);
   state.projects[pi].plots[pli][field] = type==='num' ? (Number(el.value)||0) : el.value;
   saveData();
+  // Realtime profit calc if SOLD plot + expense/sale changed
+  if (state.projects[pi].plots[pli].status === 'sold' && (field === 'salePrice' || field === 'advanceReceived')) {
+    updatePlotProfitDisplay();
+  }
 }
 
 function updatePlotPhase(el) {
@@ -5304,13 +5311,15 @@ function renderExpenditureScreen() {
         totalSold++;
         var received = Number(plt.advanceReceived||0) + (plt.partialPayments||[]).reduce(function(s,pp){ return s+Number(pp.amount||0); },0);
         totalAdvancesReceived += received;
-        totalExpectedReceivable += Number(plt.salePrice||0);
+        var salePrice = Number(plt.salePrice||0);
+        var pending = salePrice - received;
+        totalExpectedReceivable += Math.max(pending, 0);
         var centRateForProj = proj.totalCents > 0 ? (landPaid / proj.totalCents) : 0;
         var landCostForPlot = centRateForProj * Number(plt.sizeInCents||0);
         // Plot type: profit = SoldPrice - (PlotSize × DealCentRate). House: includes construction.
         var plotProfit = plt.type === 'plot'
-          ? Number(plt.salePrice||0) - landCostForPlot
-          : Number(plt.salePrice||0) - (landCostForPlot + constTotal + miscTotal + otherTotal);
+          ? salePrice - landCostForPlot
+          : salePrice - (landCostForPlot + constTotal + miscTotal + otherTotal);
         totalProfit += plotProfit;
       }
     });
@@ -5372,6 +5381,43 @@ function toggleExpDetail(el) {
   var idx = el.dataset.exp;
   var body = document.getElementById('expd'+idx);
   if (body) body.style.display = body.style.display==='none' ? 'block' : 'none';
+}
+
+// ── Real-time profit calc for plot (SOLD status only) ──
+function updatePlotProfitDisplay() {
+  var projects = state.projects||[];
+  var currProj = projects.length > 0 ? projects[0] : null; // active project
+  if (!currProj) return;
+  
+  var profitEl = document.getElementById('pp-display');
+  if (!profitEl) return;
+  
+  var plots = currProj.plots||[];
+  var totalCents = Number(currProj.totalCents||0);
+  var landPaid = (state.landPayments||[]).filter(function(p){ return p.projId===currProj.id; })
+                 .reduce(function(s,p){ return s+Number(p.amount||0); },0);
+  var landCostTotal = Number(currProj.landCost||0) || (totalCents * Number(currProj.pricePerCent||0));
+  var centRate = totalCents > 0 ? (landPaid > 0 ? landPaid : landCostTotal) / totalCents : 0;
+  
+  var totalProfit = 0;
+  plots.forEach(function(plt) {
+    if (plt.status !== 'sold') return;
+    
+    var salePrice = Number(plt.salePrice||0);
+    var plotLand = centRate * Number(plt.sizeInCents||0);
+    var plotConst = plt.type === 'house' 
+      ? (plt.constructionExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0) : 0;
+    var plotMisc = (plt.miscExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
+    var plotOther = (plt.otherExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
+    var totalCost = plotLand + plotConst + plotMisc + plotOther;
+    
+    var profit = salePrice - totalCost;
+    totalProfit += profit;
+  });
+  
+  var profitColor = totalProfit >= 0 ? 'var(--sage)' : 'var(--rose)';
+  profitEl.innerHTML = '<div style="font-weight:700;font-size:16px;color:'+profitColor+'">'
+    + (totalProfit >= 0 ? '+' : '') + rup(totalProfit) + '</div>';
 }
 
 function openPlotExpenditure(pi, pli) {
