@@ -5252,6 +5252,41 @@ function syncProjectPlots(projId) {
   });
 }
 
+// ══ Sync ProjectIncome sheet ══
+function syncProjectIncome(projId) {
+  var proj = (state.projects||[]).find(function(p){ return p.id===projId; });
+  if (!proj) return;
+  
+  // Delete old income entries for this project
+  fetch(cfg.scriptUrl, {
+    method:'POST',
+    body:JSON.stringify({action:'deleteRow', sheetId:cfg.sheetId, sheetName:'ProjectIncome', matchCol:'projId', matchVal:projId})
+  }).catch(function(){});
+  
+  // Re-sync all income from plots
+  (proj.plots||[]).forEach(function(plt) {
+    // Advance received
+    if (plt.advanceReceived && plt.advanceReceived > 0) {
+      var advId = 'adv_' + plt.id + '_' + Date.now();
+      pushToSheet('ProjectIncome',
+        ['id','projId','projectName','plotId','plotNo','incomeType','amount','date','buyerName','notes'],
+        [advId, projId, proj.name, plt.id, plt.plotNo||'', 'advance', plt.advanceReceived, plt.date||today(), plt.buyer||'', 'Advance received']
+      );
+    }
+    
+    // Partial payments
+    (plt.partialPayments||[]).forEach(function(pp) {
+      if (pp.amount && pp.amount > 0) {
+        pushToSheet('ProjectIncome',
+          ['id','projId','projectName','plotId','plotNo','incomeType','amount','date','buyerName','notes'],
+          [pp.id, projId, proj.name, plt.id, plt.plotNo||'', 'partial_payment', pp.amount, pp.date||today(), plt.buyer||'', pp.desc||'Partial payment']
+        );
+      }
+    });
+  });
+}
+
+
 
 function recalcHouseTotals(pi, pli) {
   var proj = state.projects[pi];
@@ -5301,6 +5336,10 @@ function updatePlotField(el, field, type) {
   if (['status','type','salePrice','buyer','plotNo','sizeInCents'].indexOf(field) !== -1) {
     syncProjectPlots(state.projects[pi].id);
   }
+  // Sync income when advance or buyer changes
+  if (['advanceReceived','buyer'].indexOf(field) !== -1) {
+    syncProjectIncome(state.projects[pi].id);
+  }
   // Realtime updates if SOLD plot + key field changed
   if (state.projects[pi].plots[pli].status === 'sold' && (field === 'salePrice' || field === 'advanceReceived')) {
     updatePlotProfitDisplay();
@@ -5337,10 +5376,11 @@ function updatePartialPayment(el, pi, pli, ppIdx, field, type) {
   if (!plt.partialPayments || !plt.partialPayments[ppIdx]) return;
   plt.partialPayments[ppIdx][field] = type==='num' ? (Number(el.value)||0) : el.value;
   saveData();
-  if (field === 'amount') {
+  if (field === 'amount' || field === 'desc' || field === 'date') {
     recalcPaymentTotal(pi, pli, null);
     updateAdvancesReceivedTotal();
     syncProjectPlots(state.projects[pi].id);
+    syncProjectIncome(state.projects[pi].id);
   }
   // Realtime profit update if SOLD and payment changed
   if (plt.status === 'sold' && field === 'amount') updatePlotProfitDisplay();
@@ -5370,6 +5410,7 @@ function deletePartialPayment(pi, pli, ppIdx) {
   plt.partialPayments.splice(ppIdx, 1);
   saveData();
   syncProjectPlots(state.projects[pi].id);
+  syncProjectIncome(state.projects[pi].id);
   recalcPaymentTotal(pi, pli, null);
   updateAdvancesReceivedTotal();
   openPlotByIndex({dataset:{proj:String(pi),plot:String(pli)}});
