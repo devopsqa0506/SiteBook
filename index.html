@@ -5054,6 +5054,7 @@ function savePlotClose() {
   saveData();
   closeModal('house-modal');
   renderProjects();
+  updateAdvancesReceivedTotal();
   var expSc = document.getElementById('sc-expenditure');
   if (expSc && expSc.classList.contains('on')) {
     renderExpenditureScreen();
@@ -5075,6 +5076,8 @@ function recalcHouseTotals(pi, pli) {
   var totalInv   = totalConst + landAdv;
   var t = document.getElementById('hm-total');  if (t) t.textContent = rup(totalConst);
   var i = document.getElementById('hm-invest'); if (i) i.textContent = rup(totalInv);
+  // Update summary boxes instantly
+  updateAdvancesReceivedTotal();
   // Realtime profit update if SOLD
   if (plt.status === 'sold') updatePlotProfitDisplay();
 }
@@ -5384,9 +5387,9 @@ function renderExpenditureScreen() {
   var totalInvested = totalLandPaid + totalConstruction + totalMisc;
 
   summaryEl.innerHTML = '<div class="profit-summary">'
-    + '<div class="ps-box"><div class="pl">Total Invested</div><div class="pv" style="color:var(--rose)">'+rup(totalInvested)+'</div></div>'
-    + '<div class="ps-box"><div class="pl">Construction</div><div class="pv" style="color:var(--sky)">'+rup(totalConstruction)+'</div></div>'
-    + '<div class="ps-box"><div class="pl">Misc</div><div class="pv" style="color:var(--teal)">'+rup(totalMisc)+'</div></div>'
+    + '<div class="ps-box"><div class="pl">Total Invested</div><div class="pv" data-id="total-invested" style="color:var(--rose)">'+rup(totalInvested)+'</div></div>'
+    + '<div class="ps-box"><div class="pl">Construction</div><div class="pv" data-id="total-construction" style="color:var(--sky)">'+rup(totalConstruction)+'</div></div>'
+    + '<div class="ps-box"><div class="pl">Misc</div><div class="pv" data-id="total-misc" style="color:var(--teal)">'+rup(totalMisc)+'</div></div>'
     + '</div>'
     + '<div class="profit-summary">'
     + '<div class="ps-box"><div class="pl">Paid For Land</div><div class="pv" style="color:var(--amb)">'+rup(totalLandPaid)+'</div></div>'
@@ -5443,6 +5446,7 @@ function toggleExpDetail(el) {
 function updateAdvancesReceivedTotal() {
   var projects = state.projects||[];
   var totalAdvanced = 0, totalExpRecv = 0, totalProft = 0;
+  var totalConst = 0, totalMisc = 0, totalInv = 0;
   
   projects.forEach(function(proj) {
     var landPaid = (state.landPayments||[]).filter(function(p){ return p.projId===proj.id; })
@@ -5450,6 +5454,13 @@ function updateAdvancesReceivedTotal() {
     var centRate = proj.totalCents > 0 ? (landPaid / proj.totalCents) : 0;
     
     (proj.plots||[]).forEach(function(plt) {
+      // Construction & Misc for ALL plots
+      var constExp = (plt.constructionExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
+      var miscExp = (plt.miscExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
+      var otherExp = (plt.otherExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
+      totalConst += constExp;
+      totalMisc += miscExp + otherExp;
+      
       if (plt.status === 'sold') {
         var received = Number(plt.advanceReceived||0) + (plt.partialPayments||[]).reduce(function(s,pp){ return s+Number(pp.amount||0); },0);
         totalAdvanced += received;
@@ -5467,17 +5478,39 @@ function updateAdvancesReceivedTotal() {
     });
   });
   
+  // Update advances
   var el1 = document.querySelector('[data-id="adv-total"]');
   if (el1) el1.textContent = rup(totalAdvanced);
   
+  // Update expected receivable
   var el2 = document.querySelector('[data-id="exp-recv"]');
   if (el2) el2.textContent = rup(totalExpRecv);
   
+  // Update total profit
   var el3 = document.querySelector('[data-id="tot-profit"]');
   if (el3) {
     el3.textContent = rup(totalProft);
     el3.style.color = totalProft >= 0 ? 'var(--sage)' : 'var(--rose)';
   }
+  
+  // Update Construction
+  var el4 = document.querySelector('[data-id="total-construction"]');
+  if (el4) el4.textContent = rup(totalConst);
+  
+  // Update Misc
+  var el5 = document.querySelector('[data-id="total-misc"]');
+  if (el5) el5.textContent = rup(totalMisc);
+  
+  // Update Total Invested
+  var landTotal = 0;
+  projects.forEach(function(proj) {
+    var landPaid = (state.landPayments||[]).filter(function(p){ return p.projId===proj.id; })
+                   .reduce(function(s,p){ return s+Number(p.amount||0); },0);
+    landTotal += landPaid;
+  });
+  totalInv = landTotal + totalConst + totalMisc;
+  var el6 = document.querySelector('[data-id="total-invested"]');
+  if (el6) el6.textContent = rup(totalInv);
 }
 
 // ── Real-time profit calc for plot (SOLD status only) ──
