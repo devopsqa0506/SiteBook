@@ -5620,6 +5620,7 @@ function renderExpenditureScreen() {
     var totalCents = Number(proj.totalCents||0);
     var landCostTotal = Number(proj.landCost||0) || (totalCents * Number(proj.pricePerCent||0));
     totalLandCostRemaining += Math.max(landCostTotal - landPaid, 0);
+    var centRate = totalCents > 0 ? (landCostTotal / totalCents) : 0;
 
     (proj.plots||[]).forEach(function(plt) {
       totalPlotsCnt++;
@@ -5643,8 +5644,7 @@ function renderExpenditureScreen() {
         var pending = salePrice - received;
         totalExpectedReceivable += Math.max(pending, 0);
         
-        var centRateForProj = proj.totalCents > 0 ? (landPaid / proj.totalCents) : 0;
-        var landCostForPlot = centRateForProj * Number(plt.sizeInCents||0);
+        var landCostForPlot = centRate * Number(plt.sizeInCents||0);
         var miscForPlot = (plt.miscExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
         var otherForPlot = (plt.otherExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
         var costBasis = plt.type === 'plot'
@@ -5728,7 +5728,8 @@ function updateAdvancesReceivedTotal() {
   projects.forEach(function(proj) {
     var landPaid = (state.landPayments||[]).filter(function(p){ return p.projId===proj.id; })
                    .reduce(function(s,p){ return s+Number(p.amount||0); },0);
-    var centRate = proj.totalCents > 0 ? (landPaid / proj.totalCents) : 0;
+    var landCostDeal = Number(proj.landCost||0) || (Number(proj.totalCents||0) * Number(proj.pricePerCent||0));
+    var centRate = proj.totalCents > 0 ? (landCostDeal / proj.totalCents) : 0;
     
     (proj.plots||[]).forEach(function(plt) {
       totalPlotCount++;
