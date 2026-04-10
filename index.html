@@ -3243,7 +3243,17 @@ async function handlePhoto(e, source) {
     );
     clearTimeout(timeout);
     if (!res.ok) {
-      throw new Error('API request failed: ' + res.status);
+      hideProc();
+      var statusMsg = 'Server error ' + res.status;
+      if ((res.status === 503 || res.status === 429) && cfg.apiKeys && cfg.apiKeys.length > 1) {
+        toast('⚡ API busy — retrying with next key...', 'wrn');
+        showProc('Retrying document analysis...');
+        setTimeout(function() { handlePhoto(e, source); }, 2000);
+      } else {
+        if (source==='chat') addBubble('ai','<span class="bad">AI Error: '+statusMsg+'</span>');
+        else toast('AI Error: '+statusMsg, 'err');
+      }
+      return;
     }
 
     showProc('Processing results...\nExtracting fields...');
@@ -3252,19 +3262,10 @@ async function handlePhoto(e, source) {
     if (data.error) {
       hideProc();
       var msg = data.error.message || 'Unknown error';
-      var is503 = msg.includes('503') || msg.includes('overloaded') || msg.includes('quota') || msg.includes('429');
-      
-      if (is503 && cfg.apiKeys && cfg.apiKeys.length > 1) {
-        toast('⚡ Server busy — retrying with next key...', 'wrn');
-        showProc('Retrying document analysis...');
-        setTimeout(function() { handlePhoto(e, source); }, 2000);
-      } else {
-        if (source==='chat') addBubble('ai','<span class="bad">AI Error: '+msg+'</span>');
-        else toast('AI Error: '+msg, 'err');
-      }
+      if (source==='chat') addBubble('ai','<span class="bad">AI Error: '+msg+'</span>');
+      else toast('AI Error: '+msg, 'err');
       return;
     }
-
     var rawText = (data.candidates&&data.candidates[0]&&data.candidates[0].content&&data.candidates[0].content.parts&&data.candidates[0].content.parts[0]&&data.candidates[0].content.parts[0].text)||'{}';
 
     var result;
