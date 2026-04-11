@@ -5006,21 +5006,19 @@ function openPlotByIndex(el) {
   body += '<div class="seg-t" style="margin-top:12px">🏗️ Construction Expenses</div>';
   (plt.constructionExpenses||[]).forEach(function(ce, ceIdx) {
     var isFirst = ceIdx === 0;
-    body += '<div style="margin-bottom:6px">'
-      +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:center">'
+    body += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:center;margin-bottom:6px">'
       +(isFirst
         ? '<div class="fi" style="opacity:0.7;font-size:12px">Advance Construction</div>'
         : '<input type="text" class="fi" value="'+escH(ce.desc||'')+'" placeholder="Description" '
             +'onchange="updateConstructionExpense('+pi+','+pli+','+ceIdx+',\'desc\',\'text\',this)" style="font-size:12px">')
-      +'<div><input type="number" class="fi fi-mono" value="'+(ce.amount||'')+'" placeholder="Amount" '
-        +'onchange="updateConstructionExpense('+pi+','+pli+','+ceIdx+',\'amount\',\'num\',this)" oninput="showAmtLabel(this.value,\'ce-w-'+ceIdx+'\')" style="font-size:12px">'
-        +'<div id="ce-w-'+ceIdx+'" style="font-size:11px;font-weight:600;color:var(--sky);margin-top:2px;min-height:14px">'+(ce.amount?amtWords(ce.amount):'')+'</div></div>'
+      +'<input type="number" class="fi fi-mono" value="'+(ce.amount||'')+'" placeholder="Amount" '
+        +'onchange="updateConstructionExpense('+pi+','+pli+','+ceIdx+',\'amount\',\'num\',this)" style="font-size:12px">'
       +'<input type="date" class="fi" value="'+(ce.date||'')+'" '
         +'onchange="updateConstructionExpense('+pi+','+pli+','+ceIdx+',\'date\',\'text\',this)" style="font-size:12px">'
       +(isFirst
         ? '<div style="width:28px"></div>'
         : '<button onclick="deleteConstructionExpense('+pi+','+pli+','+ceIdx+')" style="background:none;border:none;color:var(--rose);cursor:pointer;font-size:16px;padding:4px">🗑️</button>')
-    +'</div></div>';
+    +'</div>';
   });
   body += '<button class="btn ghost sm" style="width:100%;margin-bottom:4px" onclick="addConstructionExpense('+pi+','+pli+')">+ Add Construction Expense</button>';
   } // end house-only construction
@@ -5035,35 +5033,31 @@ function openPlotByIndex(el) {
   ];
   body += '<div class="seg-t" style="margin-top:12px">📋 Misc Expenses</div>';
   (plt.miscExpenses||[]).forEach(function(me, meIdx) {
-    body += '<div style="margin-bottom:6px">'
-      +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:center">'
+    body += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:center;margin-bottom:6px">'
       +'<select class="fi" onchange="updateMiscExpense('+pi+','+pli+','+meIdx+',\'type\',\'text\',this)" style="font-size:12px">'
       +miscTypes.map(function(t){ return '<option value="'+t.v+'" '+(me.type===t.v?'selected':'')+'>'+t.l+'</option>'; }).join('')
       +'</select>'
-      +'<div><input type="number" class="fi fi-mono" value="'+(me.amount||'')+'" placeholder="Amount" '
-        +'onchange="updateMiscExpense('+pi+','+pli+','+meIdx+',\'amount\',\'num\',this)" oninput="showAmtLabel(this.value,\'me-w-'+meIdx+'\')" style="font-size:12px">'
-        +'<div id="me-w-'+meIdx+'" style="font-size:11px;font-weight:600;color:var(--teal);margin-top:2px;min-height:14px">'+(me.amount?amtWords(me.amount):'')+'</div></div>'
+      +'<input type="number" class="fi fi-mono" value="'+(me.amount||'')+'" placeholder="Amount" '
+        +'onchange="updateMiscExpense('+pi+','+pli+','+meIdx+',\'amount\',\'num\',this)" style="font-size:12px">'
       +'<input type="date" class="fi" value="'+(me.date||'')+'" '
         +'onchange="updateMiscExpense('+pi+','+pli+','+meIdx+',\'date\',\'text\',this)" style="font-size:12px">'
       +'<button onclick="deleteMiscExpense('+pi+','+pli+','+meIdx+')" style="background:none;border:none;color:var(--rose);cursor:pointer;font-size:16px;padding:4px">🗑️</button>'
-    +'</div></div>';
+    +'</div>';
   });
   body += '<button class="btn ghost sm" style="width:100%;margin-bottom:4px" onclick="addMiscExpense('+pi+','+pli+')">+ Add Misc Expense</button>';
 
   // Other Expenses section
   body += '<div class="seg-t" style="margin-top:12px">📦 Other Expenses</div>';
   (plt.otherExpenses||[]).forEach(function(oe, oeIdx) {
-    body += '<div style="margin-bottom:6px">'
-      +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:center">'
+    body += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:center;margin-bottom:6px">'
       +'<input type="text" class="fi" value="'+escH(oe.desc||'')+'" placeholder="Description" '
         +'onchange="updateOtherExpense('+pi+','+pli+','+oeIdx+',\'desc\',\'text\',this)" style="font-size:12px">'
-      +'<div><input type="number" class="fi fi-mono" value="'+(oe.amount||'')+'" placeholder="Amount" '
-        +'onchange="updateOtherExpense('+pi+','+pli+','+oeIdx+',\'amount\',\'num\',this)" oninput="showAmtLabel(this.value,\'oe-w-'+oeIdx+'\')" style="font-size:12px">'
-        +'<div id="oe-w-'+oeIdx+'" style="font-size:11px;font-weight:600;color:var(--amb);margin-top:2px;min-height:14px">'+(oe.amount?amtWords(oe.amount):'')+'</div></div>'
+      +'<input type="number" class="fi fi-mono" value="'+(oe.amount||'')+'" placeholder="Amount" '
+        +'onchange="updateOtherExpense('+pi+','+pli+','+oeIdx+',\'amount\',\'num\',this)" style="font-size:12px">'
       +'<input type="date" class="fi" value="'+(oe.date||'')+'" '
         +'onchange="updateOtherExpense('+pi+','+pli+','+oeIdx+',\'date\',\'text\',this)" style="font-size:12px">'
       +'<button onclick="deleteOtherExpense('+pi+','+pli+','+oeIdx+')" style="background:none;border:none;color:var(--rose);cursor:pointer;font-size:16px;padding:4px">🗑️</button>'
-    +'</div></div>';
+    +'</div>';
   });
   body += '<button class="btn ghost sm" style="width:100%;margin-bottom:4px" onclick="addOtherExpense('+pi+','+pli+')">+ Add Other Expense</button>';
 
@@ -5110,21 +5104,19 @@ function openPlotByIndex(el) {
     body += '<div class="seg-t" style="margin-top:14px">💳 Partial Payments</div>';
     if (pps.length) {
       pps.forEach(function(pp, ppIdx) {
-        body += '<div style="margin-bottom:6px">'
-          +'<div style="display:grid;grid-template-columns:1fr 1fr auto auto;gap:6px;align-items:center">'
+        body += '<div style="display:grid;grid-template-columns:1fr 1fr auto auto;gap:6px;align-items:center;margin-bottom:6px">'
           +'<input type="text" class="fi" value="'+escH(pp.desc||'')+'" placeholder="Description" '
             +'data-pi="'+pi+'" data-pli="'+pli+'" data-ppidx="'+ppIdx+'" '
             +'onchange="updatePartialPayment(this,'+pi+','+pli+','+ppIdx+',\'desc\',\'text\')" style="font-size:12px">'
-          +'<div><input type="number" class="fi fi-mono" value="'+(pp.amount||'')+'" placeholder="Amount" '
+          +'<input type="number" class="fi fi-mono" value="'+(pp.amount||'')+'" placeholder="Amount" '
             +'data-pi="'+pi+'" data-pli="'+pli+'" data-ppidx="'+ppIdx+'" '
-            +'onchange="updatePartialPayment(this,'+pi+','+pli+','+ppIdx+',\'amount\',\'num\')" oninput="recalcPaymentTotal('+pi+','+pli+',null); showAmtLabel(this.value,\'pp-w-'+ppIdx+'\')" style="font-size:12px">'
-            +'<div id="pp-w-'+ppIdx+'" style="font-size:11px;font-weight:600;color:var(--sage);margin-top:2px;min-height:14px">'+(pp.amount?amtWords(pp.amount):'')+'</div></div>'
+            +'onchange="updatePartialPayment(this,'+pi+','+pli+','+ppIdx+',\'amount\',\'num\')" oninput="recalcPaymentTotal('+pi+','+pli+',null)" style="font-size:12px">'
           +'<input type="date" class="fi" value="'+(pp.date||'')+'" '
             +'data-pi="'+pi+'" data-pli="'+pli+'" data-ppidx="'+ppIdx+'" '
             +'onchange="updatePartialPayment(this,'+pi+','+pli+','+ppIdx+',\'date\',\'text\')" style="font-size:12px">'
           +'<button onclick="deletePartialPayment('+pi+','+pli+','+ppIdx+')" '
             +'style="background:none;border:none;color:var(--rose);cursor:pointer;font-size:16px;padding:4px">🗑️</button>'
-        +'</div></div>';
+        +'</div>';
       });
     } else {
       body += '<div style="font-size:12px;color:var(--tx3);margin-bottom:6px">No partial payments yet</div>';
