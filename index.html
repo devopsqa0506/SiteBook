@@ -1405,11 +1405,11 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
       <div>
         <label class="fl">Total Cents Bought</label>
-        <input class="fi fi-mono" id="p-cents" type="text" inputmode="numeric" placeholder="30" oninput="calcLandTotal()">
+        <input class="fi fi-mono" id="p-cents" type="number" placeholder="30" oninput="calcLandTotal()">
       </div>
       <div>
         <label class="fl">Price per Cent (₹)</label>
-        <input class="fi fi-mono" id="p-price-per-cent" type="text" inputmode="numeric" placeholder="45000" oninput="calcLandTotal()">
+        <input class="fi fi-mono" id="p-price-per-cent" type="number" placeholder="45000" oninput="calcLandTotal()">
       </div>
     </div>
     <div style="background:var(--s2);border:1px solid var(--bd);border-radius:9px;padding:10px 14px;margin-bottom:10px">
@@ -1693,7 +1693,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px">
         <div>
           <label class="fl">Amount (₹) *</label>
-          <input class="fi fi-mono" id="ln-principal" type="text" inputmode="numeric" placeholder="200000" oninput="calcEmiFromForm();calcHandLoanInterest();updateLoanAmountWords()">
+          <input class="fi fi-mono" id="ln-principal" type="number" placeholder="200000" oninput="calcEmiFromForm();calcHandLoanInterest();updateLoanAmountWords()">
           <div id="ln-amount-words" style="font-size:11px;color:var(--sage);margin-top:2px;text-align:right"></div>
         </div>
         <div><label class="fl">Date Borrowed *</label><input class="fi" id="ln-date" type="date"></div>
@@ -1703,7 +1703,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
     <!-- Bank / Institution fields -->
     <div id="ln-bank-fields" style="display:none">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px">
-        <div><label class="fl">Interest Rate</label><input class="fi fi-mono" id="ln-rate" type="text" inputmode="decimal" placeholder="2" oninput="calcEmiFromForm()"></div>
+        <div><label class="fl">Interest Rate</label><input class="fi fi-mono" id="ln-rate" type="number" step="0.1" placeholder="2" oninput="calcEmiFromForm()"></div>
         <div><label class="fl">Rate Type</label>
           <select class="fi" id="ln-ratetype" onchange="calcEmiFromForm()">
             <option value="pm">% per Month</option>
@@ -1714,15 +1714,15 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px">
-        <div><label class="fl">EMI / Month (₹)</label><input class="fi fi-mono" id="ln-emi" type="text" inputmode="numeric" placeholder="Auto-calc" oninput="calcEmiFromForm()"></div>
-        <div><label class="fl">Term (months)</label><input class="fi fi-mono" id="ln-term" type="text" inputmode="numeric" placeholder="12" oninput="calcEmiFromForm()"></div>
+        <div><label class="fl">EMI / Month (₹)</label><input class="fi fi-mono" id="ln-emi" type="number" placeholder="Auto-calc" oninput="calcEmiFromForm()"></div>
+        <div><label class="fl">Term (months)</label><input class="fi fi-mono" id="ln-term" type="number" placeholder="12" oninput="calcEmiFromForm()"></div>
       </div>
     </div>
 
     <!-- Hand Loan fields -->
     <div id="ln-handloan-fields" style="display:none">
       <label class="fl" style="margin-top:8px">Interest Rate (% per Annum) *</label>
-      <input class="fi fi-mono" id="ln-hl-rate" type="text" inputmode="decimal" placeholder="e.g. 18" oninput="calcHandLoanInterest()">
+      <input class="fi fi-mono" id="ln-hl-rate" type="number" step="0.1" placeholder="e.g. 18" oninput="calcHandLoanInterest()">
       <!-- Interest tracking — shown when editing an existing hand loan -->
       <div id="ln-hl-track" style="display:none;background:rgba(232,93,122,0.06);border:1px solid rgba(232,93,122,0.2);border-radius:10px;padding:10px 12px;margin-top:8px">
         <div style="font-size:11px;color:var(--tx3);margin-bottom:6px;font-weight:600">INTEREST TRACKING (Annual)</div>
@@ -1733,7 +1733,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
           </div>
           <div>
             <label class="fl">Interest Paid (₹)</label>
-            <input class="fi fi-mono" id="ln-hl-int-paid" type="text" inputmode="numeric" placeholder="0" oninput="calcHandLoanInterest()">
+            <input class="fi fi-mono" id="ln-hl-int-paid" type="number" placeholder="0" oninput="calcHandLoanInterest()">
           </div>
         </div>
         <label class="fl" style="margin-top:6px">Interest Balance (₹)</label>
@@ -1767,7 +1767,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
       <div style="font-size:12px;font-weight:700;color:var(--teal);margin-bottom:10px">💰 Principal Payment</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <div><label class="fl">Date *</label><input class="fi" id="pmt-prin-date" type="date"></div>
-        <div><label class="fl">Amount (₹)</label><input class="fi fi-mono" id="pmt-prin-amount" type="text" inputmode="numeric" placeholder="0"></div>
+        <div><label class="fl">Amount (₹)</label><input class="fi fi-mono" id="pmt-prin-amount" type="number" placeholder="0"></div>
       </div>
     </div>
     
@@ -1776,7 +1776,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
       <div style="font-size:12px;font-weight:700;color:var(--rose);margin-bottom:10px">📊 Interest Payment</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <div><label class="fl">Date *</label><input class="fi" id="pmt-int-date" type="date"></div>
-        <div><label class="fl">Amount (₹)</label><input class="fi fi-mono" id="pmt-int-amount" type="text" inputmode="numeric" placeholder="0"></div>
+        <div><label class="fl">Amount (₹)</label><input class="fi fi-mono" id="pmt-int-amount" type="number" placeholder="0"></div>
       </div>
     </div>
     
@@ -1800,7 +1800,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
       <div><label class="fl">Date *</label><input class="fi" id="pexp-date" type="date"></div>
-      <div><label class="fl">Amount (₹) *</label><input class="fi fi-mono" id="pexp-amount" type="text" inputmode="numeric" placeholder="50000"></div>
+      <div><label class="fl">Amount (₹) *</label><input class="fi fi-mono" id="pexp-amount" type="number" placeholder="50000"></div>
     </div>
 
     <label class="fl">Category *</label>
@@ -1833,7 +1833,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
     <select class="fi" id="inc-project"></select>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
       <div><label class="fl">Date *</label><input class="fi" id="inc-date" type="date"></div>
-      <div><label class="fl">Amount (₹) *</label><input class="fi fi-mono" id="inc-amount" type="text" inputmode="numeric" placeholder="4500000"></div>
+      <div><label class="fl">Amount (₹) *</label><input class="fi fi-mono" id="inc-amount" type="number" placeholder="4500000"></div>
     </div>
     <label class="fl">Type</label>
     <select class="fi" id="inc-type">
@@ -1861,7 +1861,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
     <input type="hidden" id="lp-proj-id">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
       <div><label class="fl">Date *</label><input class="fi" id="lp-date" type="date"></div>
-      <div><label class="fl">Amount Paid (₹) *</label><input class="fi fi-mono" id="lp-amount" type="text" inputmode="numeric" placeholder="500000"></div>
+      <div><label class="fl">Amount Paid (₹) *</label><input class="fi fi-mono" id="lp-amount" type="number" placeholder="500000"></div>
     </div>
     <label class="fl">Notes (optional)</label>
     <input class="fi" id="lp-notes" placeholder="ఉదా: 1st installment, Registration day payment">
@@ -2607,7 +2607,7 @@ function clearChat() {
   if (!confirm('Chat history clear చేయాలా?')) return;
   state.chatHistory = [];
   saveData();
-  var _cm = document.getElementById('chat-msgs'); if (_cm) _cm.innerHTML = '';
+  document.getElementById('chat-msgs').innerHTML = '';
   toast('Chat cleared ✓', 'ok');
 }
 
@@ -2773,7 +2773,7 @@ function refreshUI() {
   var el = document.getElementById('recent-list');
   if (!state.entries.length) { el.innerHTML = '<div class="empty"><div class="ei">📋</div><div class="et">ఇంకా ఏమీ లేదు</div></div>'; return; }
   var sorted = state.entries.slice().sort(function(a,b){ return b.id>a.id?1:-1; }).slice(0,25);
-  if (el) el.innerHTML = sorted.map(function(e){
+  el.innerHTML = sorted.map(function(e){
     var cat=e.category||'Other';
     var isPay = e.type==='payment';
     var bal = getBalance(e.vendor);
@@ -2800,7 +2800,7 @@ function renderVendors() {
   var el = document.getElementById('vendor-list');
   var vnames = Object.keys(state.vendors);
   if (!vnames.length) { el.innerHTML = '<div class="empty"><div class="ei">🏪</div><div class="et">Vendors లేవు</div></div>'; return; }
-  if (el) el.innerHTML = vnames.map(function(name){
+  el.innerHTML = vnames.map(function(name){
     var v = state.vendors[name];
     var bal = (v.totalOrdered||0)-(v.totalPaid||0);
     var pct = v.totalOrdered ? Math.min(100,(v.totalPaid/v.totalOrdered)*100) : 0;
@@ -2829,7 +2829,7 @@ function renderPrices() {
   var el = document.getElementById('price-list');
   var keys = Object.keys(state.priceHistory);
   if (!keys.length) { el.innerHTML = '<div class="empty"><div class="ei">📈</div><div class="et">Price history లేదు</div></div>'; return; }
-  if (el) el.innerHTML = keys.map(function(key){
+  el.innerHTML = keys.map(function(key){
     var hist = state.priceHistory[key];
     var latest = hist[hist.length-1];
     return '<div class="price-group fu">'
@@ -2857,11 +2857,11 @@ var selIds  = new Set();
 function renderDocList() {
   var el = document.getElementById('doc-list');
   if (!state.documents.length) {
-    if (el) el.innerHTML = '<div class="empty"><div class="ei">🏛️</div><div class="et">Documents లేవు</div><div class="es">Upload చేయండి</div></div>';
+    el.innerHTML = '<div class="empty"><div class="ei">🏛️</div><div class="et">Documents లేవు</div><div class="es">Upload చేయండి</div></div>';
     return;
   }
   var sorted = state.documents.slice().reverse();
-  if (el) el.innerHTML = sorted.map(function(doc){
+  el.innerHTML = sorted.map(function(doc){
     var r = doc.result || {};
     var emoji  = {Registration:'🏛️',Agreement:'📝',Bill:'🧾',Receipt:'🧾'}[r.docType] || '📄';
     var badge  = {Registration:'reg',Agreement:'agr',Bill:'bil',Receipt:'bil'}[r.docType] || 'reg';
@@ -4143,11 +4143,11 @@ function showPriceHistoryPanel() {
   var keys = Object.keys(bph).filter(function(k) { return bph[k] && bph[k].length > 0; });
 
   var sel = document.getElementById('ph-item-select');
-  if (sel) sel.innerHTML = '<option value="">-- Item select చేయండి --</option>';
+  sel.innerHTML = '<option value="">-- Item select చేయండి --</option>';
 
   if (!keys.length) {
     panel.style.display = 'block';
-    var _pt = document.getElementById('ph-table'); if (_pt) _pt.innerHTML =
+    document.getElementById('ph-table').innerHTML =
       '<div class="empty" style="padding:20px 0"><div class="ei">📊</div>'
       +'<div class="et">Price history లేదు</div>'
       +'<div class="es">Bills scan చేసిన తర్వాత ఇక్కడ కనిపిస్తుంది</div></div>';
@@ -4181,7 +4181,7 @@ function renderPriceHistoryTable() {
   if (!tableEl) return;
 
   if (!key) {
-    if (tableEl) tableEl.innerHTML = '';
+    tableEl.innerHTML = '';
     if (statsEl) statsEl.style.display = 'none';
     return;
   }
@@ -4189,7 +4189,7 @@ function renderPriceHistoryTable() {
   var bph = state.billPriceHistory || {};
   var records = (bph[key] || []).slice(); // copy
   if (!records.length) {
-    if (tableEl) tableEl.innerHTML = '<div style="text-align:center;padding:16px;color:var(--tx3);font-size:13px">No records for this item</div>';
+    tableEl.innerHTML = '<div style="text-align:center;padding:16px;color:var(--tx3);font-size:13px">No records for this item</div>';
     if (statsEl) statsEl.style.display = 'none';
     return;
   }
@@ -4219,7 +4219,7 @@ function renderPriceHistoryTable() {
         +';border-radius:8px;padding:5px 10px;font-size:12px;color:'+(up?'var(--rose)':'var(--teal)')
         +';font-weight:700">'+(up?'📈 ':'📉 ')+(up?'+':'')+pct+'% vs prev</div>';
     }
-    if (statsEl) statsEl.innerHTML =
+    statsEl.innerHTML =
       '<div style="background:var(--s3);border:1px solid var(--bd);border-radius:8px;padding:5px 10px;font-size:12px;color:var(--tx2)">Min ₹'+fmtIN(minRate)+'</div>'
       +'<div style="background:var(--s3);border:1px solid var(--bd);border-radius:8px;padding:5px 10px;font-size:12px;color:var(--tx2)">Max ₹'+fmtIN(maxRate)+'</div>'
       +'<div style="background:var(--s3);border:1px solid var(--bd);border-radius:8px;padding:5px 10px;font-size:12px;color:var(--tx2)">Avg ₹'+fmtIN(Math.round(avgRate))+'</div>'
@@ -4263,7 +4263,7 @@ function renderPriceHistoryTable() {
   });
 
   html += '</div>';
-  if (tableEl) tableEl.innerHTML = html;
+  tableEl.innerHTML = html;
 }
 
 // ════════════════════════════════════════════════════════
@@ -4545,16 +4545,16 @@ function renderKeysList() {
   if (!keys.length) {
     // Show existing single key if present
     if (cfg.geminiKey) {
-      if (el) el.innerHTML = '<div style="background:var(--s2);border:1px solid var(--bd);border-radius:9px;padding:10px 12px;display:flex;align-items:center;gap:10px;margin-bottom:8px">'
+      el.innerHTML = '<div style="background:var(--s2);border:1px solid var(--bd);border-radius:9px;padding:10px 12px;display:flex;align-items:center;gap:10px;margin-bottom:8px">'
         +'<span style="font-size:13px;flex:1;color:var(--teal)">✓ Key 1 (current)</span>'
         +'<span style="font-size:11px;font-family:JetBrains Mono;color:var(--tx3)">'+cfg.geminiKey.substring(0,12)+'...</span>'
         +'</div>';
     } else {
-      if (el) el.innerHTML = '<div style="font-size:13px;color:var(--tx3);text-align:center;padding:10px">No keys added yet</div>';
+      el.innerHTML = '<div style="font-size:13px;color:var(--tx3);text-align:center;padding:10px">No keys added yet</div>';
     }
     return;
   }
-  if (el) el.innerHTML = keys.map(function(k, i){
+  el.innerHTML = keys.map(function(k, i){
     return '<div style="background:var(--s2);border:1px solid var(--bd);border-radius:9px;padding:10px 12px;display:flex;align-items:center;gap:9px;margin-bottom:8px">'
       +'<span style="font-size:18px">'+(i===0?'⭐':'🔑')+'</span>'
       +'<div style="flex:1;min-width:0">'
@@ -4606,7 +4606,7 @@ function renderPlotRows() {
   _pendingPlots.forEach(function(row, i) {
     html += '<div style="display:flex;gap:6px;align-items:center;margin-bottom:6px">'
       +'<input class="fi fi-mono" type="text" placeholder="No." value="'+escH(row.plotNo)+'" oninput="_pendingPlots['+i+'].plotNo=this.value" style="flex:0 0 52px;margin-bottom:0;font-size:13px;text-align:center">'
-      +'<input class="fi fi-mono" type="text" inputmode="numeric" placeholder="Cents" value="'+(row.sizeInCents||'')+'" oninput="_pendingPlots['+i+'].sizeInCents=Number(this.value)||0" style="flex:0 0 70px;margin-bottom:0;font-size:13px">'
+      +'<input class="fi fi-mono" type="number" placeholder="Cents" value="'+(row.sizeInCents||'')+'" oninput="_pendingPlots['+i+'].sizeInCents=Number(this.value)||0" style="flex:0 0 70px;margin-bottom:0;font-size:13px">'
       +'<select oninput="_pendingPlots['+i+'].type=this.value" style="flex:1;background:var(--s2);border:1px solid var(--bd);border-radius:8px;padding:8px 10px;color:var(--tx);font-size:13px;margin-bottom:0">'
         +'<option value="plot" '+(row.type==='plot'?'selected':'')+'>📋 Plot (sell)</option>'
         +'<option value="house" '+(row.type==='house'?'selected':'')+'>🏗️ House (build)</option>'
@@ -4614,7 +4614,7 @@ function renderPlotRows() {
       +'<button type="button" onclick="_pendingPlots.splice('+i+',1);renderPlotRows()" style="background:none;border:none;color:var(--rose);font-size:16px;cursor:pointer;padding:0 4px;flex-shrink:0">×</button>'
     +'</div>';
   });
-  if (container) container.innerHTML = html || '<div style="font-size:12px;color:var(--tx3);padding:4px 0">No plots added yet</div>';
+  container.innerHTML = html || '<div style="font-size:12px;color:var(--tx3);padding:4px 0">No plots added yet</div>';
 }
 
 function clearPlotRows() {
@@ -4636,7 +4636,7 @@ function calcLandTotal() {
 }
 
 function addLandPaymentRow(existingPmt) {
-  var row = existingPmt || { id:'plp_'+Date.now()+'_'+Math.random().toString(36).slice(2,6), date:new Date().toISOString().slice(0,10), amount:0, notes:'' };
+  var row = existingPmt || { id:'plp_'+Date.now()+'_'+Math.random().toString(36).slice(2,6), date:new Date().toISOString().slice(0,10), amount:'', notes:'' };
   if (!existingPmt) _pendingLandPmts.push(row);
   renderLandPaymentRows();
 }
@@ -4648,12 +4648,12 @@ function renderLandPaymentRows() {
   _pendingLandPmts.forEach(function(row, i) {
     html += '<div style="display:flex;gap:6px;align-items:center;margin-bottom:6px" data-lp-idx="'+i+'">'
       +'<input class="fi fi-mono" type="date" value="'+row.date+'" oninput="_pendingLandPmts['+i+'].date=this.value;updateLandPaidTotal()" style="flex:0 0 130px;margin-bottom:0;font-size:13px">'
-      +'<input class="fi fi-mono" type="text" inputmode="numeric" placeholder="Amount ₹" value="'+(row.amount||'')+'" oninput="_pendingLandPmts['+i+'].amount=Number(this.value.replace(/[^0-9.-]/g,\'\'))||0;updateLandPaidTotal()" style="flex:1;margin-bottom:0;font-size:13px">'
+      +'<input class="fi fi-mono" type="number" placeholder="Amount ₹" value="'+(row.amount||'')+'" oninput="_pendingLandPmts['+i+'].amount=Number(this.value)||0;updateLandPaidTotal()" style="flex:1;margin-bottom:0;font-size:13px">'
       +'<input class="fi" type="text" placeholder="Note" value="'+(row.notes||'')+'" oninput="_pendingLandPmts['+i+'].notes=this.value" style="flex:1;margin-bottom:0;font-size:13px">'
       +'<button type="button" onclick="_pendingLandPmts.splice('+i+',1);renderLandPaymentRows();updateLandPaidTotal()" style="background:none;border:none;color:var(--rose);font-size:16px;cursor:pointer;padding:0 4px;flex-shrink:0">×</button>'
     +'</div>';
   });
-  if (container) container.innerHTML = html;
+  container.innerHTML = html;
   updateLandPaidTotal();
 }
 
@@ -4787,7 +4787,7 @@ function openEditProject(projId) {
 function renderProjects() {
   var el = document.getElementById('project-list');
   if (!state.projects || !state.projects.length) {
-    if (el) el.innerHTML = '<div class="empty"><div class="ei">🏘️</div><div class="et">Ventures లేవు</div><div class="es">+ New Venture tap చేయండి</div></div>';
+    el.innerHTML = '<div class="empty"><div class="ei">🏘️</div><div class="et">Ventures లేవు</div><div class="es">+ New Venture tap చేయండి</div></div>';
     renderAgreementAlerts([]);
     renderOverallProfit([]);
     return;
@@ -4863,7 +4863,7 @@ function renderProjects() {
     +'</div>';
   });
 
-  if (el) el.innerHTML = html;
+  el.innerHTML = html;
   renderAgreementAlerts(state.projects);
   renderOverallProfit(state.projects);
 }
@@ -4975,7 +4975,7 @@ function openPlotByIndex(el) {
     +'<div><label class="fl">Plot No</label>'
       +'<input type="text" class="fi fi-mono" value="'+escH(plt.plotNo||'')+'" placeholder="1 / A1" data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'plotNo\',\'text\')" style="text-align:center"></div>'
     +'<div><label class="fl">Size (Cents)</label>'
-      +'<input type="text" inputmode="numeric" class="fi fi-mono" value="'+(plt.sizeInCents||'')+'" placeholder="3" data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'sizeInCents\',\'num\')"></div>'
+      +'<input type="number" class="fi fi-mono" value="'+(plt.sizeInCents||'')+'" placeholder="3" data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'sizeInCents\',\'num\')"></div>'
   +'</div>';
 
   // Type
@@ -5006,19 +5006,21 @@ function openPlotByIndex(el) {
   body += '<div class="seg-t" style="margin-top:12px">🏗️ Construction Expenses</div>';
   (plt.constructionExpenses||[]).forEach(function(ce, ceIdx) {
     var isFirst = ceIdx === 0;
-    body += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:center;margin-bottom:6px">'
+    body += '<div style="margin-bottom:6px">'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:center">'
       +(isFirst
         ? '<div class="fi" style="opacity:0.7;font-size:12px">Advance Construction</div>'
         : '<input type="text" class="fi" value="'+escH(ce.desc||'')+'" placeholder="Description" '
             +'onchange="updateConstructionExpense('+pi+','+pli+','+ceIdx+',\'desc\',\'text\',this)" style="font-size:12px">')
-      +'<input type="text" class="fi fi-mono" inputmode="numeric" value="'+(ce.amount||'')+'" placeholder="Amount" '
-        +'onchange="updateConstructionExpense('+pi+','+pli+','+ceIdx+',\'amount\',\'num\',this)" style="font-size:12px">'
+      +'<div><input type="number" class="fi fi-mono" value="'+(ce.amount||'')+'" placeholder="Amount" '
+        +'onchange="updateConstructionExpense('+pi+','+pli+','+ceIdx+',\'amount\',\'num\',this)" oninput="showAmtLabel(this.value,\'ce-w-'+ceIdx+'\')" style="font-size:12px">'
+        +'<div id="ce-w-'+ceIdx+'" style="font-size:11px;font-weight:600;color:var(--sky);margin-top:2px;min-height:14px">'+(ce.amount?amtWords(ce.amount):'')+'</div></div>'
       +'<input type="date" class="fi" value="'+(ce.date||'')+'" '
         +'onchange="updateConstructionExpense('+pi+','+pli+','+ceIdx+',\'date\',\'text\',this)" style="font-size:12px">'
       +(isFirst
         ? '<div style="width:28px"></div>'
         : '<button onclick="deleteConstructionExpense('+pi+','+pli+','+ceIdx+')" style="background:none;border:none;color:var(--rose);cursor:pointer;font-size:16px;padding:4px">🗑️</button>')
-    +'</div>';
+    +'</div></div>';
   });
   body += '<button class="btn ghost sm" style="width:100%;margin-bottom:4px" onclick="addConstructionExpense('+pi+','+pli+')">+ Add Construction Expense</button>';
   } // end house-only construction
@@ -5033,31 +5035,35 @@ function openPlotByIndex(el) {
   ];
   body += '<div class="seg-t" style="margin-top:12px">📋 Misc Expenses</div>';
   (plt.miscExpenses||[]).forEach(function(me, meIdx) {
-    body += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:center;margin-bottom:6px">'
+    body += '<div style="margin-bottom:6px">'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:center">'
       +'<select class="fi" onchange="updateMiscExpense('+pi+','+pli+','+meIdx+',\'type\',\'text\',this)" style="font-size:12px">'
       +miscTypes.map(function(t){ return '<option value="'+t.v+'" '+(me.type===t.v?'selected':'')+'>'+t.l+'</option>'; }).join('')
       +'</select>'
-      +'<input type="text" class="fi fi-mono" inputmode="numeric" value="'+(me.amount||'')+'" placeholder="Amount" '
-        +'onchange="updateMiscExpense('+pi+','+pli+','+meIdx+',\'amount\',\'num\',this)" style="font-size:12px">'
+      +'<div><input type="number" class="fi fi-mono" value="'+(me.amount||'')+'" placeholder="Amount" '
+        +'onchange="updateMiscExpense('+pi+','+pli+','+meIdx+',\'amount\',\'num\',this)" oninput="showAmtLabel(this.value,\'me-w-'+meIdx+'\')" style="font-size:12px">'
+        +'<div id="me-w-'+meIdx+'" style="font-size:11px;font-weight:600;color:var(--teal);margin-top:2px;min-height:14px">'+(me.amount?amtWords(me.amount):'')+'</div></div>'
       +'<input type="date" class="fi" value="'+(me.date||'')+'" '
         +'onchange="updateMiscExpense('+pi+','+pli+','+meIdx+',\'date\',\'text\',this)" style="font-size:12px">'
       +'<button onclick="deleteMiscExpense('+pi+','+pli+','+meIdx+')" style="background:none;border:none;color:var(--rose);cursor:pointer;font-size:16px;padding:4px">🗑️</button>'
-    +'</div>';
+    +'</div></div>';
   });
   body += '<button class="btn ghost sm" style="width:100%;margin-bottom:4px" onclick="addMiscExpense('+pi+','+pli+')">+ Add Misc Expense</button>';
 
   // Other Expenses section
   body += '<div class="seg-t" style="margin-top:12px">📦 Other Expenses</div>';
   (plt.otherExpenses||[]).forEach(function(oe, oeIdx) {
-    body += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:center;margin-bottom:6px">'
+    body += '<div style="margin-bottom:6px">'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:center">'
       +'<input type="text" class="fi" value="'+escH(oe.desc||'')+'" placeholder="Description" '
         +'onchange="updateOtherExpense('+pi+','+pli+','+oeIdx+',\'desc\',\'text\',this)" style="font-size:12px">'
-      +'<input type="text" class="fi fi-mono" inputmode="numeric" value="'+(oe.amount||'')+'" placeholder="Amount" '
-        +'onchange="updateOtherExpense('+pi+','+pli+','+oeIdx+',\'amount\',\'num\',this)" style="font-size:12px">'
+      +'<div><input type="number" class="fi fi-mono" value="'+(oe.amount||'')+'" placeholder="Amount" '
+        +'onchange="updateOtherExpense('+pi+','+pli+','+oeIdx+',\'amount\',\'num\',this)" oninput="showAmtLabel(this.value,\'oe-w-'+oeIdx+'\')" style="font-size:12px">'
+        +'<div id="oe-w-'+oeIdx+'" style="font-size:11px;font-weight:600;color:var(--amb);margin-top:2px;min-height:14px">'+(oe.amount?amtWords(oe.amount):'')+'</div></div>'
       +'<input type="date" class="fi" value="'+(oe.date||'')+'" '
         +'onchange="updateOtherExpense('+pi+','+pli+','+oeIdx+',\'date\',\'text\',this)" style="font-size:12px">'
       +'<button onclick="deleteOtherExpense('+pi+','+pli+','+oeIdx+')" style="background:none;border:none;color:var(--rose);cursor:pointer;font-size:16px;padding:4px">🗑️</button>'
-    +'</div>';
+    +'</div></div>';
   });
   body += '<button class="btn ghost sm" style="width:100%;margin-bottom:4px" onclick="addOtherExpense('+pi+','+pli+')">+ Add Other Expense</button>';
 
@@ -5088,11 +5094,11 @@ function openPlotByIndex(el) {
   // Sale Price, Buyer, Payments — only when SOLD
   if (isSold) {
     body += '<label class="fl" style="margin-top:9px">Sale Price (₹)</label>'
-      +'<input type="text" inputmode="numeric" class="fi fi-mono" id="hm-sale-price" value="'+(plt.salePrice||'')+'" placeholder="Actual sale price" '
+      +'<input type="number" class="fi fi-mono" id="hm-sale-price" value="'+(plt.salePrice||'')+'" placeholder="Actual sale price" '
       +'data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'salePrice\',\'num\')" oninput="showAmtLabel(this.value,\'sp-words\'); updatePlotProfitInstant('+pi+','+pli+',this.value)">'
       +'<div id="sp-words" style="font-size:12px;font-weight:600;color:var(--amb);margin-top:3px;min-height:16px">'+(plt.salePrice?amtWords(plt.salePrice):'')+'</div>'
       +'<label class="fl" style="margin-top:9px">Advance Received (₹)</label>'
-      +'<input type="text" inputmode="numeric" class="fi fi-mono" id="hm-adv-rcvd" value="'+(plt.advanceReceived||'')+'" placeholder="Token / advance amount" '
+      +'<input type="number" class="fi fi-mono" id="hm-adv-rcvd" value="'+(plt.advanceReceived||'')+'" placeholder="Token / advance amount" '
       +'data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'advanceReceived\',\'num\')" oninput="recalcPaymentTotal('+pi+','+pli+',this.value); showAmtLabel(this.value,\'adv-words\')">'
       +'<div id="adv-words" style="font-size:12px;font-weight:600;color:var(--teal);margin-top:3px;min-height:16px">'+(plt.advanceReceived?amtWords(plt.advanceReceived):'')+'</div>'
       +'<label class="fl" style="margin-top:9px">Buyer Name</label>'
@@ -5104,19 +5110,21 @@ function openPlotByIndex(el) {
     body += '<div class="seg-t" style="margin-top:14px">💳 Partial Payments</div>';
     if (pps.length) {
       pps.forEach(function(pp, ppIdx) {
-        body += '<div style="display:grid;grid-template-columns:1fr 1fr auto auto;gap:6px;align-items:center;margin-bottom:6px">'
+        body += '<div style="margin-bottom:6px">'
+          +'<div style="display:grid;grid-template-columns:1fr 1fr auto auto;gap:6px;align-items:center">'
           +'<input type="text" class="fi" value="'+escH(pp.desc||'')+'" placeholder="Description" '
             +'data-pi="'+pi+'" data-pli="'+pli+'" data-ppidx="'+ppIdx+'" '
             +'onchange="updatePartialPayment(this,'+pi+','+pli+','+ppIdx+',\'desc\',\'text\')" style="font-size:12px">'
-          +'<input type="text" inputmode="numeric" class="fi fi-mono" value="'+(pp.amount||'')+'" placeholder="Amount" '
+          +'<div><input type="number" class="fi fi-mono" value="'+(pp.amount||'')+'" placeholder="Amount" '
             +'data-pi="'+pi+'" data-pli="'+pli+'" data-ppidx="'+ppIdx+'" '
-            +'onchange="updatePartialPayment(this,'+pi+','+pli+','+ppIdx+',\'amount\',\'num\')" oninput="recalcPaymentTotal('+pi+','+pli+',null)" style="font-size:12px">'
+            +'onchange="updatePartialPayment(this,'+pi+','+pli+','+ppIdx+',\'amount\',\'num\')" oninput="recalcPaymentTotal('+pi+','+pli+',null); showAmtLabel(this.value,\'pp-w-'+ppIdx+'\')" style="font-size:12px">'
+            +'<div id="pp-w-'+ppIdx+'" style="font-size:11px;font-weight:600;color:var(--sage);margin-top:2px;min-height:14px">'+(pp.amount?amtWords(pp.amount):'')+'</div></div>'
           +'<input type="date" class="fi" value="'+(pp.date||'')+'" '
             +'data-pi="'+pi+'" data-pli="'+pli+'" data-ppidx="'+ppIdx+'" '
             +'onchange="updatePartialPayment(this,'+pi+','+pli+','+ppIdx+',\'date\',\'text\')" style="font-size:12px">'
           +'<button onclick="deletePartialPayment('+pi+','+pli+','+ppIdx+')" '
             +'style="background:none;border:none;color:var(--rose);cursor:pointer;font-size:16px;padding:4px">🗑️</button>'
-        +'</div>';
+        +'</div></div>';
       });
     } else {
       body += '<div style="font-size:12px;color:var(--tx3);margin-bottom:6px">No partial payments yet</div>';
@@ -5159,7 +5167,7 @@ function openPlotByIndex(el) {
     +'<button class="btn amb full" onclick="savePlotClose()">✓ Save</button>'
   +'</div>';
 
-  var _hm = document.getElementById('house-modal-body'); if (_hm) _hm.innerHTML = body;
+  document.getElementById('house-modal-body').innerHTML = body;
   openModal('house-modal');
 }
 
@@ -5249,18 +5257,6 @@ function syncProjectPlots(projId) {
   });
 }
 
-// ════ DEBOUNCED SYNC - prevent rapid multiple calls ════
-var _syncTimeout = {};
-
-function syncProjectPlotsDebounced(projId, delayMs) {
-  delayMs = delayMs || 500;
-  if (_syncTimeout[projId]) clearTimeout(_syncTimeout[projId]);
-  _syncTimeout[projId] = setTimeout(function() {
-    syncProjectPlots(projId);
-    delete _syncTimeout[projId];
-  }, delayMs);
-}
-
 // ══ Sync ProjectIncome sheet ══
 function syncProjectIncome(projId) {
   var proj = (state.projects||[]).find(function(p){ return p.id===projId; });
@@ -5343,7 +5339,7 @@ function updatePlotField(el, field, type) {
   saveData();
   // Sync critical fields
   if (['status','type','salePrice','buyer','plotNo','sizeInCents'].indexOf(field) !== -1) {
-    syncProjectPlotsDebounced(state.projects[pi].id);
+    syncProjectPlots(state.projects[pi].id);
   }
   // Sync income when advance or buyer changes
   if (['advanceReceived','buyer'].indexOf(field) !== -1) {
@@ -5392,7 +5388,7 @@ function updatePartialPayment(el, pi, pli, ppIdx, field, type) {
   if (field === 'amount' || field === 'desc' || field === 'date') {
     recalcPaymentTotal(pi, pli, null);
     updateAdvancesReceivedTotal();
-    syncProjectPlotsDebounced(state.projects[pi].id);
+    syncProjectPlots(state.projects[pi].id);
     syncProjectIncome(state.projects[pi].id);
   }
   // Realtime profit update if SOLD and payment changed
@@ -5446,7 +5442,7 @@ function updateConstructionExpense(pi, pli, idx, field, type, el) {
   if (field==='amount') {
     recalcHouseTotals(pi, pli);
     updateAdvancesReceivedTotal();
-    syncProjectPlotsDebounced(state.projects[pi].id);
+    syncProjectPlots(state.projects[pi].id);
   }
 }
 function deleteConstructionExpense(pi, pli, idx) {
@@ -5476,7 +5472,7 @@ function updateMiscExpense(pi, pli, idx, field, type, el) {
   if (field==='amount') {
     recalcHouseTotals(pi, pli);
     updateAdvancesReceivedTotal();
-    syncProjectPlotsDebounced(state.projects[pi].id);
+    syncProjectPlots(state.projects[pi].id);
   }
 }
 function deleteMiscExpense(pi, pli, idx) {
@@ -5506,7 +5502,7 @@ function updateOtherExpense(pi, pli, idx, field, type, el) {
   if (field==='amount') {
     recalcHouseTotals(pi, pli);
     updateAdvancesReceivedTotal();
-    syncProjectPlotsDebounced(state.projects[pi].id);
+    syncProjectPlots(state.projects[pi].id);
   }
 }
 function deleteOtherExpense(pi, pli, idx) {
@@ -5547,7 +5543,7 @@ function renderAgreementAlerts(projects) {
   });
   if (!alerts.length) { el.innerHTML=''; return; }
   alerts.sort(function(a,b){ return a.days-b.days; });
-  if (el) el.innerHTML = '<div class="seg-t" style="color:var(--rose)">⚠️ Payment Deadlines — గడువులు</div>'
+  el.innerHTML = '<div class="seg-t" style="color:var(--rose)">⚠️ Payment Deadlines — గడువులు</div>'
     + alerts.map(function(a){
       var cls = a.days<=7?'urgent':a.days<=30?'warn':'ok';
       return '<div class="alert-card '+cls+'">'
@@ -5563,7 +5559,7 @@ function renderAgreementAlerts(projects) {
 
 function renderOverallProfit(projects) {
   var el = document.getElementById('overall-profit');
-  if (!projects||!projects.length) { if (el) el.innerHTML=''; return; }
+  if (!projects||!projects.length) { el.innerHTML=''; return; }
   var totalLand=0, totalConst=0, totalExpSale=0, totalReceived=0;
   projects.forEach(function(p){
     totalLand += Number(p.landCost||0) || (Number(p.totalCents||0)*Number(p.pricePerCent||0));
@@ -5580,7 +5576,7 @@ function renderOverallProfit(projects) {
   var totalInvest = totalLand+totalConst;
   var expProfit = totalExpSale-totalLand;
   var expROI = totalLand>0?((expProfit/totalLand)*100).toFixed(1):0;
-  if (el) el.innerHTML = '<div class="profit-summary">'
+  el.innerHTML = '<div class="profit-summary">'
     +'<div class="ps-box"><div class="pl">Total Land</div><div class="pv" style="color:var(--amb)">'+rup(totalLand)+'</div></div>'
     +'<div class="ps-box"><div class="pl">Construction</div><div class="pv" style="color:var(--sky)">'+rup(totalConst)+'</div></div>'
     +'<div class="ps-box"><div class="pl">Total Invested</div><div class="pv" style="color:var(--rose)">'+rup(totalInvest)+'</div></div>'
@@ -5992,11 +5988,11 @@ function renderContacts() {
   var all = state.contacts||[];
   var filtered = contactFilter==='all' ? all : all.filter(function(c){ return c.category===contactFilter; });
   if (!filtered.length) {
-    if (el) el.innerHTML = '<div class="empty"><div class="ei">👥</div><div class="et">Contacts లేవు</div><div class="es">Bills/Docs scan చేయండి లేదా AI Chat లో vendor పేరు చెప్పండి</div></div>';
+    el.innerHTML = '<div class="empty"><div class="ei">👥</div><div class="et">Contacts లేవు</div><div class="es">Bills/Docs scan చేయండి లేదా AI Chat లో vendor పేరు చెప్పండి</div></div>';
     return;
   }
   var catEmoji = {Sand:'🪨',Steel:'🔩',Cement:'🏗️',Electrical:'⚡',Labour:'👷',Hardware:'🔧',Other:'📦'};
-  if (el) el.innerHTML = filtered.map(function(c){
+  el.innerHTML = filtered.map(function(c){
     var ico = catEmoji[c.category] || '👤';
     var lastPriceHtml = '';
     if (c.lastPrice && Number(c.lastPrice) > 0) {
@@ -6467,7 +6463,7 @@ var _procStart = null;
 var _procSeconds = 0;
 
 function showProc(t) {
-  var _pr = document.getElementById('proc-text'); if (_pr) _pr.innerHTML = (t||'').replace(/\n/g,'<br>');
+  document.getElementById('proc-text').innerHTML = (t||'').replace(/\n/g,'<br>');
   document.getElementById('proc').classList.add('on');
   _procStart = Date.now();
   _procSeconds = 0;
@@ -6803,10 +6799,10 @@ function confirmAutoEntry(entryJson) {
       notes: entry.notes || '',
       phone: ''
     });
-    var _ar = document.getElementById('auto-entry-result'); if (_ar) _ar.innerHTML = '<div class="insight-card good"><div class="insight-title">✅ Entry saved!</div></div>';
+    document.getElementById('auto-entry-result').innerHTML = '<div class="insight-card good"><div class="insight-title">✅ Entry saved!</div></div>';
     document.getElementById('auto-entry-input').value = '';
     setTimeout(function(){
-      var _ar2 = document.getElementById('auto-entry-result'); if (_ar2) _ar2.innerHTML = '';
+      document.getElementById('auto-entry-result').innerHTML = '';
     }, 2000);
     toast('Entry saved! ✓', 'ok');
   } catch(e) {
@@ -7610,7 +7606,7 @@ function renderLoanList() {
   var ib=document.getElementById('fs-int-balance');     if(ib) ib.innerHTML=rup(totalIntBalance)+' <span style="font-size:12px;font-weight:600;color:var(--sky)">('+shortAmt(totalIntBalance)+')</span>';
 
   if (!loans.length) {
-    if (el) el.innerHTML = '<div class="empty"><div class="ei">🏦</div><div class="et">Loans లేవు</div><div class="es">Bank loans, gold loans, hand loans అన్నీ ఇక్కడ track చేయండి</div></div>';
+    el.innerHTML='<div class="empty"><div class="ei">🏦</div><div class="et">Loans లేవు</div><div class="es">Bank loans, gold loans, hand loans అన్నీ ఇక్కడ track చేయండి</div></div>';
     return;
   }
 
@@ -7751,7 +7747,7 @@ function renderLoanList() {
     +'</div>'; // loan-card
   });
 
-  if (el) el.innerHTML = html;
+  el.innerHTML = html;
   // Restore expanded cards
   openBodies.forEach(function(id){ var b=document.getElementById(id); if(b) b.style.display='block'; });
 }
@@ -7834,7 +7830,7 @@ function openAddLandPayment(projId) {
   var totalLandCost = Number(proj.landCost||0)||(Number(proj.totalCents||0)*Number(proj.pricePerCent||0));
   var paid = (state.landPayments||[]).filter(function(p){ return p.projId===projId; })
               .reduce(function(s,p){ return s+Number(p.amount||0); },0);
-  var _lpi = document.getElementById('lp-proj-info'); if (_lpi) _lpi.innerHTML =
+  document.getElementById('lp-proj-info').innerHTML =
     '<b style="color:var(--amb)">'+escH(proj.name)+'</b><br>'
     +'Total Land Cost: '+rup(totalLandCost)+' &nbsp;·&nbsp; Paid So Far: <b style="color:var(--teal)">'+rup(paid)+'</b>'
     +' &nbsp;·&nbsp; Remaining: <b style="color:var(--rose)">'+rup(Math.max(totalLandCost-paid,0))+'</b>';
@@ -7895,7 +7891,7 @@ function renderProjExp() {
   if (!el) return;
   var projects = state.projects||[];
   if (!projects.length) {
-    if (el) el.innerHTML = '<div class="empty"><div class="ei">📊</div><div class="et">Projects add అయిన తర్వాత expenditure కనపడుతుంది</div></div>';
+    el.innerHTML='<div class="empty"><div class="ei">📊</div><div class="et">Projects add అయిన తర్వాత expenditure కనపడుతుంది</div></div>';
     return;
   }
 
@@ -8056,7 +8052,7 @@ function renderProjExp() {
     +'</div>'; // proj-exp-card
   });
 
-  if (el) el.innerHTML = html;
+  el.innerHTML=html;
 }
 
 function deleteProjIncome(incId) {
@@ -8192,26 +8188,26 @@ function renderPL() {
 
     var landLine = landForCalc > 0
       ? (landPaid > 0 && landPaid < landCostTotal
-        ? '<div class="pl-row"><span class="pl-lbl">🌾 Land Paid <span style="font-size:10px;color:var(--tx3)">('+rup(landPaid)+' of '+rup(landCostTotal)+')</span></span><span class="pl-val" style="color:var(--amb)">'+rup(landPaid)+'</span></div>'
-        : '<div class="pl-row"><span class="pl-lbl">🌾 Land Cost</span><span class="pl-val" style="color:var(--amb)">'+rup(landForCalc)+'</span></div>')
+        ? '<div class="pl-row"><span class="pl-lbl">🌾 Land Paid <span style="font-size:10px;color:var(--tx3)">('+rup(landPaid)+' of '+rup(landCostTotal)+')</span></span><span class="pl-val" style="color:var(--amb)">'+rup(landPaid)+' <span style="font-size:10px;color:var(--sky)">('+shortAmt(landPaid)+')</span></span></div>'
+        : '<div class="pl-row"><span class="pl-lbl">🌾 Land Cost</span><span class="pl-val" style="color:var(--amb)">'+rup(landForCalc)+' <span style="font-size:10px;color:var(--teal)">('+shortAmt(landForCalc)+')</span></span></div>')
       : '';
 
     html += '<div class="pl-card fu">'
       +'<div class="pl-proj-name">🏘️ '+escH(proj.name) + roiBadge +'</div>'
       + landLine
-      +(projConstCost ? '<div class="pl-row"><span class="pl-lbl">🏗️ Construction</span><span class="pl-val" style="color:var(--sky)">'+rup(projConstCost)+'</span></div>' : '')
-      +(projMiscOther ? '<div class="pl-row"><span class="pl-lbl">📋 Misc &amp; Other</span><span class="pl-val" style="color:var(--teal)">'+rup(projMiscOther)+'</span></div>' : '')
-      +(manualExp ? '<div class="pl-row"><span class="pl-lbl">📤 Overhead / Admin</span><span class="pl-val" style="color:var(--rose)">'+rup(manualExp)+'</span></div>' : '')
-      +'<div class="pl-row"><span class="pl-lbl" style="font-weight:700">Total Cost Incurred</span><span class="pl-val" style="color:var(--rose)">'+rup(costIncurred)+'</span></div>'
+      +(projConstCost ? '<div class="pl-row"><span class="pl-lbl">🏗️ Construction</span><span class="pl-val" style="color:var(--sky)">'+rup(projConstCost)+' <span style="font-size:10px;color:var(--amb)">('+shortAmt(projConstCost)+')</span></span></div>' : '')
+      +(projMiscOther ? '<div class="pl-row"><span class="pl-lbl">📋 Misc &amp; Other</span><span class="pl-val" style="color:var(--teal)">'+rup(projMiscOther)+' <span style="font-size:10px;color:var(--rose)">('+shortAmt(projMiscOther)+')</span></span></div>' : '')
+      +(manualExp ? '<div class="pl-row"><span class="pl-lbl">📤 Overhead / Admin</span><span class="pl-val" style="color:var(--rose)">'+rup(manualExp)+' <span style="font-size:10px;color:var(--sage)">('+shortAmt(manualExp)+')</span></span></div>' : '')
+      +'<div class="pl-row"><span class="pl-lbl" style="font-weight:700">Total Cost Incurred</span><span class="pl-val" style="color:var(--rose)">'+rup(costIncurred)+' <span style="font-size:10px;color:var(--sky)">('+shortAmt(costIncurred)+')</span></span></div>'
       +'<div class="pl-row"><span class="pl-lbl" style="color:var(--tx3)">Plots: '+plots.length+' total · '+soldCount+' sold · '+wipCount+' unsold</span></div>';
 
     if (soldRevenue > 0) {
       html += '<div style="border-top:1px solid var(--bd);margin:6px 0;padding-top:6px">'
-        +'<div class="pl-row"><span class="pl-lbl">💰 Revenue (Sold plots)</span><span class="pl-val" style="color:var(--sage)">'+rup(soldRevenue)+'</span></div>'
-        +'<div class="pl-row"><span class="pl-lbl">✅ Received So Far</span><span class="pl-val" style="color:var(--teal)">'+rup(soldReceived)+'</span></div>'
-        +(soldReceived < soldRevenue ? '<div class="pl-row"><span class="pl-lbl" style="color:var(--tx3)">Pending Collection</span><span class="pl-val" style="color:var(--amb)">'+rup(soldRevenue-soldReceived)+'</span></div>' : '')
-        +'<div class="pl-row"><span class="pl-lbl">📊 COGS (Sold plots cost)</span><span class="pl-val" style="color:var(--rose)">'+rup(soldCOGS)+'</span></div>'
-        +'<div class="pl-row total" style="background:var(--s3);border-radius:8px;padding:8px 10px;margin-top:4px"><span class="pl-lbl" style="font-size:14px">Gross Profit</span><span class="pl-val" style="font-size:15px;color:'+gpColor+'">'+(grossProfit>=0?'+':'')+rup(grossProfit)+'</span></div>'
+        +'<div class="pl-row"><span class="pl-lbl">💰 Revenue (Sold plots)</span><span class="pl-val" style="color:var(--sage)">'+rup(soldRevenue)+' <span style="font-size:10px;color:var(--amb)">('+shortAmt(soldRevenue)+')</span></span></div>'
+        +'<div class="pl-row"><span class="pl-lbl">✅ Received So Far</span><span class="pl-val" style="color:var(--teal)">'+rup(soldReceived)+' <span style="font-size:10px;color:var(--rose)">('+shortAmt(soldReceived)+')</span></span></div>'
+        +(soldReceived < soldRevenue ? '<div class="pl-row"><span class="pl-lbl" style="color:var(--tx3)">Pending Collection</span><span class="pl-val" style="color:var(--amb)">'+rup(soldRevenue-soldReceived)+' <span style="font-size:10px;color:var(--sky)">('+shortAmt(soldRevenue-soldReceived)+')</span></span></div>' : '')
+        +'<div class="pl-row"><span class="pl-lbl">📊 COGS (Sold plots cost)</span><span class="pl-val" style="color:var(--rose)">'+rup(soldCOGS)+' <span style="font-size:10px;color:var(--teal)">('+shortAmt(soldCOGS)+')</span></span></div>'
+        +'<div class="pl-row total" style="background:var(--s3);border-radius:8px;padding:8px 10px;margin-top:4px"><span class="pl-lbl" style="font-size:14px">Gross Profit</span><span class="pl-val" style="font-size:15px;color:'+gpColor+'">'+(grossProfit>=0?'+':'')+rup(grossProfit)+' <span style="font-size:11px;color:var(--sage)">('+shortAmt(grossProfit)+')</span></span></div>'
       +'</div>';
     } else {
       html += '<div style="background:rgba(232,184,74,0.06);border:1px solid rgba(232,184,74,0.2);border-radius:9px;padding:8px 12px;margin-top:8px;text-align:center">'
@@ -8228,19 +8224,19 @@ function renderPL() {
     var overallNet    = overallGross - totalInterestPaid;
     var ogColor       = overallGross >= 0 ? 'var(--sage)' : 'var(--rose)';
     var onColor       = overallNet   >= 0 ? 'var(--sage)' : 'var(--rose)';
-    if (elOverall) elOverall.innerHTML = '<div style="background:linear-gradient(135deg,rgba(232,184,74,0.08),rgba(58,232,200,0.05));border:1px solid rgba(232,184,74,0.3);border-radius:13px;padding:14px;margin-bottom:4px">'
+    elOverall.innerHTML = '<div style="background:linear-gradient(135deg,rgba(232,184,74,0.08),rgba(58,232,200,0.05));border:1px solid rgba(232,184,74,0.3);border-radius:13px;padding:14px;margin-bottom:4px">'
       +'<div style="font-size:13px;font-weight:700;color:var(--amb);margin-bottom:10px">📊 Company P&amp;L — All Projects</div>'
       +'<div class="fin-summary">'
-        +'<div class="fsum-box"><div class="fsum-lbl">Total Borrowed</div><div class="fsum-val" style="color:var(--amb)">'+rup(totalBorrowed)+'</div></div>'
-        +'<div class="fsum-box"><div class="fsum-lbl">Outstanding Debt</div><div class="fsum-val" style="color:var(--rose)">'+rup(totalOutstanding)+'</div></div>'
-        +'<div class="fsum-box"><div class="fsum-lbl">Interest Paid</div><div class="fsum-val" style="color:var(--sky)">'+rup(totalInterestPaid)+'</div></div>'
-        +'<div class="fsum-box"><div class="fsum-lbl">Total Cost Incurred</div><div class="fsum-val" style="color:var(--rose)">'+rup(allCostIncurred)+'</div></div>'
+        +'<div class="fsum-box"><div class="fsum-lbl">Total Borrowed</div><div class="fsum-val" style="color:var(--amb)">'+rup(totalBorrowed)+' <span style="font-size:11px;font-weight:600;color:var(--sky)">('+shortAmt(totalBorrowed)+')</span></div></div>'
+        +'<div class="fsum-box"><div class="fsum-lbl">Outstanding Debt</div><div class="fsum-val" style="color:var(--rose)">'+rup(totalOutstanding)+' <span style="font-size:11px;font-weight:600;color:var(--amb)">('+shortAmt(totalOutstanding)+')</span></div></div>'
+        +'<div class="fsum-box"><div class="fsum-lbl">Interest Paid</div><div class="fsum-val" style="color:var(--sky)">'+rup(totalInterestPaid)+' <span style="font-size:11px;font-weight:600;color:var(--teal)">('+shortAmt(totalInterestPaid)+')</span></div></div>'
+        +'<div class="fsum-box"><div class="fsum-lbl">Total Cost Incurred</div><div class="fsum-val" style="color:var(--rose)">'+rup(allCostIncurred)+' <span style="font-size:11px;font-weight:600;color:var(--sage)">('+shortAmt(allCostIncurred)+')</span></div></div>'
       +'</div>'
       +(hasSales ? '<div class="fin-summary" style="margin-top:8px">'
-        +'<div class="fsum-box"><div class="fsum-lbl">Revenue (Sold)</div><div class="fsum-val" style="color:var(--sage)">'+rup(allRevenue)+'</div></div>'
-        +'<div class="fsum-box"><div class="fsum-lbl">Received So Far</div><div class="fsum-val" style="color:var(--teal)">'+rup(allReceived)+'</div></div>'
-        +'<div class="fsum-box"><div class="fsum-lbl">Gross Profit</div><div class="fsum-val" style="color:'+ogColor+'">'+(overallGross>=0?'+':'')+rup(overallGross)+'</div></div>'
-        +'<div class="fsum-box"><div class="fsum-lbl" style="font-weight:700">Net Profit</div><div class="fsum-val" style="color:'+onColor+';font-size:18px">'+(overallNet>=0?'+':'')+rup(overallNet)+'</div></div>'
+        +'<div class="fsum-box"><div class="fsum-lbl">Revenue (Sold)</div><div class="fsum-val" style="color:var(--sage)">'+rup(allRevenue)+' <span style="font-size:11px;font-weight:600;color:var(--amb)">('+shortAmt(allRevenue)+')</span></div></div>'
+        +'<div class="fsum-box"><div class="fsum-lbl">Received So Far</div><div class="fsum-val" style="color:var(--teal)">'+rup(allReceived)+' <span style="font-size:11px;font-weight:600;color:var(--rose)">('+shortAmt(allReceived)+')</span></div></div>'
+        +'<div class="fsum-box"><div class="fsum-lbl">Gross Profit</div><div class="fsum-val" style="color:'+ogColor+'">'+(overallGross>=0?'+':'')+rup(overallGross)+' <span style="font-size:11px;font-weight:600;color:var(--sky)">('+shortAmt(overallGross)+')</span></div></div>'
+        +'<div class="fsum-box"><div class="fsum-lbl" style="font-weight:700">Net Profit</div><div class="fsum-val" style="color:'+onColor+';font-size:18px">'+(overallNet>=0?'+':'')+rup(overallNet)+' <span style="font-size:12px;font-weight:600;color:var(--amb)">('+shortAmt(overallNet)+')</span></div></div>'
       +'</div>' : '<div style="padding:8px 0;font-size:12px;color:var(--tx3);text-align:center">Mark plots as Sold to see Revenue &amp; Profit</div>')
     +'</div>';
   }
