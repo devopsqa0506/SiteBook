@@ -2494,8 +2494,14 @@ function finishSetup() {
   app.style.display = '';
   app.classList.add('on');
   
-  // Clean up any corrupted floating-point amounts in existing data
-  cleanupCorruptedAmounts();
+  // Clean up corrupted amounts ONCE (check flag)
+  try {
+    var cleanupDone = localStorage.getItem('sb_cleanup_v1');
+    if (!cleanupDone) {
+      cleanupCorruptedAmounts();
+      localStorage.setItem('sb_cleanup_v1', 'done');
+    }
+  } catch(e) {}
   
   refreshUI();
   renderDocList();
