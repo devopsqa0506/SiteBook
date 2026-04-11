@@ -1053,7 +1053,6 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
         <div class="seg-t">
           <span>📊 Project Expenditure</span>
         </div>
-        <!-- Overall profit summary -->
         <!-- Venture-level summary -->
         <div id="exp-venture-summary"></div>
         <!-- Project list for expenditure -->
@@ -1153,7 +1152,6 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
         <div class="fin-tabs">
           <div class="fin-tab on" id="ftab-loans" onclick="switchFinTab('loans')">🏦 Fund Register</div>
           <div class="fin-tab" id="ftab-pl" onclick="switchFinTab('pl')">📈 P&amp;L Summary</div>
-          <div class="fin-tab" id="ftab-land" onclick="switchFinTab('land')">🌾 Land</div>
         </div>
 
         <!-- ── PANEL 1: FUND REGISTER (LOANS) ── -->
@@ -1180,15 +1178,6 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
           <!-- Per-project P&L -->
           <div id="pl-list">
             <div class="empty"><div class="ei">📈</div><div class="et">Projects + Loans add చేసిన తర్వాత P&amp;L కనపడుతుంది</div></div>
-          </div>
-        </div>
-
-        <!-- ── PANEL 3: LAND SUMMARY ── -->
-        <div class="fin-panel" id="fpanel-land">
-          <div style="background:rgba(232,184,74,0.07);border:1px solid rgba(232,184,74,0.25);border-radius:11px;padding:12px 14px;margin-bottom:12px">
-            <div style="font-size:13px;font-weight:700;color:var(--amb);margin-bottom:4px">🌾 Plot-wise Land Payment Summary</div>
-            <div style="font-size:12px;color:var(--tx3);margin-bottom:10px">Land Cost fixed at plot creation. Paid amount adjustable anytime from plot modal.</div>
-            <div id="land-summary-table"><div style="font-size:13px;color:var(--tx3);padding:8px 0">No projects yet</div></div>
           </div>
         </div>
 
@@ -1778,7 +1767,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
       <div style="font-size:12px;font-weight:700;color:var(--teal);margin-bottom:10px">💰 Principal Payment</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <div><label class="fl">Date *</label><input class="fi" id="pmt-prin-date" type="date"></div>
-        <div><label class="fl">Amount (₹)</label><input class="fi fi-mono" id="pmt-prin-amount" type="text" inputmode="numeric" placeholder="0"></div>
+        <div><label class="fl">Amount (₹)</label><input class="fi fi-mono" id="pmt-prin-amount" type="number" placeholder="0"></div>
       </div>
     </div>
     
@@ -1787,7 +1776,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
       <div style="font-size:12px;font-weight:700;color:var(--rose);margin-bottom:10px">📊 Interest Payment</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <div><label class="fl">Date *</label><input class="fi" id="pmt-int-date" type="date"></div>
-        <div><label class="fl">Amount (₹)</label><input class="fi fi-mono" id="pmt-int-amount" type="text" inputmode="numeric" placeholder="0"></div>
+        <div><label class="fl">Amount (₹)</label><input class="fi fi-mono" id="pmt-int-amount" type="number" placeholder="0"></div>
       </div>
     </div>
     
@@ -1872,34 +1861,13 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
     <input type="hidden" id="lp-proj-id">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
       <div><label class="fl">Date *</label><input class="fi" id="lp-date" type="date"></div>
-      <div><label class="fl">Amount Paid (₹) *</label><input class="fi fi-mono" id="lp-amount" type="text" inputmode="numeric" placeholder="500000"></div>
+      <div><label class="fl">Amount Paid (₹) *</label><input class="fi fi-mono" id="lp-amount" type="number" placeholder="500000"></div>
     </div>
     <label class="fl">Notes (optional)</label>
     <input class="fi" id="lp-notes" placeholder="ఉదా: 1st installment, Registration day payment">
     <div style="display:flex;gap:9px;margin-top:4px">
       <button class="btn ghost full" onclick="closeModal('add-land-payment')">Cancel</button>
       <button class="btn amb full" onclick="saveLandPayment()">✓ Save Payment</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══ ADJUST PLOT LAND PAYMENT MODAL ══ -->
-<div class="mover" id="adjust-land-modal">
-  <div class="msheet">
-    <div class="mgrip"></div>
-    <div class="mt">💰 Adjust Land Payment</div>
-    <div id="alp-info" style="background:rgba(232,184,74,0.07);border:1px solid rgba(232,184,74,0.25);border-radius:10px;padding:10px 13px;margin-bottom:12px;font-size:13px;color:var(--tx2)"></div>
-    <input type="hidden" id="alp-pi">
-    <input type="hidden" id="alp-pli">
-    <label class="fl">New Paid To Date (₹) *</label>
-    <input class="fi fi-mono" id="alp-paid" type="number" placeholder="Enter total paid so far">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px">
-      <div><label class="fl">Date *</label><input class="fi" id="alp-date" type="date"></div>
-      <div><label class="fl">Reason</label><input class="fi" id="alp-reason" placeholder="e.g. 2nd installment"></div>
-    </div>
-    <div style="display:flex;gap:9px;margin-top:10px">
-      <button class="btn ghost full" onclick="closeModal('adjust-land-modal')">Cancel</button>
-      <button class="btn amb full" onclick="saveAdjustLandPayment()">✓ Update</button>
     </div>
   </div>
 </div>
@@ -1997,20 +1965,10 @@ var APPS_SCRIPT_CODE = [
   '      return ok({});',
   '    }',
   '',
-  '    // ── BATCH APPEND ROWS ──',
-  '    if (action === "batchAppend") {',
-  '      var sheet = ss.getSheetByName(data.sheetName) || ss.insertSheet(data.sheetName);',
-  '      if (sheet.getLastRow() === 0 && data.headers) sheet.appendRow(data.headers);',
-  '      if (data.rows && data.rows.length > 0) {',
-  '        data.rows.forEach(function(row) { sheet.appendRow(row); });',
-  '      }',
-  '      return ok({});',
-  '    }',
-  '',
   '    // ── READ ALL SHEETS ──',
   '    if (action === "readAll") {',
   '      var result = {};',
-  '      var sheetNames = data.sheets || ["Entries","Vendors","Prices","Documents","Contacts","Projects","BillHeaders","BillItems","Loans","LoanPayments","ProjectIncome","ProjectExpenses","LandPayments","PlotLandPayments"];',
+  '      var sheetNames = data.sheets || ["Entries","Vendors","Prices","Documents","Contacts","Projects","BillHeaders","BillItems","Loans","LoanPayments","ProjectIncome","ProjectExpenses","LandPayments"];',
   '      sheetNames.forEach(function(name) {',
   '        var sh = ss.getSheetByName(name);',
   '        result[name] = (sh && sh.getLastRow() > 1) ? sh.getDataRange().getValues() : [];',
@@ -2137,7 +2095,7 @@ function saveData() {
   toSave.documents = [];
   STORE.set(DATA_KEY, toSave);
 }
-function freshData(){ return {entries:[],vendors:{},priceHistory:{},billPriceHistory:{},documents:[],projects:[],contacts:[],nextId:1,chatHistory:[],lastSync:null,loans:[],loanPayments:[],projIncome:[],projExpenses:[],landPayments:[],plotLandPayments:[]}; }
+function freshData(){ return {entries:[],vendors:{},priceHistory:{},billPriceHistory:{},documents:[],projects:[],contacts:[],nextId:1,chatHistory:[],lastSync:null,loans:[],loanPayments:[],projIncome:[],projExpenses:[],landPayments:[]}; }
 
 // ════════════════════════════════════════════════════════
 // HARDCODED CONFIG — Private repo లో safe గా ఉంటుంది
@@ -2194,25 +2152,6 @@ var state = loadData();
       }
     });
   });
-  // Migrate plotLandCost — compute from landCost if not yet set
-  // Also auto-populate paidToDate from existing landPayments (proportional by cents)
-  (state.projects||[]).forEach(function(proj) {
-    var landCost = Number(proj.landCost||0) || (Number(proj.totalCents||0) * Number(proj.pricePerCent||0));
-    var totalCents = Number(proj.totalCents||0);
-    var totalLandPaid = (state.landPayments||[]).filter(function(p){ return p.projId===proj.id; })
-                        .reduce(function(s,p){ return s+Number(p.amount||0); },0);
-    (proj.plots||[]).forEach(function(plt) {
-      if (!plt.plotLandCost) {
-        plt.plotLandCost = totalCents > 0 ? Math.round(landCost / totalCents * Number(plt.sizeInCents||0)) : 0;
-      }
-      // Auto-populate paidToDate proportionally from landPayments if never set
-      if (!plt.paidToDate && totalLandPaid > 0 && totalCents > 0) {
-        plt.paidToDate = Math.round(totalLandPaid / totalCents * Number(plt.sizeInCents||0));
-      }
-      if (plt.paidToDate === undefined) plt.paidToDate = 0;
-      if (!plt.adjustmentHistory) plt.adjustmentHistory = [];
-    });
-  });
 })();
 
 // ════════════════════════════════════════════════════════
@@ -2262,15 +2201,15 @@ function updatePlotProfitInstant(pi, pli, salePriceVal) {
   var plt = proj && proj.plots[pli];
   if (!plt || plt.status !== 'sold') return;
   
-  var constTotal = (plt.constructionExpenses||[]).reduce(function(s,e){ return s+Number(e.amount); },0);
-  var _dealCentRate = proj.totalCents > 0 ? (Number(proj.landCost) / proj.totalCents) : 0;
+  var constTotal = (plt.constructionExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
+  var _dealCentRate = proj.totalCents > 0 ? (Number(proj.landCost||0) / proj.totalCents) : 0;
   var _landCostForPlt = _dealCentRate * Number(plt.sizeInCents||0);
-  var _miscForPlt = (plt.miscExpenses||[]).reduce(function(s,e){ return s+Number(e.amount); },0);
-  var _otherForPlt = (plt.otherExpenses||[]).reduce(function(s,e){ return s+Number(e.amount); },0);
+  var _miscForPlt = (plt.miscExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
+  var _otherForPlt = (plt.otherExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
   var _costBasis = plt.type === 'plot'
     ? _landCostForPlt + _miscForPlt + _otherForPlt
     : _landCostForPlt + constTotal + _miscForPlt + _otherForPlt;
-  var salePrice = Number(salePriceVal);
+  var salePrice = Number(salePriceVal)||0;
   var plotProfit = salePrice - _costBasis;
   var profitColor = plotProfit >= 0 ? 'var(--sage)' : 'var(--rose)';
   var profitEl = document.getElementById('hm-plot-profit');
@@ -2323,109 +2262,6 @@ function fixAmountStr(str) {
   // Reconstruct with proper Indian formatting
   return 'Rs. ' + fmtIN(num) + '/-';
 }
-
-// ════════════════════════════════════════════════════════
-// SANITIZE AMOUNT - Fix floating-point precision errors
-// ════════════════════════════════════════════════════════
-// Converts any number/string to clean integer (no decimals)
-
-// ════════════════════════════════════════════════════════
-// CLEANUP CORRUPTED AMOUNTS - Run once on app load
-// ════════════════════════════════════════════════════════
-function cleanupCorruptedAmounts() {
-  var cleaned = false;
-  
-  // Clean Projects
-  if (state.projects) {
-    state.projects.forEach(function(proj) {
-      if (proj.landCost) { proj.landCost = Number(proj.landCost); cleaned = true; }
-      if (proj.pricePerCent) { proj.pricePerCent = Number(proj.pricePerCent); cleaned = true; }
-      
-      if (proj.plots) {
-        proj.plots.forEach(function(plt) {
-          if (plt.salePrice) { plt.salePrice = Number(plt.salePrice); cleaned = true; }
-          if (plt.advanceReceived) { plt.advanceReceived = Number(plt.advanceReceived); cleaned = true; }
-          if (plt.constructionCost) { plt.constructionCost = Number(plt.constructionCost); cleaned = true; }
-          
-          if (plt.partialPayments) {
-            plt.partialPayments.forEach(function(pp) {
-              if (pp.amount) { pp.amount = Number(pp.amount); cleaned = true; }
-            });
-          }
-          
-          if (plt.constructionExpenses) {
-            plt.constructionExpenses.forEach(function(ce) {
-              if (ce.amount) { ce.amount = Number(ce.amount); cleaned = true; }
-            });
-          }
-          
-          if (plt.miscExpenses) {
-            plt.miscExpenses.forEach(function(me) {
-              if (me.amount) { me.amount = Number(me.amount); cleaned = true; }
-            });
-          }
-          
-          if (plt.otherExpenses) {
-            plt.otherExpenses.forEach(function(oe) {
-              if (oe.amount) { oe.amount = Number(oe.amount); cleaned = true; }
-            });
-          }
-          
-          if (plt.phases) {
-            ['foundation','structure','roof','electrical','plumbing','finishing'].forEach(function(phase) {
-              if (plt.phases[phase]) { plt.phases[phase] = Number(plt.phases[phase]); cleaned = true; }
-            });
-          }
-        });
-      }
-    });
-  }
-  
-  // Clean Loans
-  if (state.loans) {
-    state.loans.forEach(function(loan) {
-      if (loan.principal) { loan.principal = Number(loan.principal); cleaned = true; }
-      if (loan.emi) { loan.emi = Number(loan.emi); cleaned = true; }
-      if (loan.interestPaid) { loan.interestPaid = Number(loan.interestPaid); cleaned = true; }
-    });
-  }
-  
-  // Clean Loan Payments
-  if (state.loanPayments) {
-    state.loanPayments.forEach(function(pmt) {
-      if (pmt.amount) { pmt.amount = Number(pmt.amount); cleaned = true; }
-      if (pmt.principalAmount) { pmt.principalAmount = Number(pmt.principalAmount); cleaned = true; }
-      if (pmt.interestAmount) { pmt.interestAmount = Number(pmt.interestAmount); cleaned = true; }
-    });
-  }
-  
-  // Clean Land Payments
-  if (state.landPayments) {
-    state.landPayments.forEach(function(pmt) {
-      if (pmt.amount) { pmt.amount = Number(pmt.amount); cleaned = true; }
-    });
-  }
-  
-  // Clean Project Income
-  if (state.projIncome) {
-    state.projIncome.forEach(function(inc) {
-      if (inc.amount) { inc.amount = Number(inc.amount); cleaned = true; }
-    });
-  }
-  
-  // Clean Project Expenses
-  if (state.projExpenses) {
-    state.projExpenses.forEach(function(exp) {
-      if (exp.amount) { exp.amount = Number(exp.amount); cleaned = true; }
-    });
-  }
-  
-  if (cleaned) {
-    saveData();
-    console.log('✓ Cleaned corrupted amounts from localStorage');
-  }
-}
-
 function today() { return new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}); }
 function nowt()  { return new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}); }
 function escH(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -2546,16 +2382,6 @@ function finishSetup() {
   setTimeout(function(){ setup.style.display = 'none'; }, 400);
   app.style.display = '';
   app.classList.add('on');
-  
-  // Clean up corrupted amounts ONCE (check flag)
-  try {
-    var cleanupDone = localStorage.getItem('sb_cleanup_v1');
-    if (!cleanupDone) {
-      cleanupCorruptedAmounts();
-      localStorage.setItem('sb_cleanup_v1', 'done');
-    }
-  } catch(e) {}
-  
   refreshUI();
   renderDocList();
   renderProjects();
@@ -2724,7 +2550,7 @@ function mergeSheetData(sheetData) {
     if (!state.loans) state.loans=[];
     var lnIds = new Set(state.loans.map(function(l){ return l.id; }));
     lnRows.forEach(function(r){ var o={}; lnHdrs.forEach(function(h,i){ o[h]=r[i]; });
-      if (o.id && !lnIds.has(o.id)) { o.principal=Number(o.principal); o.rate=Number(o.rate)||0; state.loans.push(o); }
+      if (o.id && !lnIds.has(o.id)) { o.principal=Number(o.principal)||0; o.rate=Number(o.rate)||0; state.loans.push(o); }
     });
   }
   // ── Merge LoanPayments ──
@@ -2734,10 +2560,10 @@ function mergeSheetData(sheetData) {
     var lpIds = new Set(state.loanPayments.map(function(p){ return p.id; }));
     lpRows.forEach(function(r){ var o={}; lpHdrs.forEach(function(h,i){ o[h]=r[i]; });
       if (o.id && !lpIds.has(o.id)) { 
-        o.amount=Number(o.amount); 
+        o.amount=Number(o.amount)||0; 
         // Support both old and new schema
-        o.interestAmount=Number(o.interestAmount||o.interestPart); 
-        o.principalAmount=Number(o.principalAmount||o.principalPart); 
+        o.interestAmount=Number(o.interestAmount||o.interestPart)||0; 
+        o.principalAmount=Number(o.principalAmount||o.principalPart)||0; 
         state.loanPayments.push(o); 
       }
     });
@@ -2748,7 +2574,7 @@ function mergeSheetData(sheetData) {
     if (!state.projIncome) state.projIncome=[];
     var piIds = new Set(state.projIncome.map(function(i){ return i.id; }));
     piRows.forEach(function(r){ var o={}; piHdrs.forEach(function(h,i){ o[h]=r[i]; });
-      if (o.id && !piIds.has(o.id)) { o.amount=Number(o.amount); state.projIncome.push(o); }
+      if (o.id && !piIds.has(o.id)) { o.amount=Number(o.amount)||0; state.projIncome.push(o); }
     });
   }
   // ── Merge ProjectExpenses ──
@@ -2758,7 +2584,7 @@ function mergeSheetData(sheetData) {
     var lpIds2 = new Set(state.landPayments.map(function(p){ return p.id; }));
     lpRows2.forEach(function(r){
       var o={}; lpHdrs2.forEach(function(h,i){ o[h]=r[i]; });
-      if (o.id && !lpIds2.has(o.id)) { o.amount=Number(o.amount); state.landPayments.push(o); }
+      if (o.id && !lpIds2.has(o.id)) { o.amount=Number(o.amount)||0; state.landPayments.push(o); }
     });
   }
   if (sheetData.ProjectExpenses && sheetData.ProjectExpenses.length > 1) {
@@ -2766,7 +2592,7 @@ function mergeSheetData(sheetData) {
     if (!state.projExpenses) state.projExpenses=[];
     var peIds = new Set(state.projExpenses.map(function(e){ return e.id; }));
     peRows.forEach(function(r){ var o={}; peHdrs.forEach(function(h,i){ o[h]=r[i]; });
-      if (o.id && !peIds.has(o.id)) { o.amount=Number(o.amount); state.projExpenses.push(o); }
+      if (o.id && !peIds.has(o.id)) { o.amount=Number(o.amount)||0; state.projExpenses.push(o); }
     });
   }
   
@@ -2794,13 +2620,13 @@ function addEntry(entry) {
   state.entries.push(entry);
   ensureVendor(entry.vendor, entry.category, entry.phone);
   if (entry.type === 'order') {
-    state.vendors[entry.vendor].totalOrdered = (state.vendors[entry.vendor].totalOrdered||0) + Number(entry.amount);
+    state.vendors[entry.vendor].totalOrdered = (state.vendors[entry.vendor].totalOrdered||0) + Number(entry.amount||0);
     if (entry.priceKey && entry.unitPrice) {
       if (!state.priceHistory[entry.priceKey]) state.priceHistory[entry.priceKey] = [];
       state.priceHistory[entry.priceKey].push({date:entry.date,price:Number(entry.unitPrice),vendor:entry.vendor,unit:entry.priceUnit||''});
     }
   } else if (entry.type === 'payment') {
-    state.vendors[entry.vendor].totalPaid = (state.vendors[entry.vendor].totalPaid||0) + Number(entry.amount);
+    state.vendors[entry.vendor].totalPaid = (state.vendors[entry.vendor].totalPaid||0) + Number(entry.amount||0);
   }
   // Save entry to localStorage + Sheet first — this is the primary action
   saveData(); refreshUI();
@@ -4802,7 +4628,7 @@ var _pendingLandPmts = []; // [{id,date,amount,notes}]
 function calcLandTotal() {
   var cents = Number(document.getElementById('p-cents').value) || 0;
   var ppc   = Number(document.getElementById('p-price-per-cent').value) || 0;
-  var total = cents * ppc;  // Direct multiplication with Number()
+  var total = cents * ppc;
   document.getElementById('p-landtotal-display').textContent = '₹' + fmtIN(total);
   document.getElementById('p-landcost').value = total;
   var wordsEl = document.getElementById('p-landtotal-words');
@@ -4822,7 +4648,7 @@ function renderLandPaymentRows() {
   _pendingLandPmts.forEach(function(row, i) {
     html += '<div style="display:flex;gap:6px;align-items:center;margin-bottom:6px" data-lp-idx="'+i+'">'
       +'<input class="fi fi-mono" type="date" value="'+row.date+'" oninput="_pendingLandPmts['+i+'].date=this.value;updateLandPaidTotal()" style="flex:0 0 130px;margin-bottom:0;font-size:13px">'
-      +'<input class="fi fi-mono" type="text" inputmode="numeric" placeholder="Amount ₹" value="'+(row.amount||'')+'" oninput="_pendingLandPmts['+i+'].amount=parseInt((this.value||\'0\').trim().replace(/,/g,\'\'),10)||0;updateLandPaidTotal()" style="flex:1;margin-bottom:0;font-size:13px">'
+      +'<input class="fi fi-mono" type="number" placeholder="Amount ₹" value="'+(row.amount||'')+'" oninput="_pendingLandPmts['+i+'].amount=Number(this.value)||0;updateLandPaidTotal()" style="flex:1;margin-bottom:0;font-size:13px">'
       +'<input class="fi" type="text" placeholder="Note" value="'+(row.notes||'')+'" oninput="_pendingLandPmts['+i+'].notes=this.value" style="flex:1;margin-bottom:0;font-size:13px">'
       +'<button type="button" onclick="_pendingLandPmts.splice('+i+',1);renderLandPaymentRows();updateLandPaidTotal()" style="background:none;border:none;color:var(--rose);font-size:16px;cursor:pointer;padding:0 4px;flex-shrink:0">×</button>'
     +'</div>';
@@ -4832,11 +4658,7 @@ function renderLandPaymentRows() {
 }
 
 function updateLandPaidTotal() {
-  var total = 0;
-  _pendingLandPmts.forEach(function(p) {
-    var amt = Number(p.amount) || 0;
-    total += amt;
-  });
+  var total = _pendingLandPmts.reduce(function(s,p){ return s+(Number(p.amount)||0); }, 0);
   var el = document.getElementById('p-landpaid-display');
   if (el) el.textContent = '₹' + fmtIN(total);
   var wordsEl = document.getElementById('p-landpaid-words');
@@ -4858,9 +4680,9 @@ function saveProject() {
     id: editId || ('proj_' + Date.now()),
     name: name,
     projType: 'venture',
-    landCost: Number(document.getElementById('p-landcost').value),
+    landCost: Number(document.getElementById('p-landcost').value) || 0,
     totalCents: Number(document.getElementById('p-cents').value) || 0,
-    pricePerCent: Number(document.getElementById('p-price-per-cent').value),
+    pricePerCent: Number(document.getElementById('p-price-per-cent').value) || 0,
     status: document.getElementById('p-status').value,
     date: document.getElementById('p-date').value || today(),
     dealEndDate: document.getElementById('p-deal-end-date').value || '',
@@ -4880,18 +4702,15 @@ function saveProject() {
       sizeInCents: row.sizeInCents || 0,
       type: row.type || 'plot',
       status: ext.status || 'planned',
-      salePrice: Number(ext.salePrice),
+      salePrice: ext.salePrice || 0,
       buyer: ext.buyer || '',
-      advanceReceived: Number(ext.advanceReceived),
+      advanceReceived: ext.advanceReceived || 0,
       partialPayments: ext.partialPayments || [],
-      constructionCost: Number(ext.constructionCost),
+      constructionCost: ext.constructionCost || 0,
       phases: ext.phases || {foundation:0,structure:0,roof:0,electrical:0,plumbing:0,finishing:0},
       constructionExpenses: ext.constructionExpenses || undefined,
       miscExpenses: ext.miscExpenses || undefined,
-      otherExpenses: ext.otherExpenses || undefined,
-      plotLandCost: ext.plotLandCost !== undefined ? ext.plotLandCost : (proj.totalCents > 0 ? Math.round((proj.landCost / proj.totalCents) * (row.sizeInCents||0)) : 0),
-      paidToDate: ext.paidToDate || 0,
-      adjustmentHistory: ext.adjustmentHistory || []
+      otherExpenses: ext.otherExpenses || undefined
     };
   });
 
@@ -4909,30 +4728,18 @@ function saveProject() {
   if (editId) {
     state.landPayments = state.landPayments.filter(function(p){ return p.projId !== editId; });
   }
-  // Deduplicate _pendingLandPmts by id (state only - sheet syncs via syncLandPayments)
-  var seenIds = {};
   _pendingLandPmts.forEach(function(row) {
-    if (row.amount > 0 && row.date && !seenIds[row.id]) {
-      seenIds[row.id] = true;
+    if (row.amount > 0 && row.date) {
       var pmt = { id: row.id, projId: proj.id, date: row.date, amount: Number(row.amount)||0, notes: row.notes||'' };
       state.landPayments.push(pmt);
+      pushToSheet('LandPayments',
+        ['id','projId','date','amount','notes'],
+        [pmt.id, pmt.projId, pmt.date, pmt.amount, pmt.notes]
+      );
     }
   });
 
   saveData();
-  
-  // On new venture creation: divide upfront land cost equally across plots
-  if (!editId && proj.plots && proj.plots.length > 0 && proj.landCost > 0) {
-    var upfrontPerPlot = Math.round(proj.landCost / proj.plots.length);
-    proj.plots.forEach(function(plt) {
-      plt.paidToDate = upfrontPerPlot;
-    });
-    // Update in state
-    var projIdx = state.projects.findIndex(function(p){ return p.id === proj.id; });
-    if (projIdx !== -1) state.projects[projIdx] = proj;
-    saveData();
-  }
-  
   closeModal('add-project');
   renderProjects();
   ['p-name','p-landcost','p-cents','p-price-per-cent','p-location','p-deal-end-date'].forEach(function(id){
@@ -4945,8 +4752,6 @@ function saveProject() {
   clearPlotRows();
   toast(editId ? 'Venture updated ✓' : 'Venture saved!', 'ok');
   syncProjectPlots(proj.id);
-  syncPlotLandPayments(proj.id);
-  syncLandPayments(proj.id);
 }
 
 function openEditProject(projId) {
@@ -4973,8 +4778,7 @@ function openEditProject(projId) {
              status:p.status, salePrice:p.salePrice, buyer:p.buyer,
              advanceReceived:p.advanceReceived||0, partialPayments:p.partialPayments||[],
              constructionCost:p.constructionCost||0,
-             phases:p.phases||{foundation:0,structure:0,roof:0,electrical:0,plumbing:0,finishing:0},
-             plotLandCost:p.plotLandCost||0, paidToDate:p.paidToDate||0, adjustmentHistory:p.adjustmentHistory||[] };
+             phases:p.phases||{foundation:0,structure:0,roof:0,electrical:0,plumbing:0,finishing:0} };
   });
   renderPlotRows();
   openModal('add-project');
@@ -4985,6 +4789,7 @@ function renderProjects() {
   if (!state.projects || !state.projects.length) {
     el.innerHTML = '<div class="empty"><div class="ei">🏘️</div><div class="et">Ventures లేవు</div><div class="es">+ New Venture tap చేయండి</div></div>';
     renderAgreementAlerts([]);
+    renderOverallProfit([]);
     return;
   }
 
@@ -4992,17 +4797,17 @@ function renderProjects() {
   state.projects.forEach(function(proj, pidx) {
     var statusMap = {planned:'Planned',active:'Active',done:'Done'};
     var plots = proj.plots || [];
-    var totalLandDeal = Number(proj.landCost) || (Number(proj.totalCents||0) * Number(proj.pricePerCent));
+    var totalLandDeal = Number(proj.landCost) || (Number(proj.totalCents||0) * Number(proj.pricePerCent||0));
     var landPaidSoFar = (state.landPayments||[]).filter(function(p){ return p.projId===proj.id; })
-                        .reduce(function(s,p){ return s+Number(p.amount); },0);
+                        .reduce(function(s,p){ return s+Number(p.amount||0); },0);
     var constructionCost = plots.filter(function(p){ return p.type==='house'; })
-                               .reduce(function(s,p){ return s+Number(p.constructionCost); },0);
+                               .reduce(function(s,p){ return s+Number(p.constructionCost||0); },0);
     var soldPlots = plots.filter(function(p){ return p.status==='sold'; });
     var totalSaleReceived = soldPlots.reduce(function(s,p){
-      var ppSum = (p.partialPayments||[]).reduce(function(ps,pp){ return ps+Number(pp.amount); },0);
-      return s + Number(p.advanceReceived) + ppSum;
+      var ppSum = (p.partialPayments||[]).reduce(function(ps,pp){ return ps+Number(pp.amount||0); },0);
+      return s + Number(p.advanceReceived||0) + ppSum;
     },0);
-    var totalExpSale = plots.reduce(function(s,p){ return s+Number(p.salePrice); },0);
+    var totalExpSale = plots.reduce(function(s,p){ return s+Number(p.salePrice||0); },0);
     var totalCentsSold = soldPlots.reduce(function(s,p){ return s+Number(p.sizeInCents||0); },0);
     var totalCentsLeft = Number(proj.totalCents||0) - totalCentsSold;
     var totalInvest = (landPaidSoFar > 0 ? landPaidSoFar : totalLandDeal) + constructionCost;
@@ -5060,6 +4865,7 @@ function renderProjects() {
 
   el.innerHTML = html;
   renderAgreementAlerts(state.projects);
+  renderOverallProfit(state.projects);
 }
 
 function toggleProjDetail(el) {
@@ -5111,11 +4917,6 @@ function deleteProjByIndex(el) {
       method:'POST',
       body: JSON.stringify({action:'deleteRow', sheetId:cfg.sheetId, sheetName:'LandPayments', matchCol:'projId', matchVal:projId})
     }).catch(function(){});
-
-    fetch(cfg.scriptUrl, {
-      method:'POST',
-      body: JSON.stringify({action:'deleteRow', sheetId:cfg.sheetId, sheetName:'PlotLandPayments', matchCol:'projectId', matchVal:projId})
-    }).catch(function(){});
   }
   
   // Delete from local state
@@ -5148,19 +4949,18 @@ function openPlotByIndex(el) {
 
   document.getElementById('house-modal-title').textContent = proj.name + ' — Plot ' + escH(plt.plotNo||String(pli+1));
 
-  // Calculate land cost for this plot using fixed plotLandCost
-  var plotLandCost = plt.plotLandCost !== undefined ? plt.plotLandCost
-    : (proj.totalCents > 0 ? Math.round((Number(proj.landCost||0) / proj.totalCents) * Number(plt.sizeInCents||0)) : 0);
-  var paidToDate = plt.paidToDate || 0;
-  var landOutstanding = Math.max(plotLandCost - paidToDate, 0);
+  // Calculate land advance for this plot
+  var landPaid = (state.landPayments||[]).filter(function(p){ return p.projId===proj.id; })
+                 .reduce(function(s,p){ return s+Number(p.amount||0); },0);
+  var landAdvanceForPlot = proj.totalCents > 0 ? (landPaid / proj.totalCents) * Number(plt.sizeInCents||0) : 0;
 
   // Expense totals
-  var constTotal = (plt.constructionExpenses||[]).reduce(function(s,e){ return s+Number(e.amount); },0);
-  var miscTotal = (plt.miscExpenses||[]).reduce(function(s,e){ return s+Number(e.amount); },0);
-  var otherTotal = (plt.otherExpenses||[]).reduce(function(s,e){ return s+Number(e.amount); },0);
+  var constTotal = (plt.constructionExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
+  var miscTotal = (plt.miscExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
+  var otherTotal = (plt.otherExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
   // For plot type: no construction cost, only misc + other
   var totalConstruction = (plt.type==='house' ? constTotal : 0) + miscTotal + otherTotal;
-  var totalInvestment = totalConstruction + plotLandCost;
+  var totalInvestment = totalConstruction + landAdvanceForPlot;
 
   var body = '';
 
@@ -5192,36 +4992,14 @@ function openPlotByIndex(el) {
     +'</select>';
   }
 
-  // Land Payment section
-  var adjHistory = plt.adjustmentHistory || [];
-  body += '<div class="seg-t" style="margin-top:12px">🌾 Land Payment</div>'
-    +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px">'
-      +'<div style="background:var(--s3);border-radius:8px;padding:8px 10px;text-align:center">'
-        +'<div style="font-size:10px;color:var(--tx3);margin-bottom:3px">Land Cost (Fixed)</div>'
-        +'<div style="font-family:JetBrains Mono;font-size:13px;font-weight:700;color:var(--amb)">'+rup(plotLandCost)+'</div>'
-      +'</div>'
-      +'<div style="background:var(--s3);border-radius:8px;padding:8px 10px;text-align:center">'
-        +'<div style="font-size:10px;color:var(--tx3);margin-bottom:3px">Paid To Date</div>'
-        +'<div style="font-family:JetBrains Mono;font-size:13px;font-weight:700;color:var(--teal)">'+rup(paidToDate)+'</div>'
-      +'</div>'
-      +'<div style="background:var(--s3);border-radius:8px;padding:8px 10px;text-align:center">'
-        +'<div style="font-size:10px;color:var(--tx3);margin-bottom:3px">Outstanding</div>'
-        +'<div style="font-family:JetBrains Mono;font-size:13px;font-weight:700;color:'+(landOutstanding>0?'var(--rose)':'var(--sage)')+'">'+rup(landOutstanding)+'</div>'
-      +'</div>'
-    +'</div>'
-    +'<button class="btn ghost sm" style="width:100%;margin-bottom:6px;color:var(--amb);border-color:rgba(232,184,74,0.4)" onclick="openAdjustLandModal('+pi+','+pli+')">💰 Adjust Paid Amount</button>';
-  if (adjHistory.length) {
-    body += '<div style="background:var(--s3);border-radius:8px;padding:8px 10px;margin-bottom:6px">'
-      +'<div style="font-size:10px;color:var(--tx3);font-weight:700;margin-bottom:5px">ADJUSTMENT HISTORY</div>';
-    adjHistory.slice().reverse().forEach(function(a) {
-      body += '<div style="display:flex;align-items:center;gap:8px;padding:3px 0;border-top:1px solid var(--bd);font-size:11px">'
-        +'<span style="color:var(--tx3);flex-shrink:0">'+(a.date||'')+'</span>'
-        +'<span style="color:var(--teal);font-family:JetBrains Mono;font-weight:700;flex-shrink:0">'+rup(a.newPaid)+'</span>'
-        +'<span style="color:var(--tx2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escH(a.reason||'')+'</span>'
-      +'</div>';
-    });
-    body += '</div>';
-  }
+  // Land Advance section
+  body += '<div class="seg-t" style="margin-top:12px">🌾 Land Advance</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">'
+      +'<div><label class="fl">Description</label>'
+        +'<div class="fi" style="opacity:0.7;font-size:12px">Advance paid for land</div></div>'
+      +'<div><label class="fl">Amount (₹)</label>'
+        +'<div class="fi fi-mono" style="opacity:0.7;color:var(--amb)">'+rup(landAdvanceForPlot)+'</div></div>'
+    +'</div>';
 
   // Construction Expenses section — only for house type
   if (plt.type === 'house') {
@@ -5289,10 +5067,10 @@ function openPlotByIndex(el) {
   });
   body += '<button class="btn ghost sm" style="width:100%;margin-bottom:4px" onclick="addOtherExpense('+pi+','+pli+')">+ Add Other Expense</button>';
 
-  // Expense totals summary
+  // Expense totals
   var centRate = proj.totalCents > 0 ? (Number(proj.landCost||0) / proj.totalCents) : 0;
-  var landCostForPlot = plotLandCost;
-  var landBalance = landOutstanding;
+  var landCostForPlot = centRate * Number(plt.sizeInCents||0);
+  var landBalance = landCostForPlot - landAdvanceForPlot;
   var investLabel = plt.type === 'house' ? '💰 Cost Basis (Land + Build)' : '💰 Cost Basis (Land + Misc)';
   body += '<div style="background:var(--s2);border:1px solid var(--bd);border-radius:9px;padding:10px 12px;margin-top:8px">'
     +'<div style="display:flex;justify-content:space-between;margin-bottom:4px">'
@@ -5317,11 +5095,11 @@ function openPlotByIndex(el) {
   if (isSold) {
     body += '<label class="fl" style="margin-top:9px">Sale Price (₹)</label>'
       +'<input type="number" class="fi fi-mono" id="hm-sale-price" value="'+(plt.salePrice||'')+'" placeholder="Actual sale price" '
-      +'data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'salePrice\',\'num\')" oninput="showAmtLabel(this.value,\'sp-words\'); updatePlotProfitInstant('+pi+','+pli+',Number(this.value))">'
+      +'data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'salePrice\',\'num\')" oninput="showAmtLabel(this.value,\'sp-words\'); updatePlotProfitInstant('+pi+','+pli+',this.value)">'
       +'<div id="sp-words" style="font-size:12px;font-weight:600;color:var(--amb);margin-top:3px;min-height:16px">'+(plt.salePrice?amtWords(plt.salePrice):'')+'</div>'
       +'<label class="fl" style="margin-top:9px">Advance Received (₹)</label>'
       +'<input type="number" class="fi fi-mono" id="hm-adv-rcvd" value="'+(plt.advanceReceived||'')+'" placeholder="Token / advance amount" '
-      +'data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'advanceReceived\',\'num\')" oninput="recalcPaymentTotal('+pi+','+pli+',Number(this.value)); showAmtLabel(this.value,\'adv-words\')">'
+      +'data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'advanceReceived\',\'num\')" oninput="recalcPaymentTotal('+pi+','+pli+',this.value); showAmtLabel(this.value,\'adv-words\')">'
       +'<div id="adv-words" style="font-size:12px;font-weight:600;color:var(--teal);margin-top:3px;min-height:16px">'+(plt.advanceReceived?amtWords(plt.advanceReceived):'')+'</div>'
       +'<label class="fl" style="margin-top:9px">Buyer Name</label>'
       +'<input type="text" class="fi" value="'+escH(plt.buyer||'')+'" placeholder="Buyer పేరు" '
@@ -5353,8 +5131,8 @@ function openPlotByIndex(el) {
     }
     body += '<button class="btn ghost sm" style="width:100%;margin-bottom:4px" onclick="addPartialPayment('+pi+','+pli+')">+ Add Partial Payment</button>';
 
-    var advTotal = Number(plt.advanceReceived) + (plt.partialPayments||[]).reduce(function(s,pp){ return s+Number(pp.amount); },0);
-    var salePrice = Number(plt.salePrice);
+    var advTotal = Number(plt.advanceReceived||0) + (plt.partialPayments||[]).reduce(function(s,pp){ return s+Number(pp.amount||0); },0);
+    var salePrice = Number(plt.salePrice||0);
     var balance = salePrice - advTotal;
     body += '<div style="background:rgba(122,200,90,0.08);border:1px solid rgba(122,200,90,0.25);border-radius:9px;padding:8px 12px;margin-top:4px;display:flex;justify-content:space-between;align-items:center">'
       +'<span style="font-size:12px;font-weight:700;color:var(--tx1)">Total Amount Received</span>'
@@ -5366,10 +5144,10 @@ function openPlotByIndex(el) {
     +'</div>';
 
     // Plot Profit with correct cost basis - SAME AS DISPLAYED VALUES
-    var _dealCentRate = proj.totalCents > 0 ? (Number(proj.landCost) / proj.totalCents) : 0;
+    var _dealCentRate = proj.totalCents > 0 ? (Number(proj.landCost||0) / proj.totalCents) : 0;
     var _landCostForPlt = _dealCentRate * Number(plt.sizeInCents||0);
-    var _miscForPlt = (plt.miscExpenses||[]).reduce(function(s,e){ return s+Number(e.amount); },0);
-    var _otherForPlt = (plt.otherExpenses||[]).reduce(function(s,e){ return s+Number(e.amount); },0);
+    var _miscForPlt = (plt.miscExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
+    var _otherForPlt = (plt.otherExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
     var _costBasis = plt.type === 'plot'
       ? _landCostForPlt + _miscForPlt + _otherForPlt
       : _landCostForPlt + constTotal + _miscForPlt + _otherForPlt;
@@ -5401,10 +5179,7 @@ function savePlotClose() {
   var pi = modal.dataset.pi, pli = modal.dataset.pli;
   if (pi !== undefined && pli !== undefined) {
     var proj = state.projects[pi];
-    if (proj) {
-      syncProjectPlots(proj.id);
-      syncPlotLandPayments(proj.id);
-    }
+    if (proj) syncProjectPlots(proj.id);
   }
   saveData();
   closeModal('house-modal');
@@ -5421,37 +5196,38 @@ function syncProjectPlots(projId) {
   var proj = (state.projects||[]).find(function(p){ return p.id===projId; });
   if (!proj) return;
   
-  // Delete old ProjectExpenses, THEN append new ones
+  // Delete old ProjectExpenses for this project
   fetch(cfg.scriptUrl, {
     method:'POST',
     body:JSON.stringify({action:'deleteRow', sheetId:cfg.sheetId, sheetName:'ProjectExpenses', matchCol:'projId', matchVal:projId})
-  }).then(function() {
-    var expRows = [];
-    (proj.plots||[]).forEach(function(plt) {
-      (plt.constructionExpenses||[]).forEach(function(exp) {
-        expRows.push([exp.id, projId, plt.id, 'construction', 'Construction', exp.desc||'', exp.amount||0, exp.date||'']);
-      });
-      (plt.miscExpenses||[]).forEach(function(exp) {
-        expRows.push([exp.id, projId, plt.id, 'misc', exp.type||'Misc', '', exp.amount||0, exp.date||'']);
-      });
-      (plt.otherExpenses||[]).forEach(function(exp) {
-        expRows.push([exp.id, projId, plt.id, 'other', 'Other', exp.desc||'', exp.amount||0, exp.date||'']);
-      });
+  }).catch(function(){});
+  
+  // Re-sync all plot expenses
+  (proj.plots||[]).forEach(function(plt) {
+    // Construction expenses
+    (plt.constructionExpenses||[]).forEach(function(exp) {
+      pushToSheet('ProjectExpenses',
+        ['id','projId','plotId','type','category','desc','amount','date'],
+        [exp.id, projId, plt.id, 'construction', 'Construction', exp.desc||'', exp.amount||0, exp.date||'']
+      );
     });
     
-    if (expRows.length > 0) {
-      fetch(cfg.scriptUrl, {
-        method:'POST',
-        body:JSON.stringify({
-          action:'batchAppend',
-          sheetId:cfg.sheetId,
-          sheetName:'ProjectExpenses',
-          headers:['id','projId','plotId','type','category','desc','amount','date'],
-          rows:expRows
-        })
-      }).catch(function(){});
-    }
-  }).catch(function(){});
+    // Misc expenses
+    (plt.miscExpenses||[]).forEach(function(exp) {
+      pushToSheet('ProjectExpenses',
+        ['id','projId','plotId','type','category','desc','amount','date'],
+        [exp.id, projId, plt.id, 'misc', exp.type||'Misc', '', exp.amount||0, exp.date||'']
+      );
+    });
+    
+    // Other expenses
+    (plt.otherExpenses||[]).forEach(function(exp) {
+      pushToSheet('ProjectExpenses',
+        ['id','projId','plotId','type','category','desc','amount','date'],
+        [exp.id, projId, plt.id, 'other', 'Other', exp.desc||'', exp.amount||0, exp.date||'']
+      );
+    });
+  });
   
   // Update Projects sheet with full plot data
   fetch(cfg.scriptUrl, {
@@ -5467,37 +5243,52 @@ function syncProjectPlots(projId) {
     })
   }).catch(function(){});
   
-  // Delete old income entries, THEN append new ones
+  // Sync LandPayments
+  fetch(cfg.scriptUrl, {
+    method:'POST',
+    body:JSON.stringify({action:'deleteRow', sheetId:cfg.sheetId, sheetName:'LandPayments', matchCol:'projId', matchVal:projId})
+  }).catch(function(){});
+  
+  (state.landPayments||[]).filter(function(p){ return p.projId===projId; }).forEach(function(pmt) {
+    pushToSheet('LandPayments',
+      ['id','projId','date','amount','notes'],
+      [pmt.id, pmt.projId, pmt.date, pmt.amount, pmt.notes||'']
+    );
+  });
+}
+
+// ══ Sync ProjectIncome sheet ══
+function syncProjectIncome(projId) {
+  var proj = (state.projects||[]).find(function(p){ return p.id===projId; });
+  if (!proj) return;
+  
+  // Delete old income entries for this project
   fetch(cfg.scriptUrl, {
     method:'POST',
     body:JSON.stringify({action:'deleteRow', sheetId:cfg.sheetId, sheetName:'ProjectIncome', matchCol:'projId', matchVal:projId})
-  }).then(function() {
-    var incomeRows = [];
-    (proj.plots||[]).forEach(function(plt) {
-      if (plt.advanceReceived && plt.advanceReceived > 0) {
-        var advId = 'adv_' + plt.id + '_' + Date.now();
-        incomeRows.push([advId, projId, proj.name, plt.id, plt.plotNo||'', 'advance', plt.advanceReceived, plt.date||today(), plt.buyer||'', 'Advance received']);
-      }
-      (plt.partialPayments||[]).forEach(function(pp) {
-        if (pp.amount && pp.amount > 0) {
-          incomeRows.push([pp.id, projId, proj.name, plt.id, plt.plotNo||'', 'partial_payment', pp.amount, pp.date||today(), plt.buyer||'', pp.desc||'Partial payment']);
-        }
-      });
-    });
-    
-    if (incomeRows.length > 0) {
-      fetch(cfg.scriptUrl, {
-        method:'POST',
-        body:JSON.stringify({
-          action:'batchAppend',
-          sheetId:cfg.sheetId,
-          sheetName:'ProjectIncome',
-          headers:['id','projId','projectName','plotId','plotNo','incomeType','amount','date','buyerName','notes'],
-          rows:incomeRows
-        })
-      }).catch(function(){});
-    }
   }).catch(function(){});
+  
+  // Re-sync all income from plots
+  (proj.plots||[]).forEach(function(plt) {
+    // Advance received
+    if (plt.advanceReceived && plt.advanceReceived > 0) {
+      var advId = 'adv_' + plt.id + '_' + Date.now();
+      pushToSheet('ProjectIncome',
+        ['id','projId','projectName','plotId','plotNo','incomeType','amount','date','buyerName','notes'],
+        [advId, projId, proj.name, plt.id, plt.plotNo||'', 'advance', plt.advanceReceived, plt.date||today(), plt.buyer||'', 'Advance received']
+      );
+    }
+    
+    // Partial payments
+    (plt.partialPayments||[]).forEach(function(pp) {
+      if (pp.amount && pp.amount > 0) {
+        pushToSheet('ProjectIncome',
+          ['id','projId','projectName','plotId','plotNo','incomeType','amount','date','buyerName','notes'],
+          [pp.id, projId, proj.name, plt.id, plt.plotNo||'', 'partial_payment', pp.amount, pp.date||today(), plt.buyer||'', pp.desc||'Partial payment']
+        );
+      }
+    });
+  });
 }
 
 
@@ -5506,11 +5297,12 @@ function recalcHouseTotals(pi, pli) {
   var proj = state.projects[pi];
   var plt = proj && proj.plots[pli];
   if (!plt) return;
-  var landAdv = plt.plotLandCost !== undefined ? plt.plotLandCost
-    : (proj.totalCents > 0 ? Math.round((Number(proj.landCost||0) / proj.totalCents) * Number(plt.sizeInCents||0)) : 0);
-  var constTotal = (plt.constructionExpenses||[]).reduce(function(s,e){return s+Number(e.amount);},0);
-  var miscTotal  = (plt.miscExpenses||[]).reduce(function(s,e){return s+Number(e.amount);},0);
-  var otherTotal = (plt.otherExpenses||[]).reduce(function(s,e){return s+Number(e.amount);},0);
+  var landPaid = (state.landPayments||[]).filter(function(p){return p.projId===proj.id;})
+                  .reduce(function(s,p){return s+Number(p.amount||0);},0);
+  var landAdv = proj.totalCents > 0 ? (landPaid / proj.totalCents) * Number(plt.sizeInCents||0) : 0;
+  var constTotal = (plt.constructionExpenses||[]).reduce(function(s,e){return s+Number(e.amount||0);},0);
+  var miscTotal  = (plt.miscExpenses||[]).reduce(function(s,e){return s+Number(e.amount||0);},0);
+  var otherTotal = (plt.otherExpenses||[]).reduce(function(s,e){return s+Number(e.amount||0);},0);
   var totalConst = constTotal + miscTotal + otherTotal;
   var totalInv   = totalConst + landAdv;
   var t = document.getElementById('hm-total');  if (t) t.textContent = rup(totalConst);
@@ -5518,14 +5310,14 @@ function recalcHouseTotals(pi, pli) {
   
   // Update plot profit display if SOLD
   if (plt.status === 'sold') {
-    var _dealCentRate = proj.totalCents > 0 ? (Number(proj.landCost) / proj.totalCents) : 0;
+    var _dealCentRate = proj.totalCents > 0 ? (Number(proj.landCost||0) / proj.totalCents) : 0;
     var _landCostForPlt = _dealCentRate * Number(plt.sizeInCents||0);
-    var _miscForPlt = (plt.miscExpenses||[]).reduce(function(s,e){ return s+Number(e.amount); },0);
-    var _otherForPlt = (plt.otherExpenses||[]).reduce(function(s,e){ return s+Number(e.amount); },0);
+    var _miscForPlt = (plt.miscExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
+    var _otherForPlt = (plt.otherExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
     var _costBasis = plt.type === 'plot'
       ? _landCostForPlt + _miscForPlt + _otherForPlt
       : _landCostForPlt + constTotal + _miscForPlt + _otherForPlt;
-    var salePrice = Number(plt.salePrice);
+    var salePrice = Number(plt.salePrice||0);
     var plotProfit = salePrice - _costBasis;
     var profitColor = plotProfit >= 0 ? 'var(--sage)' : 'var(--rose)';
     var profitEl = document.getElementById('hm-plot-profit');
@@ -5543,7 +5335,7 @@ function recalcHouseTotals(pi, pli) {
 
 function updatePlotField(el, field, type) {
   var pi = Number(el.dataset.pi), pli = Number(el.dataset.pli);
-  state.projects[pi].plots[pli][field] = type==='num' ? Number(el.value) : el.value;
+  state.projects[pi].plots[pli][field] = type==='num' ? (Number(el.value)||0) : el.value;
   saveData();
   // Sync critical fields
   if (['status','type','salePrice','buyer','plotNo','sizeInCents'].indexOf(field) !== -1) {
@@ -5568,8 +5360,8 @@ function updatePlotPhase(el) {
   var pi=Number(el.dataset.pi), pli=Number(el.dataset.pli), ph=el.dataset.ph;
   var phases = ['foundation','structure','roof','electrical','plumbing','finishing'];
   if (!state.projects[pi].plots[pli].phases) state.projects[pi].plots[pli].phases = {};
-  state.projects[pi].plots[pli].phases[ph] = Number(el.value);
-  var total = phases.reduce(function(s,p){ return s+Number(state.projects[pi].plots[pli].phases[p]); },0);
+  state.projects[pi].plots[pli].phases[ph] = Number(el.value)||0;
+  var total = phases.reduce(function(s,p){ return s+Number(state.projects[pi].plots[pli].phases[p]||0); },0);
   state.projects[pi].plots[pli].constructionCost = total;
   var tot = document.getElementById('hm-total');
   if (tot) tot.textContent = rup(total);
@@ -5591,7 +5383,7 @@ function addPartialPayment(pi, pli) {
 function updatePartialPayment(el, pi, pli, ppIdx, field, type) {
   var plt = state.projects[pi].plots[pli];
   if (!plt.partialPayments || !plt.partialPayments[ppIdx]) return;
-  plt.partialPayments[ppIdx][field] = type==='num' ? Number(el.value) : el.value;
+  plt.partialPayments[ppIdx][field] = type==='num' ? (Number(el.value)||0) : el.value;
   saveData();
   if (field === 'amount' || field === 'desc' || field === 'date') {
     recalcPaymentTotal(pi, pli, null);
@@ -5605,10 +5397,10 @@ function updatePartialPayment(el, pi, pli, ppIdx, field, type) {
 
 function recalcPaymentTotal(pi, pli, advOverride) {
   var plt = state.projects[pi].plots[pli];
-  var adv = advOverride !== null && advOverride !== undefined ? Number(advOverride) : Number(plt.advanceReceived);
-  var ppTotal = (plt.partialPayments||[]).reduce(function(s,pp){ return s+Number(pp.amount); },0);
+  var adv = advOverride !== null && advOverride !== undefined ? (Number(advOverride)||0) : Number(plt.advanceReceived||0);
+  var ppTotal = (plt.partialPayments||[]).reduce(function(s,pp){ return s+Number(pp.amount||0); },0);
   var totalReceived = adv + ppTotal;
-  var salePrice = Number(plt.salePrice);
+  var salePrice = Number(plt.salePrice||0);
   var balance = salePrice - totalReceived;
   
   var el = document.getElementById('pp-adv-total');
@@ -5645,7 +5437,7 @@ function addConstructionExpense(pi, pli) {
 function updateConstructionExpense(pi, pli, idx, field, type, el) {
   var plt = state.projects[pi].plots[pli];
   if (!plt.constructionExpenses || !plt.constructionExpenses[idx]) return;
-  plt.constructionExpenses[idx][field] = type==='num' ? Number(el.value) : el.value;
+  plt.constructionExpenses[idx][field] = type==='num' ? (Number(el.value)||0) : el.value;
   saveData();
   if (field==='amount') {
     recalcHouseTotals(pi, pli);
@@ -5675,7 +5467,7 @@ function addMiscExpense(pi, pli) {
 function updateMiscExpense(pi, pli, idx, field, type, el) {
   var plt = state.projects[pi].plots[pli];
   if (!plt.miscExpenses || !plt.miscExpenses[idx]) return;
-  plt.miscExpenses[idx][field] = type==='num' ? Number(el.value) : el.value;
+  plt.miscExpenses[idx][field] = type==='num' ? (Number(el.value)||0) : el.value;
   saveData();
   if (field==='amount') {
     recalcHouseTotals(pi, pli);
@@ -5705,7 +5497,7 @@ function addOtherExpense(pi, pli) {
 function updateOtherExpense(pi, pli, idx, field, type, el) {
   var plt = state.projects[pi].plots[pli];
   if (!plt.otherExpenses || !plt.otherExpenses[idx]) return;
-  plt.otherExpenses[idx][field] = type==='num' ? Number(el.value) : el.value;
+  plt.otherExpenses[idx][field] = type==='num' ? (Number(el.value)||0) : el.value;
   saveData();
   if (field==='amount') {
     recalcHouseTotals(pi, pli);
@@ -5765,6 +5557,35 @@ function renderAgreementAlerts(projects) {
     }).join('');
 }
 
+function renderOverallProfit(projects) {
+  var el = document.getElementById('overall-profit');
+  if (!projects||!projects.length) { el.innerHTML=''; return; }
+  var totalLand=0, totalConst=0, totalExpSale=0, totalReceived=0;
+  projects.forEach(function(p){
+    totalLand += Number(p.landCost||0) || (Number(p.totalCents||0)*Number(p.pricePerCent||0));
+    var plots = p.plots||[];
+    totalConst += plots.filter(function(pl){ return pl.type==='house'; })
+                       .reduce(function(s,pl){ return s+Number(pl.constructionCost||0); },0);
+    totalExpSale += plots.reduce(function(s,pl){ return s+Number(pl.salePrice||0); },0);
+    totalReceived += plots.filter(function(pl){ return pl.status==='sold'; })
+                         .reduce(function(s,pl){
+                           var ppSum = (pl.partialPayments||[]).reduce(function(ps,pp){ return ps+Number(pp.amount||0); },0);
+                           return s + Number(pl.advanceReceived||0) + ppSum;
+                         },0);
+  });
+  var totalInvest = totalLand+totalConst;
+  var expProfit = totalExpSale-totalLand;
+  var expROI = totalLand>0?((expProfit/totalLand)*100).toFixed(1):0;
+  el.innerHTML = '<div class="profit-summary">'
+    +'<div class="ps-box"><div class="pl">Total Land</div><div class="pv" style="color:var(--amb)">'+rup(totalLand)+'</div></div>'
+    +'<div class="ps-box"><div class="pl">Construction</div><div class="pv" style="color:var(--sky)">'+rup(totalConst)+'</div></div>'
+    +'<div class="ps-box"><div class="pl">Total Invested</div><div class="pv" style="color:var(--rose)">'+rup(totalInvest)+'</div></div>'
+    +'<div class="ps-box"><div class="pl">Expected Sale</div><div class="pv" style="color:var(--teal)">'+rup(totalExpSale)+'</div></div>'
+    +'<div class="ps-box"><div class="pl">Expected Profit</div><div class="pv" style="color:'+(expProfit>0?'var(--sage)':'var(--rose)')+'">'+rup(expProfit)+'</div></div>'
+    +'<div class="ps-box"><div class="pl">ROI %</div><div class="pv" style="color:'+(expROI>0?'var(--sage)':'var(--rose)')+'">'+expROI+'%</div></div>'
+  +'</div>';
+}
+
 // ════════════════════════════════════════════════════════
 // EXPENDITURE SCREEN
 // ════════════════════════════════════════════════════════
@@ -5788,16 +5609,16 @@ function renderExpenditureScreen() {
   var totalLandCostRemaining = 0;
 
   (state.loanPayments||[]).forEach(function(lp){
-    totalInterestPaid += Number(lp.interest);
+    totalInterestPaid += Number(lp.interest||0);
   });
 
   projects.forEach(function(proj) {
     var landPaid = (state.landPayments||[]).filter(function(p){ return p.projId===proj.id; })
-                   .reduce(function(s,p){ return s+Number(p.amount); },0);
+                   .reduce(function(s,p){ return s+Number(p.amount||0); },0);
     totalLandPaid += landPaid;
     
     var totalCents = Number(proj.totalCents||0);
-    var landCostTotal = Number(proj.landCost) || (totalCents * Number(proj.pricePerCent));
+    var landCostTotal = Number(proj.landCost||0) || (totalCents * Number(proj.pricePerCent||0));
     totalLandCostRemaining += Math.max(landCostTotal - landPaid, 0);
     var centRate = totalCents > 0 ? (landCostTotal / totalCents) : 0;
 
@@ -5809,26 +5630,26 @@ function renderExpenditureScreen() {
         plt.otherExpenses = [];
       }
       var constTotal = plt.type === 'house'
-        ? (plt.constructionExpenses||[]).reduce(function(s,e){ return s+Number(e.amount); },0) : 0;
-      var miscTotal = (plt.miscExpenses||[]).reduce(function(s,e){ return s+Number(e.amount); },0);
-      var otherTotal = (plt.otherExpenses||[]).reduce(function(s,e){ return s+Number(e.amount); },0);
+        ? (plt.constructionExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0) : 0;
+      var miscTotal = (plt.miscExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
+      var otherTotal = (plt.otherExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
       totalConstruction += constTotal;
       totalMisc += miscTotal + otherTotal;
 
       if (plt.status === 'sold') {
         totalSold++;
-        var received = Number(plt.advanceReceived) + (plt.partialPayments||[]).reduce(function(s,pp){ return s+Number(pp.amount); },0);
+        var received = Number(plt.advanceReceived||0) + (plt.partialPayments||[]).reduce(function(s,pp){ return s+Number(pp.amount||0); },0);
         totalAdvancesReceived += received;
-        var salePrice = Number(plt.salePrice);
+        var salePrice = Number(plt.salePrice||0);
         var pending = salePrice - received;
         totalExpectedReceivable += Math.max(pending, 0);
         
         var landCostForPlot = centRate * Number(plt.sizeInCents||0);
-        var miscForPlot = (plt.miscExpenses||[]).reduce(function(s,e){ return s+Number(e.amount); },0);
-        var otherForPlot = (plt.otherExpenses||[]).reduce(function(s,e){ return s+Number(e.amount); },0);
+        var miscForPlot = (plt.miscExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
+        var otherForPlot = (plt.otherExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
         var costBasis = plt.type === 'plot'
           ? landCostForPlot + miscForPlot + otherForPlot
-          : landCostForPlot + (plt.constructionExpenses||[]).reduce(function(s,e){ return s+Number(e.amount); },0) + miscForPlot + otherForPlot;
+          : landCostForPlot + (plt.constructionExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0) + miscForPlot + otherForPlot;
         
         var plotProfit = salePrice - costBasis;
         totalProfit += plotProfit;
@@ -5906,16 +5727,16 @@ function updateAdvancesReceivedTotal() {
   
   projects.forEach(function(proj) {
     var landPaid = (state.landPayments||[]).filter(function(p){ return p.projId===proj.id; })
-                   .reduce(function(s,p){ return s+Number(p.amount); },0);
-    var landCostDeal = Number(proj.landCost) || (Number(proj.totalCents||0) * Number(proj.pricePerCent));
+                   .reduce(function(s,p){ return s+Number(p.amount||0); },0);
+    var landCostDeal = Number(proj.landCost||0) || (Number(proj.totalCents||0) * Number(proj.pricePerCent||0));
     var centRate = proj.totalCents > 0 ? (landCostDeal / proj.totalCents) : 0;
     
     (proj.plots||[]).forEach(function(plt) {
       totalPlotCount++;
       // Construction & Misc for ALL plots
-      var constExp = (plt.constructionExpenses||[]).reduce(function(s,e){ return s+Number(e.amount); },0);
-      var miscExp = (plt.miscExpenses||[]).reduce(function(s,e){ return s+Number(e.amount); },0);
-      var otherExp = (plt.otherExpenses||[]).reduce(function(s,e){ return s+Number(e.amount); },0);
+      var constExp = (plt.constructionExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
+      var miscExp = (plt.miscExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
+      var otherExp = (plt.otherExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
       totalConst += constExp;
       totalMisc += miscExp + otherExp;
       
@@ -7326,7 +7147,7 @@ if (!state.emiSchedule)  state.emiSchedule  = [];
 
 // ── EMI Auto-Calc ──
 function calcEmiFromForm() {
-  var principal = Number(document.getElementById('ln-principal').value);
+  var principal = Number(document.getElementById('ln-principal').value)||0;
   var rate      = Number(document.getElementById('ln-rate').value)||0;
   var rateType  = document.getElementById('ln-ratetype').value;
   var term      = Number(document.getElementById('ln-term').value)||0;
@@ -7353,7 +7174,7 @@ function calcEmiFromForm() {
 }
 
 function updateLoanAmountWords() {
-  var amt = Number(document.getElementById('ln-principal').value);
+  var amt = Number(document.getElementById('ln-principal').value) || 0;
   var wordsEl = document.getElementById('ln-amount-words');
   if (wordsEl) wordsEl.textContent = amt > 0 ? amtWords(amt) : '';
 }
@@ -7420,13 +7241,12 @@ function toggleEmiPaid(loanId, origDate) {
 
 // ── Tab switcher ──
 function switchFinTab(tab) {
-  ['loans','pl','land'].forEach(function(t) {
+  ['loans','pl'].forEach(function(t) {
     document.getElementById('ftab-'+t).classList.toggle('on', t===tab);
     document.getElementById('fpanel-'+t).classList.toggle('on', t===tab);
   });
   if (tab==='loans') renderLoanList();
   if (tab==='pl')    renderPL();
-  if (tab==='land')  renderLandSummaryTable();
 }
 
 // ── Save Loan ──
@@ -7507,7 +7327,7 @@ function saveLoan() {
   var editId    = document.getElementById('ln-edit-id').value;
   var loanType  = document.getElementById('ln-type').value;
   var name      = document.getElementById('ln-name').value.trim();
-  var principal = Number(document.getElementById('ln-principal').value);
+  var principal = Number(document.getElementById('ln-principal').value) || 0;
   var date      = document.getElementById('ln-date').value;
   var notes     = document.getElementById('ln-notes').value.trim();
 
@@ -7537,13 +7357,13 @@ function saveLoan() {
   if (loanType === 'bank') {
     loan.rate      = Number(document.getElementById('ln-rate').value) || 0;
     loan.rateType  = document.getElementById('ln-ratetype').value;
-    loan.emi       = Number(document.getElementById('ln-emi').value);
+    loan.emi       = Number(document.getElementById('ln-emi').value) || 0;
     loan.termMonths= Number(document.getElementById('ln-term').value) || 0;
   } else {
     // handloan
     loan.rate         = Number(document.getElementById('ln-hl-rate').value) || 0;
     loan.rateType     = 'pa';
-    loan.interestPaid = Number(document.getElementById('ln-hl-int-paid').value);
+    loan.interestPaid = Number(document.getElementById('ln-hl-int-paid').value) || 0;
     loan.emi          = 0;
     loan.termMonths   = 0;
   }
@@ -7611,9 +7431,9 @@ function savePaymentV2() {
   
   var loanId  = el1.value;
   var prinDate = el2.value;
-  var prinAmount = parseInt((el3.value || '0').trim().replace(/,/g, ''), 10) || 0;
+  var prinAmount = Number(el3.value)||0;
   var intDate = el4.value;
-  var intAmount = parseInt((el5.value || '0').trim().replace(/,/g, ''), 10) || 0;
+  var intAmount = Number(el5.value)||0;
   var notes   = el6.value.trim();
 
   if (!prinAmount && !intAmount) { toast('At least one amount enter చేయండి','err'); return; }
@@ -7660,7 +7480,7 @@ function savePaymentV2() {
   var loan = (state.loans||[]).find(function(l){ return l.id===loanId; });
   if (loan) {
     var totalPrinPaid = state.loanPayments.filter(function(p){ return p.loanId===loanId; })
-      .reduce(function(s,p){ return s+Number(p.principalAmount); },0);
+      .reduce(function(s,p){ return s+Number(p.principalAmount||0); },0);
     if (totalPrinPaid >= loan.principal) { loan.status='closed'; }
   }
 
@@ -7750,10 +7570,10 @@ function renderLoanList() {
   var totalBorrowed=0, totalOutstanding=0, totalIntPaid=0, totalPrinPaid=0, totalIntAccrued=0, totalIntBalance=0;
   loans.forEach(function(loan) {
     var pmts = (state.loanPayments||[]).filter(function(p){ return p.loanId===loan.id; });
-    var paidPrin = pmts.reduce(function(s,p){ return s+Number(p.principalAmount); },0);
-    var paidInt  = pmts.reduce(function(s,p){ return s+Number(p.interestAmount); },0);
-    totalBorrowed    += Number(loan.principal);
-    totalOutstanding += Math.max(Number(loan.principal)-paidPrin, 0);
+    var paidPrin = pmts.reduce(function(s,p){ return s+Number(p.principalAmount||0); },0);
+    var paidInt  = pmts.reduce(function(s,p){ return s+Number(p.interestAmount||0); },0);
+    totalBorrowed    += Number(loan.principal||0);
+    totalOutstanding += Math.max(loan.principal-paidPrin, 0);
     totalIntPaid     += paidInt;
     totalPrinPaid    += paidPrin;
     
@@ -7972,7 +7792,7 @@ function openAddProjIncome(projId) {
 function saveProjIncome() {
   var projId  = document.getElementById('inc-project').value;
   var date    = document.getElementById('inc-date').value;
-  var amount  = Number(document.getElementById('inc-amount').value);
+  var amount  = Number(document.getElementById('inc-amount').value)||0;
   var type    = document.getElementById('inc-type').value;
   var desc    = document.getElementById('inc-desc').value.trim();
 
@@ -8007,9 +7827,9 @@ function openAddLandPayment(projId) {
   var proj = (state.projects||[]).find(function(p){ return p.id===projId; });
   if (!proj) return;
   document.getElementById('lp-proj-id').value = projId;
-  var totalLandCost = Number(proj.landCost)||(Number(proj.totalCents||0)*Number(proj.pricePerCent));
+  var totalLandCost = Number(proj.landCost||0)||(Number(proj.totalCents||0)*Number(proj.pricePerCent||0));
   var paid = (state.landPayments||[]).filter(function(p){ return p.projId===projId; })
-              .reduce(function(s,p){ return s+Number(p.amount); },0);
+              .reduce(function(s,p){ return s+Number(p.amount||0); },0);
   document.getElementById('lp-proj-info').innerHTML =
     '<b style="color:var(--amb)">'+escH(proj.name)+'</b><br>'
     +'Total Land Cost: '+rup(totalLandCost)+' &nbsp;·&nbsp; Paid So Far: <b style="color:var(--teal)">'+rup(paid)+'</b>'
@@ -8024,8 +7844,7 @@ function openAddLandPayment(projId) {
 function saveLandPayment() {
   var projId = document.getElementById('lp-proj-id').value;
   var date   = document.getElementById('lp-date').value;
-  var amountStr = document.getElementById('lp-amount').value.trim().replace(/,/g, '');
-  var amount = parseInt(amountStr, 10) || 0;
+  var amount = Number(document.getElementById('lp-amount').value)||0;
   var notes  = document.getElementById('lp-notes').value.trim();
   if (!date)   { toast('Date select చేయండి','err'); return; }
   if (!amount) { toast('Amount enter చేయండి','err'); return; }
@@ -8288,12 +8107,12 @@ function renderPL() {
   }
 
   // Company-wide finance figures
-  var totalInterestPaid = (state.loanPayments||[]).reduce(function(s,p){ return s+Number(p.interestPart); },0);
-  var totalBorrowed     = loans.reduce(function(s,l){ return s+Number(l.principal); },0);
+  var totalInterestPaid = (state.loanPayments||[]).reduce(function(s,p){ return s+Number(p.interestPart||0); },0);
+  var totalBorrowed     = loans.reduce(function(s,l){ return s+Number(l.principal||0); },0);
   var totalOutstanding  = loans.reduce(function(s,l){
     var pmts = (state.loanPayments||[]).filter(function(p){ return p.loanId===l.id; });
-    var paid = pmts.reduce(function(ss,p){ return ss+Number(p.principalPart); },0);
-    return s + Math.max(Number(l.principal) - paid, 0);
+    var paid = pmts.reduce(function(ss,p){ return ss+Number(p.principalPart||0); },0);
+    return s + Math.max(Number(l.principal||0) - paid, 0);
   }, 0);
 
   var html = '';
@@ -8305,8 +8124,8 @@ function renderPL() {
     var plots = proj.plots || [];
     var totalCents = Number(proj.totalCents||0);
     var landPaid = (state.landPayments||[]).filter(function(p){ return p.projId===proj.id; })
-                   .reduce(function(s,p){ return s+Number(p.amount); },0);
-    var landCostTotal = Number(proj.landCost) || (totalCents * Number(proj.pricePerCent));
+                   .reduce(function(s,p){ return s+Number(p.amount||0); },0);
+    var landCostTotal = Number(proj.landCost||0) || (totalCents * Number(proj.pricePerCent||0));
     var landForCalc = landPaid > 0 ? landPaid : landCostTotal;
     var centRate = totalCents > 0 ? landForCalc / totalCents : 0;
 
@@ -8327,9 +8146,9 @@ function renderPL() {
     plots.forEach(function(plt) {
       var plotLand  = centRate * Number(plt.sizeInCents||0);
       var plotConst = plt.type === 'house'
-        ? (plt.constructionExpenses||[]).reduce(function(s,e){ return s+Number(e.amount); },0) : 0;
-      var plotMisc  = (plt.miscExpenses||[]).reduce(function(s,e){ return s+Number(e.amount); },0);
-      var plotOther = (plt.otherExpenses||[]).reduce(function(s,e){ return s+Number(e.amount); },0);
+        ? (plt.constructionExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0) : 0;
+      var plotMisc  = (plt.miscExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
+      var plotOther = (plt.otherExpenses||[]).reduce(function(s,e){ return s+Number(e.amount||0); },0);
       var plotCost  = plotLand + plotConst + plotMisc + plotOther;
 
       projConstCost += plotConst;
@@ -8338,10 +8157,10 @@ function renderPL() {
       if (plt.status === 'sold') {
         soldCount++;
         hasSales = true;
-        soldRevenue += Number(plt.salePrice);
+        soldRevenue += Number(plt.salePrice||0);
         soldCOGS    += plotCost;
-        soldReceived += Number(plt.advanceReceived)
-          + (plt.partialPayments||[]).reduce(function(s,pp){ return s+Number(pp.amount); },0);
+        soldReceived += Number(plt.advanceReceived||0)
+          + (plt.partialPayments||[]).reduce(function(s,pp){ return s+Number(pp.amount||0); },0);
       } else {
         wipCount++;
       }
@@ -8349,7 +8168,7 @@ function renderPL() {
 
     // Manual project expenses (overhead/admin)
     var manualExp = (state.projExpenses||[]).filter(function(e){ return e.projId===proj.id; })
-                    .reduce(function(s,e){ return s+Number(e.amount); },0);
+                    .reduce(function(s,e){ return s+Number(e.amount||0); },0);
 
     var costIncurred = landForCalc + projConstCost + projMiscOther + manualExp;
     var grossProfit  = soldRevenue - soldCOGS - manualExp;
@@ -8369,26 +8188,26 @@ function renderPL() {
 
     var landLine = landForCalc > 0
       ? (landPaid > 0 && landPaid < landCostTotal
-        ? '<div class="pl-row"><span class="pl-lbl">🌾 Land Paid <span style="font-size:10px;color:var(--tx3)">('+rup(landPaid)+' of '+rup(landCostTotal)+')</span></span><span class="pl-val" style="color:var(--amb)">'+rup(landPaid)+' <span style="font-size:10px;color:var(--sky)">('+shortAmt(landPaid)+')</span></span></div>'
-        : '<div class="pl-row"><span class="pl-lbl">🌾 Land Cost</span><span class="pl-val" style="color:var(--amb)">'+rup(landForCalc)+' <span style="font-size:10px;color:var(--teal)">('+shortAmt(landForCalc)+')</span></span></div>')
+        ? '<div class="pl-row"><span class="pl-lbl">🌾 Land Paid <span style="font-size:10px;color:var(--tx3)">('+rup(landPaid)+' of '+rup(landCostTotal)+')</span></span><span class="pl-val" style="color:var(--amb)">'+rup(landPaid)+'</span></div>'
+        : '<div class="pl-row"><span class="pl-lbl">🌾 Land Cost</span><span class="pl-val" style="color:var(--amb)">'+rup(landForCalc)+'</span></div>')
       : '';
 
     html += '<div class="pl-card fu">'
       +'<div class="pl-proj-name">🏘️ '+escH(proj.name) + roiBadge +'</div>'
       + landLine
-      +(projConstCost ? '<div class="pl-row"><span class="pl-lbl">🏗️ Construction</span><span class="pl-val" style="color:var(--sky)">'+rup(projConstCost)+' <span style="font-size:10px;color:var(--amb)">('+shortAmt(projConstCost)+')</span></span></div>' : '')
-      +(projMiscOther ? '<div class="pl-row"><span class="pl-lbl">📋 Misc &amp; Other</span><span class="pl-val" style="color:var(--teal)">'+rup(projMiscOther)+' <span style="font-size:10px;color:var(--rose)">('+shortAmt(projMiscOther)+')</span></span></div>' : '')
-      +(manualExp ? '<div class="pl-row"><span class="pl-lbl">📤 Overhead / Admin</span><span class="pl-val" style="color:var(--rose)">'+rup(manualExp)+' <span style="font-size:10px;color:var(--sage)">('+shortAmt(manualExp)+')</span></span></div>' : '')
-      +'<div class="pl-row"><span class="pl-lbl" style="font-weight:700">Total Cost Incurred</span><span class="pl-val" style="color:var(--rose)">'+rup(costIncurred)+' <span style="font-size:10px;color:var(--sky)">('+shortAmt(costIncurred)+')</span></span></div>'
+      +(projConstCost ? '<div class="pl-row"><span class="pl-lbl">🏗️ Construction</span><span class="pl-val" style="color:var(--sky)">'+rup(projConstCost)+'</span></div>' : '')
+      +(projMiscOther ? '<div class="pl-row"><span class="pl-lbl">📋 Misc &amp; Other</span><span class="pl-val" style="color:var(--teal)">'+rup(projMiscOther)+'</span></div>' : '')
+      +(manualExp ? '<div class="pl-row"><span class="pl-lbl">📤 Overhead / Admin</span><span class="pl-val" style="color:var(--rose)">'+rup(manualExp)+'</span></div>' : '')
+      +'<div class="pl-row"><span class="pl-lbl" style="font-weight:700">Total Cost Incurred</span><span class="pl-val" style="color:var(--rose)">'+rup(costIncurred)+'</span></div>'
       +'<div class="pl-row"><span class="pl-lbl" style="color:var(--tx3)">Plots: '+plots.length+' total · '+soldCount+' sold · '+wipCount+' unsold</span></div>';
 
     if (soldRevenue > 0) {
       html += '<div style="border-top:1px solid var(--bd);margin:6px 0;padding-top:6px">'
-        +'<div class="pl-row"><span class="pl-lbl">💰 Revenue (Sold plots)</span><span class="pl-val" style="color:var(--sage)">'+rup(soldRevenue)+' <span style="font-size:10px;color:var(--amb)">('+shortAmt(soldRevenue)+')</span></span></div>'
-        +'<div class="pl-row"><span class="pl-lbl">✅ Received So Far</span><span class="pl-val" style="color:var(--teal)">'+rup(soldReceived)+' <span style="font-size:10px;color:var(--rose)">('+shortAmt(soldReceived)+')</span></span></div>'
-        +(soldReceived < soldRevenue ? '<div class="pl-row"><span class="pl-lbl" style="color:var(--tx3)">Pending Collection</span><span class="pl-val" style="color:var(--amb)">'+rup(soldRevenue-soldReceived)+' <span style="font-size:10px;color:var(--sky)">('+shortAmt(soldRevenue-soldReceived)+')</span></span></div>' : '')
-        +'<div class="pl-row"><span class="pl-lbl">📊 COGS (Sold plots cost)</span><span class="pl-val" style="color:var(--rose)">'+rup(soldCOGS)+' <span style="font-size:10px;color:var(--teal)">('+shortAmt(soldCOGS)+')</span></span></div>'
-        +'<div class="pl-row total" style="background:var(--s3);border-radius:8px;padding:8px 10px;margin-top:4px"><span class="pl-lbl" style="font-size:14px">Gross Profit</span><span class="pl-val" style="font-size:15px;color:'+gpColor+'">'+(grossProfit>=0?'+':'')+rup(grossProfit)+' <span style="font-size:11px;color:var(--sage)">('+shortAmt(grossProfit)+')</span></span></div>'
+        +'<div class="pl-row"><span class="pl-lbl">💰 Revenue (Sold plots)</span><span class="pl-val" style="color:var(--sage)">'+rup(soldRevenue)+'</span></div>'
+        +'<div class="pl-row"><span class="pl-lbl">✅ Received So Far</span><span class="pl-val" style="color:var(--teal)">'+rup(soldReceived)+'</span></div>'
+        +(soldReceived < soldRevenue ? '<div class="pl-row"><span class="pl-lbl" style="color:var(--tx3)">Pending Collection</span><span class="pl-val" style="color:var(--amb)">'+rup(soldRevenue-soldReceived)+'</span></div>' : '')
+        +'<div class="pl-row"><span class="pl-lbl">📊 COGS (Sold plots cost)</span><span class="pl-val" style="color:var(--rose)">'+rup(soldCOGS)+'</span></div>'
+        +'<div class="pl-row total" style="background:var(--s3);border-radius:8px;padding:8px 10px;margin-top:4px"><span class="pl-lbl" style="font-size:14px">Gross Profit</span><span class="pl-val" style="font-size:15px;color:'+gpColor+'">'+(grossProfit>=0?'+':'')+rup(grossProfit)+'</span></div>'
       +'</div>';
     } else {
       html += '<div style="background:rgba(232,184,74,0.06);border:1px solid rgba(232,184,74,0.2);border-radius:9px;padding:8px 12px;margin-top:8px;text-align:center">'
@@ -8408,16 +8227,16 @@ function renderPL() {
     elOverall.innerHTML = '<div style="background:linear-gradient(135deg,rgba(232,184,74,0.08),rgba(58,232,200,0.05));border:1px solid rgba(232,184,74,0.3);border-radius:13px;padding:14px;margin-bottom:4px">'
       +'<div style="font-size:13px;font-weight:700;color:var(--amb);margin-bottom:10px">📊 Company P&amp;L — All Projects</div>'
       +'<div class="fin-summary">'
-        +'<div class="fsum-box"><div class="fsum-lbl">Total Borrowed</div><div class="fsum-val" style="color:var(--amb)">'+rup(totalBorrowed)+' <span style="font-size:11px;font-weight:600;color:var(--sky)">('+shortAmt(totalBorrowed)+')</span></div></div>'
-        +'<div class="fsum-box"><div class="fsum-lbl">Outstanding Debt</div><div class="fsum-val" style="color:var(--rose)">'+rup(totalOutstanding)+' <span style="font-size:11px;font-weight:600;color:var(--amb)">('+shortAmt(totalOutstanding)+')</span></div></div>'
-        +'<div class="fsum-box"><div class="fsum-lbl">Interest Paid</div><div class="fsum-val" style="color:var(--sky)">'+rup(totalInterestPaid)+' <span style="font-size:11px;font-weight:600;color:var(--teal)">('+shortAmt(totalInterestPaid)+')</span></div></div>'
-        +'<div class="fsum-box"><div class="fsum-lbl">Total Cost Incurred</div><div class="fsum-val" style="color:var(--rose)">'+rup(allCostIncurred)+' <span style="font-size:11px;font-weight:600;color:var(--sage)">('+shortAmt(allCostIncurred)+')</span></div></div>'
+        +'<div class="fsum-box"><div class="fsum-lbl">Total Borrowed</div><div class="fsum-val" style="color:var(--amb)">'+rup(totalBorrowed)+'</div></div>'
+        +'<div class="fsum-box"><div class="fsum-lbl">Outstanding Debt</div><div class="fsum-val" style="color:var(--rose)">'+rup(totalOutstanding)+'</div></div>'
+        +'<div class="fsum-box"><div class="fsum-lbl">Interest Paid</div><div class="fsum-val" style="color:var(--sky)">'+rup(totalInterestPaid)+'</div></div>'
+        +'<div class="fsum-box"><div class="fsum-lbl">Total Cost Incurred</div><div class="fsum-val" style="color:var(--rose)">'+rup(allCostIncurred)+'</div></div>'
       +'</div>'
       +(hasSales ? '<div class="fin-summary" style="margin-top:8px">'
-        +'<div class="fsum-box"><div class="fsum-lbl">Revenue (Sold)</div><div class="fsum-val" style="color:var(--sage)">'+rup(allRevenue)+' <span style="font-size:11px;font-weight:600;color:var(--amb)">('+shortAmt(allRevenue)+')</span></div></div>'
-        +'<div class="fsum-box"><div class="fsum-lbl">Received So Far</div><div class="fsum-val" style="color:var(--teal)">'+rup(allReceived)+' <span style="font-size:11px;font-weight:600;color:var(--rose)">('+shortAmt(allReceived)+')</span></div></div>'
-        +'<div class="fsum-box"><div class="fsum-lbl">Gross Profit</div><div class="fsum-val" style="color:'+ogColor+'">'+(overallGross>=0?'+':'')+rup(overallGross)+' <span style="font-size:11px;font-weight:600;color:var(--sky)">('+shortAmt(overallGross)+')</span></div></div>'
-        +'<div class="fsum-box"><div class="fsum-lbl" style="font-weight:700">Net Profit</div><div class="fsum-val" style="color:'+onColor+';font-size:18px">'+(overallNet>=0?'+':'')+rup(overallNet)+' <span style="font-size:12px;font-weight:600;color:var(--amb)">('+shortAmt(overallNet)+')</span></div></div>'
+        +'<div class="fsum-box"><div class="fsum-lbl">Revenue (Sold)</div><div class="fsum-val" style="color:var(--sage)">'+rup(allRevenue)+'</div></div>'
+        +'<div class="fsum-box"><div class="fsum-lbl">Received So Far</div><div class="fsum-val" style="color:var(--teal)">'+rup(allReceived)+'</div></div>'
+        +'<div class="fsum-box"><div class="fsum-lbl">Gross Profit</div><div class="fsum-val" style="color:'+ogColor+'">'+(overallGross>=0?'+':'')+rup(overallGross)+'</div></div>'
+        +'<div class="fsum-box"><div class="fsum-lbl" style="font-weight:700">Net Profit</div><div class="fsum-val" style="color:'+onColor+';font-size:18px">'+(overallNet>=0?'+':'')+rup(overallNet)+'</div></div>'
       +'</div>' : '<div style="padding:8px 0;font-size:12px;color:var(--tx3);text-align:center">Mark plots as Sold to see Revenue &amp; Profit</div>')
     +'</div>';
   }
@@ -8427,7 +8246,7 @@ function renderPL() {
 function saveProjExpense() {
   var projId   = document.getElementById('pexp-project').value;
   var date     = document.getElementById('pexp-date').value;
-  var amount   = Number(document.getElementById('pexp-amount').value);
+  var amount   = Number(document.getElementById('pexp-amount').value)||0;
   var category = document.getElementById('pexp-category').value;
   var desc     = document.getElementById('pexp-desc').value.trim();
 
@@ -8494,166 +8313,6 @@ function populateIncomeProjectSelector() {
 
 // ── Update readAll to include Finance sheets ──
 // (handled via dynamic sheets param in syncFromSheet and freshData)
-
-// ════════════════════════════════════════════════════════
-// PLOT LAND PAYMENTS — Adjust paidToDate per plot
-// ════════════════════════════════════════════════════════
-if (!state.plotLandPayments) state.plotLandPayments = [];
-
-function openAdjustLandModal(pi, pli) {
-  var proj = state.projects[pi];
-  var plt = proj && proj.plots[pli];
-  if (!plt) return;
-  var plc = plt.plotLandCost !== undefined ? plt.plotLandCost
-    : (proj.totalCents > 0 ? Math.round((Number(proj.landCost||0) / proj.totalCents) * Number(plt.sizeInCents||0)) : 0);
-  document.getElementById('alp-pi').value = pi;
-  document.getElementById('alp-pli').value = pli;
-  document.getElementById('alp-info').innerHTML =
-    '<b style="color:var(--amb)">'+escH(proj.name)+' — Plot '+escH(plt.plotNo||String(pli+1))+'</b><br>'
-    +'Land Cost (Fixed): <b style="color:var(--amb)">'+rup(plc)+'</b>'
-    +' &nbsp;·&nbsp; Current Paid: <b style="color:var(--teal)">'+rup(plt.paidToDate||0)+'</b>';
-  document.getElementById('alp-paid').value = plt.paidToDate || '';
-  document.getElementById('alp-reason').value = '';
-  document.getElementById('alp-date').value = new Date().toISOString().slice(0,10);
-  openModal('adjust-land-modal');
-}
-
-function saveAdjustLandPayment() {
-  var pi = Number(document.getElementById('alp-pi').value);
-  var pli = Number(document.getElementById('alp-pli').value);
-  var newPaid = Number(document.getElementById('alp-paid').value)||0;
-  var reason = document.getElementById('alp-reason').value.trim();
-  var date = document.getElementById('alp-date').value;
-  if (!date) { toast('Date select చేయండి','err'); return; }
-  adjustPlotLandPayment(pi, pli, newPaid, reason, date);
-  closeModal('adjust-land-modal');
-  openPlotByIndex({dataset:{proj:String(pi),plot:String(pli)}});
-  renderProjExp();
-  renderPL();
-  toast('Land payment updated ✓','ok');
-}
-
-function adjustPlotLandPayment(pi, pli, newPaidAmount, reason, date) {
-  var proj = state.projects[pi];
-  var plt = proj && proj.plots[pli];
-  if (!plt) return;
-  if (!plt.adjustmentHistory) plt.adjustmentHistory = [];
-  plt.adjustmentHistory.push({ date:date, prevPaid:plt.paidToDate||0, newPaid:newPaidAmount, reason:reason||'' });
-  plt.paidToDate = newPaidAmount;
-  saveData();
-  syncPlotLandPayments(proj.id);
-}
-
-function syncPlotLandPayments(projId) {
-  var proj = (state.projects||[]).find(function(p){ return p.id===projId; });
-  if (!proj || !cfg.scriptUrl || !cfg.sheetId) return;
-  
-  // Delete all rows for this project, THEN append new ones
-  fetch(cfg.scriptUrl, {
-    method:'POST', mode:'no-cors',
-    body: JSON.stringify({action:'deleteRow', sheetId:cfg.sheetId, sheetName:'PlotLandPayments', matchCol:'projectId', matchVal:projId})
-  }).then(function() {
-    // Only proceed AFTER delete completes
-    var rows = [];
-    (proj.plots||[]).forEach(function(plt) {
-      var plc = plt.plotLandCost !== undefined ? plt.plotLandCost
-        : (proj.totalCents > 0 ? Math.round((Number(proj.landCost||0) / proj.totalCents) * Number(plt.sizeInCents||0)) : 0);
-      rows.push([plt.id, plt.plotNo||'', projId, plt.sizeInCents||0, plc, plt.paidToDate||0, JSON.stringify(plt.adjustmentHistory||[])]);
-    });
-    
-    if (rows.length > 0) {
-      var url = cfg.scriptUrl;
-      var payload = JSON.stringify({
-        action:'batchAppend',
-        sheetId:cfg.sheetId,
-        sheetName:'PlotLandPayments',
-        headers:['plotId','plotNo','projectId','plotCents','plotLandCost','paidToDate','adjustmentHistory'],
-        rows:rows
-      });
-      fetch(url, {
-        method:'POST', mode:'no-cors',
-        body: payload
-      }).then(function(){ setSyncStatus('ok'); state.lastSync = new Date().toISOString(); saveData(); }).catch(function(e){ setSyncStatus('err'); console.error('syncPlotLandPayments err:', e); });
-    }
-  }).catch(function(){});
-}
-
-function syncLandPayments(projId) {
-  if (!cfg.scriptUrl || !cfg.sheetId) return;
-  
-  // Delete old LandPayments for this project, THEN append new ones
-  fetch(cfg.scriptUrl, {
-    method:'POST', mode:'no-cors',
-    body: JSON.stringify({action:'deleteRow', sheetId:cfg.sheetId, sheetName:'LandPayments', matchCol:'projId', matchVal:projId})
-  }).then(function() {
-    // Only proceed AFTER delete completes
-    var pmts = (state.landPayments||[]).filter(function(p){ return p.projId === projId; });
-    var rows = [];
-    pmts.forEach(function(pmt) {
-      rows.push([pmt.id, pmt.projId, pmt.date, pmt.amount, pmt.notes||'']);
-    });
-    
-    if (rows.length > 0) {
-      var url = cfg.scriptUrl;
-      var payload = JSON.stringify({
-        action:'batchAppend',
-        sheetId:cfg.sheetId,
-        sheetName:'LandPayments',
-        headers:['id','projId','date','amount','notes'],
-        rows:rows
-      });
-      fetch(url, {
-        method:'POST', mode:'no-cors',
-        body: payload
-      }).then(function(){ setSyncStatus('ok'); state.lastSync = new Date().toISOString(); saveData(); }).catch(function(e){ setSyncStatus('err'); console.error('syncLandPayments err:', e); });
-    }
-  }).catch(function(){});
-}
-
-function renderLandSummaryTable() {
-  var el = document.getElementById('land-summary-table');
-  if (!el) return;
-  var projects = state.projects||[];
-  if (!projects.length) {
-    el.innerHTML = '<div style="font-size:13px;color:var(--tx3);padding:8px 0">No projects yet</div>';
-    return;
-  }
-  var totLC=0, totPaid=0, totOut=0;
-  var rows = '';
-  projects.forEach(function(proj) {
-    (proj.plots||[]).forEach(function(plt) {
-      var plc = plt.plotLandCost !== undefined ? plt.plotLandCost
-        : (proj.totalCents > 0 ? Math.round((Number(proj.landCost||0) / proj.totalCents) * Number(plt.sizeInCents||0)) : 0);
-      var paid = plt.paidToDate || 0;
-      var out = Math.max(plc - paid, 0);
-      totLC += plc; totPaid += paid; totOut += out;
-      rows += '<tr style="border-bottom:1px solid var(--bd)">'
-        +'<td style="padding:6px 8px;color:var(--tx1)">'+escH(proj.name)+' P'+escH(plt.plotNo||'')+'</td>'
-        +'<td style="padding:6px 8px;text-align:right;color:var(--tx2);font-family:JetBrains Mono">'+(plt.sizeInCents||0)+'</td>'
-        +'<td style="padding:6px 8px;text-align:right;font-family:JetBrains Mono;font-weight:700;color:var(--amb)">'+rup(plc)+'</td>'
-        +'<td style="padding:6px 8px;text-align:right;font-family:JetBrains Mono;font-weight:700;color:var(--teal)">'+rup(paid)+'</td>'
-        +'<td style="padding:6px 8px;text-align:right;font-family:JetBrains Mono;font-weight:700;color:'+(out>0?'var(--rose)':'var(--sage)')+'">'+rup(out)+'</td>'
-      +'</tr>';
-    });
-  });
-  el.innerHTML = '<div style="overflow-x:auto">'
-    +'<table style="width:100%;border-collapse:collapse;font-size:12px">'
-    +'<thead><tr style="border-bottom:2px solid var(--bd)">'
-      +'<th style="text-align:left;padding:6px 8px;color:var(--tx3);font-weight:600">Plot</th>'
-      +'<th style="text-align:right;padding:6px 8px;color:var(--tx3);font-weight:600">Cents</th>'
-      +'<th style="text-align:right;padding:6px 8px;color:var(--tx3);font-weight:600">Land Cost</th>'
-      +'<th style="text-align:right;padding:6px 8px;color:var(--tx3);font-weight:600">Paid</th>'
-      +'<th style="text-align:right;padding:6px 8px;color:var(--tx3);font-weight:600">Outstanding</th>'
-    +'</tr></thead><tbody>'
-    +rows
-    +'<tr style="border-top:2px solid var(--bd);background:var(--s3)">'
-      +'<td colspan="2" style="padding:7px 8px;font-weight:700;color:var(--tx1)">TOTAL</td>'
-      +'<td style="padding:7px 8px;text-align:right;font-family:JetBrains Mono;font-weight:700;color:var(--amb)">'+rup(totLC)+'</td>'
-      +'<td style="padding:7px 8px;text-align:right;font-family:JetBrains Mono;font-weight:700;color:var(--teal)">'+rup(totPaid)+'</td>'
-      +'<td style="padding:7px 8px;text-align:right;font-family:JetBrains Mono;font-weight:700;color:'+(totOut>0?'var(--rose)':'var(--sage)')+'">'+rup(totOut)+'</td>'
-    +'</tr>'
-    +'</tbody></table></div>';
-}
 
 init();
 </script>
