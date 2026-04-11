@@ -5385,7 +5385,10 @@ function savePlotClose() {
   var pi = modal.dataset.pi, pli = modal.dataset.pli;
   if (pi !== undefined && pli !== undefined) {
     var proj = state.projects[pi];
-    if (proj) syncProjectPlots(proj.id);
+    if (proj) {
+      syncProjectPlots(proj.id);
+      syncPlotLandPayments(proj.id);
+    }
   }
   saveData();
   closeModal('house-modal');
