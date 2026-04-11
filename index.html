@@ -4812,7 +4812,7 @@ function renderLandPaymentRows() {
   _pendingLandPmts.forEach(function(row, i) {
     html += '<div style="display:flex;gap:6px;align-items:center;margin-bottom:6px" data-lp-idx="'+i+'">'
       +'<input class="fi fi-mono" type="date" value="'+row.date+'" oninput="_pendingLandPmts['+i+'].date=this.value;updateLandPaidTotal()" style="flex:0 0 130px;margin-bottom:0;font-size:13px">'
-      +'<input class="fi fi-mono" type="number" placeholder="Amount ₹" value="'+(row.amount||'')+'" oninput="_pendingLandPmts['+i+'].amount=sanitizeAmount(this.value);updateLandPaidTotal()" style="flex:1;margin-bottom:0;font-size:13px">'
+      +'<input class="fi fi-mono" type="number" placeholder="Amount ₹" value="'+(row.amount||'')+'" oninput="_pendingLandPmts['+i+'].amount=Number(this.value)||0;updateLandPaidTotal()" style="flex:1;margin-bottom:0;font-size:13px">'
       +'<input class="fi" type="text" placeholder="Note" value="'+(row.notes||'')+'" oninput="_pendingLandPmts['+i+'].notes=this.value" style="flex:1;margin-bottom:0;font-size:13px">'
       +'<button type="button" onclick="_pendingLandPmts.splice('+i+',1);renderLandPaymentRows();updateLandPaidTotal()" style="background:none;border:none;color:var(--rose);font-size:16px;cursor:pointer;padding:0 4px;flex-shrink:0">×</button>'
     +'</div>';
