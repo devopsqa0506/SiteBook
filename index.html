@@ -1054,7 +1054,6 @@ body{background:var(--bg);color:var(--tx);font-family:'Noto Sans Telugu',sans-se
           <span>📊 Project Expenditure</span>
         </div>
         <!-- Overall profit summary -->
-        <div id="overall-profit"></div>
         <!-- Venture-level summary -->
         <div id="exp-venture-summary"></div>
         <!-- Project list for expenditure -->
@@ -2322,10 +2321,10 @@ function fixAmountStr(str) {
 // Prevents ₹75,00,000 → ₹74,99,997 bugs
 function sanitizeAmount(val) {
   if (val === null || val === undefined || val === '') return 0;
-  // Strip commas, handle scientific notation from Google Sheets
-  var n = parseFloat(String(val).replace(/,/g, ''));
-  if (isNaN(n)) return 0;
-  return Math.round(n);
+  // Convert to string, strip commas, parse as integer (no floating-point errors)
+  var str = String(val).replace(/,/g, '').trim();
+  var n = parseInt(str, 10);
+  return isNaN(n) ? 0 : n;
 }
 
 // ════════════════════════════════════════════════════════
@@ -4970,7 +4969,6 @@ function renderProjects() {
   if (!state.projects || !state.projects.length) {
     el.innerHTML = '<div class="empty"><div class="ei">🏘️</div><div class="et">Ventures లేవు</div><div class="es">+ New Venture tap చేయండి</div></div>';
     renderAgreementAlerts([]);
-    renderOverallProfit([]);
     return;
   }
 
@@ -5046,7 +5044,6 @@ function renderProjects() {
 
   el.innerHTML = html;
   renderAgreementAlerts(state.projects);
-  renderOverallProfit(state.projects);
 }
 
 function toggleProjDetail(el) {
@@ -5766,35 +5763,6 @@ function renderAgreementAlerts(projects) {
         +'</div>'
       +'</div>';
     }).join('');
-}
-
-function renderOverallProfit(projects) {
-  var el = document.getElementById('overall-profit');
-  if (!el || !projects||!projects.length) { if (el) el.innerHTML=''; return; }
-  var totalLand=0, totalConst=0, totalExpSale=0, totalReceived=0;
-  projects.forEach(function(p){
-    totalLand += sanitizeAmount(p.landCost) || (Number(p.totalCents||0)*sanitizeAmount(p.pricePerCent));
-    var plots = p.plots||[];
-    totalConst += plots.filter(function(pl){ return pl.type==='house'; })
-                       .reduce(function(s,pl){ return s+sanitizeAmount(pl.constructionCost); },0);
-    totalExpSale += plots.reduce(function(s,pl){ return s+sanitizeAmount(pl.salePrice); },0);
-    totalReceived += plots.filter(function(pl){ return pl.status==='sold'; })
-                         .reduce(function(s,pl){
-                           var ppSum = (pl.partialPayments||[]).reduce(function(ps,pp){ return ps+sanitizeAmount(pp.amount); },0);
-                           return s + sanitizeAmount(pl.advanceReceived) + ppSum;
-                         },0);
-  });
-  var totalInvest = totalLand+totalConst;
-  var expProfit = totalExpSale-totalLand;
-  var expROI = totalLand>0?((expProfit/totalLand)*100).toFixed(1):0;
-  el.innerHTML = '<div class="profit-summary">'
-    +'<div class="ps-box"><div class="pl">Total Land</div><div class="pv" style="color:var(--amb)">'+rup(totalLand)+'</div></div>'
-    +'<div class="ps-box"><div class="pl">Construction</div><div class="pv" style="color:var(--sky)">'+rup(totalConst)+'</div></div>'
-    +'<div class="ps-box"><div class="pl">Total Invested</div><div class="pv" style="color:var(--rose)">'+rup(totalInvest)+'</div></div>'
-    +'<div class="ps-box"><div class="pl">Expected Sale</div><div class="pv" style="color:var(--teal)">'+rup(totalExpSale)+'</div></div>'
-    +'<div class="ps-box"><div class="pl">Expected Profit</div><div class="pv" style="color:'+(expProfit>0?'var(--sage)':'var(--rose)')+'">'+rup(expProfit)+'</div></div>'
-    +'<div class="ps-box"><div class="pl">ROI %</div><div class="pv" style="color:'+(expROI>0?'var(--sage)':'var(--rose)')+'">'+expROI+'%</div></div>'
-  +'</div>';
 }
 
 // ════════════════════════════════════════════════════════
