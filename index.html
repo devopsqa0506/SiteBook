@@ -2184,12 +2184,19 @@ var state = loadData();
     });
   });
   // Migrate plotLandCost — compute from landCost if not yet set
+  // Also auto-populate paidToDate from existing landPayments (proportional by cents)
   (state.projects||[]).forEach(function(proj) {
     var landCost = Number(proj.landCost||0) || (Number(proj.totalCents||0) * Number(proj.pricePerCent||0));
     var totalCents = Number(proj.totalCents||0);
+    var totalLandPaid = (state.landPayments||[]).filter(function(p){ return p.projId===proj.id; })
+                        .reduce(function(s,p){ return s+Number(p.amount||0); },0);
     (proj.plots||[]).forEach(function(plt) {
       if (!plt.plotLandCost) {
         plt.plotLandCost = totalCents > 0 ? Math.round(landCost / totalCents * Number(plt.sizeInCents||0)) : 0;
+      }
+      // Auto-populate paidToDate proportionally from landPayments if never set
+      if (!plt.paidToDate && totalLandPaid > 0 && totalCents > 0) {
+        plt.paidToDate = Math.round(totalLandPaid / totalCents * Number(plt.sizeInCents||0));
       }
       if (plt.paidToDate === undefined) plt.paidToDate = 0;
       if (!plt.adjustmentHistory) plt.adjustmentHistory = [];
@@ -2313,9 +2320,9 @@ function fixAmountStr(str) {
 // Prevents ₹75,00,000 → ₹74,99,997 bugs
 function sanitizeAmount(val) {
   if (val === null || val === undefined || val === '') return 0;
-  var n = Number(val);
+  // Strip commas, handle scientific notation from Google Sheets
+  var n = parseFloat(String(val).replace(/,/g, ''));
   if (isNaN(n)) return 0;
-  // Round to nearest integer (no paise needed for construction)
   return Math.round(n);
 }
 
