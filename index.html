@@ -2276,6 +2276,103 @@ function sanitizeAmount(val) {
   return Math.round(n);
 }
 
+// ════════════════════════════════════════════════════════
+// CLEANUP CORRUPTED AMOUNTS - Run once on app load
+// ════════════════════════════════════════════════════════
+function cleanupCorruptedAmounts() {
+  var cleaned = false;
+  
+  // Clean Projects
+  if (state.projects) {
+    state.projects.forEach(function(proj) {
+      if (proj.landCost) { proj.landCost = sanitizeAmount(proj.landCost); cleaned = true; }
+      if (proj.pricePerCent) { proj.pricePerCent = sanitizeAmount(proj.pricePerCent); cleaned = true; }
+      
+      if (proj.plots) {
+        proj.plots.forEach(function(plt) {
+          if (plt.salePrice) { plt.salePrice = sanitizeAmount(plt.salePrice); cleaned = true; }
+          if (plt.advanceReceived) { plt.advanceReceived = sanitizeAmount(plt.advanceReceived); cleaned = true; }
+          if (plt.constructionCost) { plt.constructionCost = sanitizeAmount(plt.constructionCost); cleaned = true; }
+          
+          if (plt.partialPayments) {
+            plt.partialPayments.forEach(function(pp) {
+              if (pp.amount) { pp.amount = sanitizeAmount(pp.amount); cleaned = true; }
+            });
+          }
+          
+          if (plt.constructionExpenses) {
+            plt.constructionExpenses.forEach(function(ce) {
+              if (ce.amount) { ce.amount = sanitizeAmount(ce.amount); cleaned = true; }
+            });
+          }
+          
+          if (plt.miscExpenses) {
+            plt.miscExpenses.forEach(function(me) {
+              if (me.amount) { me.amount = sanitizeAmount(me.amount); cleaned = true; }
+            });
+          }
+          
+          if (plt.otherExpenses) {
+            plt.otherExpenses.forEach(function(oe) {
+              if (oe.amount) { oe.amount = sanitizeAmount(oe.amount); cleaned = true; }
+            });
+          }
+          
+          if (plt.phases) {
+            ['foundation','structure','roof','electrical','plumbing','finishing'].forEach(function(phase) {
+              if (plt.phases[phase]) { plt.phases[phase] = sanitizeAmount(plt.phases[phase]); cleaned = true; }
+            });
+          }
+        });
+      }
+    });
+  }
+  
+  // Clean Loans
+  if (state.loans) {
+    state.loans.forEach(function(loan) {
+      if (loan.principal) { loan.principal = sanitizeAmount(loan.principal); cleaned = true; }
+      if (loan.emi) { loan.emi = sanitizeAmount(loan.emi); cleaned = true; }
+      if (loan.interestPaid) { loan.interestPaid = sanitizeAmount(loan.interestPaid); cleaned = true; }
+    });
+  }
+  
+  // Clean Loan Payments
+  if (state.loanPayments) {
+    state.loanPayments.forEach(function(pmt) {
+      if (pmt.amount) { pmt.amount = sanitizeAmount(pmt.amount); cleaned = true; }
+      if (pmt.principalAmount) { pmt.principalAmount = sanitizeAmount(pmt.principalAmount); cleaned = true; }
+      if (pmt.interestAmount) { pmt.interestAmount = sanitizeAmount(pmt.interestAmount); cleaned = true; }
+    });
+  }
+  
+  // Clean Land Payments
+  if (state.landPayments) {
+    state.landPayments.forEach(function(pmt) {
+      if (pmt.amount) { pmt.amount = sanitizeAmount(pmt.amount); cleaned = true; }
+    });
+  }
+  
+  // Clean Project Income
+  if (state.projIncome) {
+    state.projIncome.forEach(function(inc) {
+      if (inc.amount) { inc.amount = sanitizeAmount(inc.amount); cleaned = true; }
+    });
+  }
+  
+  // Clean Project Expenses
+  if (state.projExpenses) {
+    state.projExpenses.forEach(function(exp) {
+      if (exp.amount) { exp.amount = sanitizeAmount(exp.amount); cleaned = true; }
+    });
+  }
+  
+  if (cleaned) {
+    saveData();
+    console.log('✓ Cleaned corrupted amounts from localStorage');
+  }
+}
+
 function today() { return new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}); }
 function nowt()  { return new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}); }
 function escH(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -2396,6 +2493,10 @@ function finishSetup() {
   setTimeout(function(){ setup.style.display = 'none'; }, 400);
   app.style.display = '';
   app.classList.add('on');
+  
+  // Clean up any corrupted floating-point amounts in existing data
+  cleanupCorruptedAmounts();
+  
   refreshUI();
   renderDocList();
   renderProjects();
@@ -5109,11 +5210,11 @@ function openPlotByIndex(el) {
   if (isSold) {
     body += '<label class="fl" style="margin-top:9px">Sale Price (₹)</label>'
       +'<input type="number" class="fi fi-mono" id="hm-sale-price" value="'+(plt.salePrice||'')+'" placeholder="Actual sale price" '
-      +'data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'salePrice\',\'num\')" oninput="showAmtLabel(this.value,\'sp-words\'); updatePlotProfitInstant('+pi+','+pli+',this.value)">'
+      +'data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'salePrice\',\'num\')" oninput="showAmtLabel(this.value,\'sp-words\'); updatePlotProfitInstant('+pi+','+pli+',sanitizeAmount(this.value))">'
       +'<div id="sp-words" style="font-size:12px;font-weight:600;color:var(--amb);margin-top:3px;min-height:16px">'+(plt.salePrice?amtWords(plt.salePrice):'')+'</div>'
       +'<label class="fl" style="margin-top:9px">Advance Received (₹)</label>'
       +'<input type="number" class="fi fi-mono" id="hm-adv-rcvd" value="'+(plt.advanceReceived||'')+'" placeholder="Token / advance amount" '
-      +'data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'advanceReceived\',\'num\')" oninput="recalcPaymentTotal('+pi+','+pli+',this.value); showAmtLabel(this.value,\'adv-words\')">'
+      +'data-pi="'+pi+'" data-pli="'+pli+'" onchange="updatePlotField(this,\'advanceReceived\',\'num\')" oninput="recalcPaymentTotal('+pi+','+pli+',sanitizeAmount(this.value)); showAmtLabel(this.value,\'adv-words\')">'
       +'<div id="adv-words" style="font-size:12px;font-weight:600;color:var(--teal);margin-top:3px;min-height:16px">'+(plt.advanceReceived?amtWords(plt.advanceReceived):'')+'</div>'
       +'<label class="fl" style="margin-top:9px">Buyer Name</label>'
       +'<input type="text" class="fi" value="'+escH(plt.buyer||'')+'" placeholder="Buyer పేరు" '
