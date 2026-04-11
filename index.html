@@ -2504,12 +2504,12 @@ function setSyncStatus(s) {
   }).then(function(r){ return r.json(); }).then(function(data){
     if (data.ok && data.data) {
       mergeSheetData(data.data);
-      setSyncStatus('ok');
-      state.lastSync = new Date().toISOString();
-      saveData(); refreshUI();
-      document.getElementById('last-sync').textContent = 'Synced '+nowt();
-      document.getElementById('cfg-sync').textContent = 'Last sync: '+new Date(state.lastSync).toLocaleString('en-IN');
     }
+    setSyncStatus('ok');
+    state.lastSync = new Date().toISOString();
+    saveData(); refreshUI();
+    document.getElementById('last-sync').textContent = 'Synced '+nowt();
+    document.getElementById('cfg-sync').textContent = 'Last sync: '+new Date(state.lastSync).toLocaleString('en-IN');
   }).catch(function(){ setSyncStatus('off'); }).finally(function(){ isSyncing = false; });
 }
 
@@ -3132,16 +3132,19 @@ function clearAll() {
 
 function clearLocalAndResync() {
   if (!confirm('Local cache delete చేసి Google Sheet నుండి fresh గా load చేయాలా?\n\nSheet లో ఉన్న data అన్నీ restore అవుతుంది.')) return;
-  // Wipe all local state but keep config (script url, sheet id, api keys)
   state = freshData();
-  // Clear the repair flag so it runs again on fresh data
   delete state.__amtRepairV1;
   saveData();
   refreshUI();
   renderDocList();
   renderProjects();
-  toast('Local data cleared ✓ Sheet నుండి sync చేస్తున్నాం...', 'info');
-  setTimeout(function(){ syncFromSheet(); }, 300);
+  setSyncStatus('ok');
+  toast('Local data cleared ✓', 'ok');
+  // Only sync if sheets are configured
+  if (cfg.scriptUrl && cfg.sheetId) {
+    isSyncing = false; // reset lock in case previous sync got stuck
+    setTimeout(function(){ syncFromSheet(); }, 300);
+  }
 }
 
 // ════════════════════════════════════════════════════════
