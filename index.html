@@ -2085,6 +2085,7 @@ var STORE = (function() {
 
 var CFG_KEY = 'nirmit_cfg_v1';
 var DATA_KEY = 'nirmit_data_v1';
+var CONFIG_CACHE_KEY = 'sitebook_config_cache_v1';
 
 // ════════════════════════════════════════════════════════════════════════════════
   // SECTION: DATA STORAGE & PERSISTENCE
@@ -2096,6 +2097,62 @@ function saveCfg()  { STORE.set(CFG_KEY, cfg); }
 function loadData() {
   var data = STORE.get(DATA_KEY) || freshData();
   return repairAmountPrecision(data);
+}
+
+// ════════════════════════════════════════════════════════════════════════════════
+// DYNAMIC CONFIG LOADER FROM GOOGLE DRIVE
+// Loads SiteBook_Config.json from user's Google Drive via Apps Script
+// ════════════════════════════════════════════════════════════════════════════════
+function loadConfigFromDrive(scriptUrl) {
+  if (!scriptUrl) {
+    return Promise.reject('Script URL required to load config');
+  }
+  
+  // Try to load from localStorage cache first
+  var cached = STORE.get(CONFIG_CACHE_KEY);
+  if (cached && cached.timestamp && (Date.now() - cached.timestamp) < 24*60*60*1000) {
+    console.log('SiteBook: Using cached config from Drive (age: ' + Math.round((Date.now()-cached.timestamp)/1000) + 's)');
+    return Promise.resolve(cached.data);
+  }
+  
+  // Fetch fresh config from Apps Script
+  console.log('SiteBook: Fetching config from Drive via Apps Script...');
+  return fetch(scriptUrl, {
+    method: 'POST',
+    body: JSON.stringify({
+      action: 'getConfig'
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.ok && data.data) {
+      // Cache for 24 hours
+      STORE.set(CONFIG_CACHE_KEY, {
+        timestamp: Date.now(),
+        data: data.data
+      });
+      console.log('SiteBook: Config loaded and cached');
+      return data.data;
+    } else {
+      throw new Error(data.error || 'Config load failed - check SiteBook_Config.json in Drive');
+    }
+  })
+  .catch(function(err) {
+    console.error('SiteBook: Config load error:', err.message);
+    throw err;
+  });
+}
+
+function applyConfigFromDrive(configData) {
+  cfg.scriptUrl = configData.scriptUrl;
+  cfg.sheetId = configData.sheetId;
+  cfg.geminiKey = configData.geminiKeys && configData.geminiKeys[0] ? configData.geminiKeys[0] : '';
+  cfg.apiKeys = (configData.geminiKeys || []).map(function(k, i) {
+    return {key: k, label: 'Key '+(i+1), addedDate: today()};
+  });
+  cfg.setupDone = true;
+  saveCfg();
+  console.log('SiteBook: Config applied from Drive - ScriptUrl set, SheetId set, '+cfg.apiKeys.length+' Gemini keys loaded');
 }
 
 // ── One-time data repair: round all integer-intended amounts that got float-corrupted ──
@@ -2153,20 +2210,21 @@ function saveData() {
 function freshData(){ return {entries:[],vendors:{},priceHistory:{},billPriceHistory:{},documents:[],projects:[],contacts:[],nextId:1,chatHistory:[],lastSync:null,loans:[],loanPayments:[],projIncome:[],projExpenses:[],landPayments:[]}; }
 
 // ════════════════════════════════════════════════════════
-// HARDCODED CONFIG — Private repo లో safe గా ఉంటుంది
-// New phone లో automatically loaded అవుతుంది
+// DYNAMIC CONFIG LOADING
+// Config is loaded from SiteBook_Config.json in user's Google Drive
+// No hardcoded credentials for security
 // ════════════════════════════════════════════════════════
-// Hardcoded config — survives Ctrl+F5 / localStorage clear
-var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwwQ2HN6OI3hbyu4mfKBY_o6QUgEGsQTKfk_CZwK9WCOpgOmF7kg6aV8NgbhUToMMPx/exec';
-var SHEET_ID   = '13Nk9DKYCcL4PND9wZnBlLB_O2eo2pNa6lG914oU2HAU';
+var SCRIPT_URL = '';
+var SHEET_ID   = '';
+
 // ════════════════════════════════════════════════════════════════════════════════
   // SECTION: CONFIGURATION MANAGEMENT
-  // Purpose: Merge user config with hardcoded defaults
+  // Purpose: Load config from Drive, apply user QR input, merge safely
   // ════════════════════════════════════════════════════════════════════════════════
   function mergeHardcodedConfig(c) {
-  c.scriptUrl = SCRIPT_URL;
-  c.sheetId   = SHEET_ID;
-  c.setupDone = true;
+  // Don't set any hardcoded defaults - all config comes from Drive or QR
+  // setupDone = false unless explicitly set by Drive config or QR
+  if (c.setupDone === undefined) c.setupDone = false;
   return c;
 }
 
@@ -2443,7 +2501,10 @@ function finishSetup() {
   renderContacts();
   injectWelcome();
   updateSettingsUI();
-  syncFromSheet();
+  // Sync from sheets if not already syncing
+  if (!isSyncing && cfg.scriptUrl && cfg.sheetId) {
+    syncFromSheet();
+  }
   var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
   var isAnd = /android/i.test(navigator.userAgent);
   var isSA  = window.navigator.standalone || window.matchMedia('(display-mode:standalone)').matches;
@@ -6474,10 +6535,17 @@ function applyQRData(data) {
   }
   cfg.setupDone = true;
   saveCfg();
+  // Store script URL for future Drive config loads
+  if (data.u) STORE.set('temp_script_url', data.u);
   closeModal('qr-modal');
   updateSettingsUI();
-  toast('✓ Setup complete! All keys loaded from QR', 'ok');
-  setTimeout(function(){ launchApp(); }, 500);
+  toast('✓ QR loaded! Syncing data...', 'ok');
+  // Delay sync to ensure config is saved and UI is ready
+  setTimeout(function(){
+    isSyncing = false;
+    syncFromSheet();
+    setTimeout(function(){ launchApp(); }, 1000);
+  }, 500);
 }
 
 // Also show scan QR on setup wizard for new phones
@@ -7176,23 +7244,60 @@ function init() {
     splash.style.opacity = '0';
     setTimeout(function() {
       splash.style.display = 'none';
-      if (cfg.setupDone && cfg.sheetId && cfg.geminiKey) {
-        // Already configured - launch app directly
+      
+      // Check if already has complete config from previous session (localStorage)
+      if (cfg.setupDone && cfg.sheetId && cfg.geminiKey && cfg.scriptUrl) {
+        console.log('SiteBook: Using config from localStorage');
         launchApp();
         updateUserUI();
-        // Re-init Google login silently for auto-select next time
+        setTimeout(function(){
+          if (!isSyncing && cfg.scriptUrl && cfg.sheetId) {
+            syncFromSheet();
+          }
+        }, 800);
         if (GOOGLE_CLIENT_ID) initGoogleLogin();
-      } else if (GOOGLE_CLIENT_ID) {
-        // Show Google login screen
-        showLoginScreen();
-        initGoogleLogin();
+        return;
+      }
+      
+      // Try to load config from Google Drive (stored in SiteBook_Config.json)
+      var tempScriptUrl = STORE.get('temp_script_url');
+      
+      if (tempScriptUrl) {
+        console.log('SiteBook: Loading config from Drive via Apps Script...');
+        loadConfigFromDrive(tempScriptUrl)
+          .then(function(configData) {
+            console.log('SiteBook: Drive config loaded successfully');
+            applyConfigFromDrive(configData);
+            STORE.set('temp_script_url', configData.scriptUrl);
+            launchApp();
+            updateUserUI();
+            setTimeout(function(){
+              syncFromSheet();
+            }, 800);
+            if (GOOGLE_CLIENT_ID) initGoogleLogin();
+          })
+          .catch(function(err) {
+            console.log('SiteBook: Could not load from Drive:', err.message);
+            showSetupScreen();
+          });
       } else {
-        // No Google Client ID — manual setup
-        setup.style.display = 'flex';
-        setTimeout(function(){ setup.style.opacity='1'; }, 30);
+        // No previous config - show setup screen
+        console.log('SiteBook: No config found, showing setup screen');
+        showSetupScreen();
       }
     }, 600);
   }, 2500);
+}
+
+function showSetupScreen() {
+  var setup = document.getElementById('setup');
+  if (GOOGLE_CLIENT_ID) {
+    showLoginScreen();
+    initGoogleLogin();
+  } else {
+    setup.style.display = 'flex';
+    setTimeout(function(){ setup.style.opacity='1'; }, 30);
+  }
 }
 
 // Global error safety — if splash gets stuck, show setup
